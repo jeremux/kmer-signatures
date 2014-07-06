@@ -29,7 +29,7 @@ void imprime_kmer(FILE *out,int taille_kmer)
 	
 }
 
-void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,int ***resultat)
+void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,unsigned long long ***resultat)
 {
 	int i,j,k;
 	FILE *out = NULL;
@@ -56,7 +56,7 @@ void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_s
 
 				for (j = 0; j < nb_possibilite; j++)
 				{
-					fprintf(out,"%d;",resultat[k][i][j]);
+					fprintf(out,"%llu;",resultat[k][i][j]);
 				}
 				
 			}
@@ -75,7 +75,7 @@ void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_s
 
 void imprime_entete_weka(FILE *fi,int taille_kmer)
 {
-	int i;
+	unsigned long long i;
 
 	unsigned long long taille =  puissance4(taille_kmer) ;
 
@@ -85,9 +85,9 @@ void imprime_entete_weka(FILE *fi,int taille_kmer)
 	}
 }
 
-void imprime_weka(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,int ***resultat,const char *taxid,int flag_en_tete,char *les_accessions)
+void imprime_weka(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,unsigned long long ***resultat,const char *taxid,int flag_en_tete,char *les_accessions)
 {
-	int i,j,k;
+	unsigned long long i,j,k;
 	FILE *out = NULL;
 	unsigned long long nb_possibilite;
 
@@ -118,14 +118,14 @@ void imprime_weka(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_
 
 				for (j = 0; j < nb_possibilite; j++)
 				{
-					fprintf(out,"%d,",resultat[k][i][j]);
-					// fprintf(stdout,"%d,",resultat[k][i][j]);
+					// fprintf(out,"%d,",resultat[k][i][j]);
+					fprintf(stdout,"%llu,",resultat[k][i][j]);
 
 				}
 				
 			}
-			fprintf(out,"%s %% %s\n",taxid,les_accessions);
-			// fprintf(stdout,"%s %% %s\n",taxid,les_accessions);
+			// fprintf(out,"%s %% %s\n",taxid,les_accessions);
+			fprintf(stdout,"%s %% %s\n",taxid,les_accessions);
 		}
 
 		fclose(out);

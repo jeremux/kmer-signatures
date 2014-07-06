@@ -42,7 +42,7 @@ int main(int argc,char *argv[])
 {
 	
 	int nb_kmer;
-	int i,j,val,x;
+	unsigned long long i,j,val,x;
 	// FILE *tmp;
 	int taille_fenetre = 0;
 	int nb_sequences;
@@ -50,7 +50,7 @@ int main(int argc,char *argv[])
 	char *path_kmer = NULL;
 	char *out = NULL;
 	char *taxid = NULL;
-	int ***resultat = NULL;
+	unsigned long long ***resultat = NULL;
 	// char *taxid = NULL;
 	int flag_fenetre = 1;
 	int taille_fenetre_origine;
@@ -309,7 +309,7 @@ int main(int argc,char *argv[])
 		
 		if (taille_fenetre > taille_seq)
 		{
-			fprintf(stderr, "the read size is greater than that of the sequence %d > %d (seq n°%d)\n",taille_fenetre,taille_seq,x);
+			fprintf(stderr, "the read size is greater than that of the sequence %d > %d (seq n°%llu)\n",taille_fenetre,taille_seq,x);
 		}
 
 
@@ -327,7 +327,7 @@ int main(int argc,char *argv[])
 		// 	accession_tab[i] = (char *)(malloc(20*sizeof(char)));
 		// 	my_error(accession_tab[i],"Erreur malloc accession_tab[i]");
 		// }
-		resultat = (int ***)(calloc(nb_kmer,sizeof(int **)));
+		resultat = (unsigned long long ***)(calloc(nb_kmer,sizeof(unsigned long long **)));
 	
 		my_error(resultat,"Erreur malloc resultat");
 		
@@ -335,7 +335,7 @@ int main(int argc,char *argv[])
 
 		for (i = 0; i < nb_kmer; i++)
 		{
-			resultat[i] = (int **)(calloc(nombre_sous_sequence,sizeof(int *)));
+			resultat[i] = (unsigned long long **)(calloc(nombre_sous_sequence,sizeof(unsigned long long *)));
 			my_error(resultat,"Erreur malloc resultat[i]");
 
 			nb_possibilite = puissance4(taille_kmer[i]);
@@ -344,7 +344,7 @@ int main(int argc,char *argv[])
 
 			for(j=0; j < nombre_sous_sequence;j++)
 			{
-				resultat[i][j] = (int *)(calloc(nb_possibilite,sizeof(int)));
+				resultat[i][j] = (unsigned long long *)(calloc(nb_possibilite,sizeof(unsigned long long)));
 				my_error(resultat,"Erreur calloc resultat[i]");
 				// accession_tab[indice_ligne++] = les_accessions[x];
 			}

@@ -4,9 +4,9 @@
 
 void imprime(unsigned long long **tab_comptage,int *taille_kmer);
 
-void imprime_weka(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,int ***resultat,const char *taxid,int flag,char *les_accessions);
+void imprime_weka(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,unsigned long long ***resultat,const char *taxid,int flag,char *les_accessions);
 
-void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,int ***resultat);
+void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_sequence,unsigned long long ***resultat);
 
 void imprime_kmer(FILE *out,int taille_kmer);
 
