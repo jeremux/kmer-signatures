@@ -3,6 +3,8 @@
 
 use strict;
 use Parallel::ForkManager;
+use threads;
+use threads::shared;
 use Getopt::Long;
 use Cwd 'abs_path';
 
@@ -112,74 +114,152 @@ my $cpt;
 
 # ROUTINE COMPTAGE
 
+my %hash_chemins = ();
+my @les_chemins1;
+my @les_chemins2;
+my @les_chemins3;
+my @les_chemins4;
 
-my @les_chemins;
+
+
 my $nb_feuilles = 0;
 while (<FEUILLE>)
 {
 	my $k = $_ ;
 	$k =~ s/^\s+//;
 	$k =~ s/\s+$//;
-	push(@les_chemins,$k);
+	print "Je vais push $k\n";
+	$hash_chemins{1} .= "," . $k ;
 	$nb_feuilles++;
+
+	$k = <FEUILLE> ;
+	
+	
+	if (defined($k))
+	{
+		$k =~ s/^\s+//;
+	$k =~ s/\s+$//;
+		print "Je vais push $k\n";
+		$hash_chemins{2} .= "," . $k ;
+		$nb_feuilles++;
+	}
+
+	$k = <FEUILLE> ;
+	
+	
+	if (defined($k))
+	{
+		$k =~ s/^\s+//;
+	$k =~ s/\s+$//;
+		print "Je vais push $k\n";
+		$hash_chemins{3} .= "," . $k ;
+		$nb_feuilles++;
+	}
+
+	$k = <FEUILLE> ;
+	
+
+	if (defined($k))
+	{
+		$k =~ s/^\s+//;
+		$k =~ s/\s+$//;
+		print "Je vais push $k\n";
+		$hash_chemins{4} .= "," . $k ;
+		$nb_feuilles++;
+	}
 	# print "k = $k\n";
 }
 
+print "toto\n";
 
+while( my ($k,$v) = each(%hash_chemins) ) {
+   print "#############Clef=$k############\n";
+   my @tmp = split(',',$v);
+   foreach my $t (@tmp)
+   {
+   	if ($t ne "")
+   	{
+   		print " t = $t\n";
+   	}
+   }
+}
 my @childs;
-
+my @threads;
 my $count = 0;
-foreach my $chemin (@les_chemins)
-{
-		$count++;
-        my $pid = fork();
-        if ($pid) {
-        # parent
-        # print "pid is $pid, parent $$\n";
-        push(@childs, $pid);
-        } elsif ($pid == 0) {
-                # child
-                &write($count,$chemin);
-                exit 0;
-        } else {
-                die "couldnt fork: $!\n";
-        }
- 
- 
- 
-}
- 
-foreach (@childs) {
-        my $tmp = waitpid($_, 0);
-         # print "done with pid $tmp\n";
- 
-}
+
+
+########################################################
+########################################################
+###############    FORK ################################
+########################################################
+########################################################
+# foreach my $chemin (@les_chemins)
+# {
+# 		$count++;
+#         my $pid = fork();
+#         if ($pid) {
+#         # parent
+#         # print "pid is $pid, parent $$\n";
+#         push(@childs, $pid);
+#         } elsif ($pid == 0) {
+#                 # child
+#                 &write($count,$chemin);
+#                 exit 0;
+#         } else {
+#                 die "couldnt fork: $!\n";
+#         }
+# }
+
+
+# foreach (@childs) {
+#         my $tmp = waitpid($_, 0);
+#          # print "done with pid $tmp\n";
+# }
  
 # print "End of main program\n";
+########################################################
+########################################################
+######### END FORK #####################################
+########################################################
+########################################################
+
+foreach my $chemin (@les_chemins1) {
+		$count++;
+        my $t = threads->new(\&write, $count,$chemin);
+        push(@threads,$t);
+}
+foreach (@threads) {
+        my $num = $_->join;
+        # print "done with $num\n";
+}
  
  
 sub write {
-        my ($num,$k) = (@_);
-        # print "started child process for  $num\n";
-        system("mkdir -p $k/count");
-		my $les_genomes = `ls $k/genomes_*.fasta`;
+        my ($num,@chemins) = (@_);
 
-		my @liste_genomes = split('\n',$les_genomes);
+        foreach my $k (@chemins)
+        {
+	        # print "started child process for  $num\n";
+	        system("mkdir -p $k/count");
+			my $les_genomes = `ls $k/genomes_*.fasta`;
 
-		my $nom_fichier = $k.'/count/count_S'.$taille_read.'.arff';
+			my @liste_genomes = split('\n',$les_genomes);
+
+			my $nom_fichier = $k.'/count/count_S'.$taille_read.'.arff';
 
 
-		open(WEKA,'>',$k.'/count/count_S'.$taille_read.'.arff') || die "Can't open file $nom_fichier:$!\n";
-		# print "*****les_genomes*****\n";
-		foreach my $j (@liste_genomes)
-		{
-			# print "nom_fichier = $nom_fichier\n";
-			# system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X");
-			# print "./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier\n";
-			system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier");
+			open(WEKA,'>',$k.'/count/count_S'.$taille_read.'.arff') || die "Can't open file $nom_fichier:$!\n";
+			# print "*****les_genomes*****\n";
+			foreach my $j (@liste_genomes)
+			{
+				# print "nom_fichier = $nom_fichier\n";
+				# system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X");
+				print "./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier\n";
+				# system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier");
 
+			}
+			close(WEKA);
 		}
-		close(WEKA);
         sleep $num;
         # print "done with child process for $num\n";
         return $num;
