@@ -2,7 +2,7 @@
 
 
 use strict;
-
+use Parallel::ForkManager;
 use Getopt::Long;
 use Cwd 'abs_path';
 
@@ -133,8 +133,8 @@ while (<FEUILLE>)
 	{
 		# print "nom_fichier = $nom_fichier\n";
 		# system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X");
-		# print "./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier\n";
-		system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier");
+		print "./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier\n";
+		# system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier");
 
 	}
 	close(WEKA);
