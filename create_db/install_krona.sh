@@ -8,16 +8,16 @@ echo "*********************"
 echo ""
 echo ""
 
-if [ -d "n66d5Ey8pBBHb6" ]; then
-	echo "Le dossier n66d5Ey8pBBHb6 existe"
+if [ -d "krona" ]; then
+	echo "Le dossier krona existe"
 	exit 1;
 else
 
-git clone git://git.code.sf.net/p/krona/git n66d5Ey8pBBHb6;
-cd n66d5Ey8pBBHb6/KronaTools
+git clone git://git.code.sf.net/p/krona/git krona;
+cd krona/KronaTools
 sudo perl install.pl
 cd ../..
-rm -rf ./n66d5Ey8pBBHb6
+# rm -rf ./n66d5Ey8pBBHb6
 
 echo ""
 echo ""
@@ -27,7 +27,7 @@ echo "**************************"
 echo ""
 echo ""
 echo "*********************"
-echo "ktImportXML fichier_krona.xml"
+echo "ktImportXML krona_Eukaryota.xml"
 echo "*********************"
 echo ""
 echo ""

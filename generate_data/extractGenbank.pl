@@ -171,6 +171,7 @@ while(<GENBANK>)
 		my $rap = ($cpt / $taille_finale)*100;
 		my $rap_string = "" . $rap;
 		$rap_string = substr($rap_string,0,4);
+		print "Traitement 1 / 3\n";
 		print "Avancement: $rap_string %\n";
 
 	}
@@ -731,6 +732,7 @@ my $cpt1;
 my $id;
 my $id2;
 
+print "Traitement 2 / 3 (Génération des donnees aux feuilles)\n";
 foreach my $un_genbank (@tab_extract)
 {
 	chomp($un_genbank);

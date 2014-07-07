@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Traitement 3/3 (linkage)";
 cp feuille.txt feuille2.txt;
 
 racine=`head -n 1 feuille2.txt`;

@@ -26,7 +26,6 @@ echo "find $1 -type f -exec rm '{}' \;" >> scrpit_clean_$3.sh;
 echo "find $1 -type l -exec rm '{}' \;" >> scrpit_clean_$3.sh;
 
 for line in $(cat leaf.txt); do 
-
 	cat $2 | grep $line >> ../generate_data/listGenbank.txt ;
 done
 

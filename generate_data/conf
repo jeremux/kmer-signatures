@@ -1,4 +1,4 @@
-cox1: CO1,COI,COXI,COXI,COX1,CYTOCHROME OXIDASE SUBUNIT I,cytochrome c oxidase subunit I,cox1i1,cox1i1,cox1-i1,cox1i10,cox1i11,cox1i2,cox1-i2,cox1i3,cox1-i3,cox1i4,cox1-i4,cox1i5,cox1-i5,cox1i6,cox1-i6,cox1i7,cox1-i7,cox1i8,cox1-i8,cox1i8 1,cox1i8 2,cox1i8 3,cox1i9,cox1-i9
-cox2: CO2,COII,COXII,COX II,COX 2,CYTOCHROME OXIDASE SUBUNIT II,cox2-1,cox2i1,cox2i2,cox2i3
+cox1: CO1,COI,COXI,COXI,COX1,CYTOCHROME OXIDASE SUBUNIT I,cytochrome c oxidase subunit I,cox1i1,cox1i1,cox1-i1,cox1i10,cox1i11,cox1i2,cox1-i2,cox1i3,cox1-i3,cox1i4,cox1-i4,cox1i5,cox1-i5,cox1i6,cox1-i6,cox1i7,cox1-i7,cox1i8,cox1-i8,cox1i8 1,cox1i8 2,cox1i8 3,cox1i9,cox1-i9,cytochrome c oxidase subunit 1
+cox2: CO2,COII,COXII,COX II,COX 2,CYTOCHROME OXIDASE SUBUNIT II,cox2-1,cox2i1,cox2i2,cox2i3,cox2-2,cytochrome c oxidase subunit 3
 cox3: CO3,COIII,COXIII,COX III,COX 3,CYTOCHROME OXIDASE SUBUNIT III,co 3,co iii,cox3-i1
 cytb: CYT B,CYTOB,CYTOCHROME B,CB,COB,cyb,cobi1,cob-i1,cobi2,cob-i2,cob-i3,cob-i4

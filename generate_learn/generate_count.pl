@@ -21,14 +21,16 @@ my $p = 0;
 my @taille_kmer;
 my $nb_kmer = 0;
 
-
+# En option le fichier contenant la graine, la taille du read, 
+# et les feuilles (liste de path) de la bdd. si p = nb de fork
 GetOptions ('pattern|p=s' => \$fichier_pattern,
             'read|r=i' => \$taille_read,	
             'leaf|f=s' => \$fichier_feuille,
             'thread|t=i' => \$p,	
             'help|h' => \$help);
 
-
+# on vérifie si le programme count_kmer a bien
+# été compilé
 if (! -e "./../count_kmer/src/count_kmer") 
 {
 	print "Lancez le makefile du dossier ./../count_kmer/src\n";
@@ -39,62 +41,8 @@ if (! -e "./../count_kmer/src/count_kmer")
 open (FEUILLE,'<',$fichier_feuille) || die "Can't open file $fichier_feuille:$!\n";
 open (KMER,  '<', $fichier_pattern) || die "Can't open file $fichier_pattern:$!\n";
 
+# la premiere ligne du fichier feuille est le path de la bdd
 my $premiere_ligne = <FEUILLE>;
-
-while (<KMER>) 
-{
-	my $l = $_;
-	#trim
-	$l =~ s/\d//g;
-	$l =~ s/\s*//g;	
-
-	my @tab_kmer = split(//,$l);
-	my $tmp_size = 0;
-
-	foreach my $k (@tab_kmer)
-	{
-		if($k eq "#")
-		{
-			$tmp_size++;
-		}
-
-	}
-
-	if ($tmp_size != 0)
-	{
-		# print "taille_kmer = $tmp_size\n";
-		push(@taille_kmer,$tmp_size);
-		$nb_kmer++;
-	}
-	
-}
-
-sub write_entete
-{
-
-	my ($k) = @_;
-	my @bases = ('A','C','G','T');
-	my @words = @bases;
-	my @newwords;
-	for my $i (1..$k-1)
-	{
-		undef @newwords;
-		foreach my $w (@words)
-		{
-			foreach my $b (@bases)
-			{
-				push (@newwords,$w.$b);
-			}
-		}
-		undef @words;
-		@words = @newwords;
-	}
-	foreach my $w (@words)
-	{
-		print WEKA "\@attribute $w numeric\n";
-	}
-}
- 
 
 my $tmp_size = 0;
 
@@ -109,13 +57,14 @@ my $nb_feuilles = 0;
 while (<FEUILLE>)
 {
 	my $k = $_ ;
+	#trim des whitespaces
 	$k =~ s/^\s+//;
 	$k =~ s/\s+$//;
-	# print "Je vais push $k\n";
+
 	$hash_chemins{1} .= "," . $k ;
 	$nb_feuilles++;
 
-
+	#split des path en plusieurs parties
 	for (my $i = 2 ; $i <= $nb_thread ;$i++)
 	{
 		$k = <FEUILLE> ;
