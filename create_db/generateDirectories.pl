@@ -435,15 +435,10 @@ open (SCRIPT_MKDIR, '>', 'script_mkdir.sh') || die "Can't open file:$!\n";
 ##### Fichier generateGenbank.sh #####
 open (GENERATE_GEN,  '>', 'listGenbank2.txt') || die "Can't open file:$!\n"; 
 
-open (SCRIPT_GET, '>','../generate_data/generateGenbank.sh') || die "Can't open file:$!\n";
-
-open (NEWICK, '>', 'tree.newick') || die "Can't open file:$!\n"; 
-
-
 
 # En tete des scripts
 print SCRIPT_MKDIR "#!/bin/sh\n";
-print SCRIPT_GET "#!/bin/sh\n";
+
 
 
 
@@ -667,6 +662,13 @@ sub tree
 # print NEWICK "(";
 
 my $nom_racine = $objet_taxon->scientific_name;
+my $nom_fichier = '../generate_data/generateGenbank_'.$nom_racine.'.sh';
+open (SCRIPT_GET, '>',$nom_fichier) || die "Can't open file:$!\n";
+
+open (NEWICK, '>', 'tree_'.$nom_racine.'.newick') || die "Can't open file:$!\n"; 
+
+
+print SCRIPT_GET "#!/bin/sh\n";
 
 open (KRONA, '>', 'krona_'.$nom_racine.'.xml') || die "Can't open file krona.xml!\n";
 
@@ -722,7 +724,8 @@ print "abs_path = $abs_path\n";
 my $abs_path_racine = $abs_path . $path_racine;
 
 my $abs_genbank = abs_path($genbank);
-print SCRIPT_GET "perl extractGenbank.pl -list listGenbank.txt -gen $abs_genbank -conf conf --root $abs_path";
+print SCRIPT_GET "perl extractGenbank.pl -list listGenbank.txt -gen $abs_genbank -conf conf --root $abs_path;\n";
+print SCRIPT_GET "bash fillAll_v2.sh;"
 # print "path_racine = $abs_path\n";
 
 print NEWICK ";";
@@ -735,7 +738,7 @@ close KRONA;
 close SCRIPT_MKDIR;
 close GENERATE_GEN;
 system "chmod +x script_mkdir.sh";
-system "chmod +x ../generate_data/generateGenbank.sh";
+system "chmod +x $nom_fichier";
 system "./script_mkdir.sh";
 system "./get_leaf.sh $abs_path_racine listGenbank2.txt";
 system "rm -f script_mkdir.sh";

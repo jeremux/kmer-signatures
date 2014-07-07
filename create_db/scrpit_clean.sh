@@ -1,2 +1,2 @@
-find /home/jeremy/taxonomic-classification/create_db/./Eukaryota__2759 -type f -exec rm '{}' \;
-find /home/jeremy/taxonomic-classification/create_db/./Eukaryota__2759 -type l -exec rm '{}' \;
+find /home/jeremy/mitomer/trunk/create_db/./Alveolata__33630 -type f -exec rm '{}' \;
+find /home/jeremy/mitomer/trunk/create_db/./Alveolata__33630 -type l -exec rm '{}' \;
