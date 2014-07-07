@@ -137,9 +137,10 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 	int flag_titre = 0;
 	int flag_take_acc = 0;
 	int flag_take_seq = 0;
-	int ancien_char1;
-	int ancien_char2;
+	int ancien_char1='\0';
+	int ancien_char2='\0';
 
+	// int flag_tmp = 0;
 	FILE* fichier = NULL;
 
 
@@ -201,8 +202,47 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 
 			if (flag_take_seq && c!=' ' && c!='\n' && c!='\t')
 			{
+				// flag_tmp = 0;
+				// switch(c)
+				// {
+
+				// 	case 'y':
+				// 		c = 'c';
+				// 		break;
+				// 	case 's':
+				// 		c = 'g';
+				// 		break;
+				// 	case 'w':
+				// 		printf("rencontre\n");
+				// 		flag_tmp = 1;
+				// 		c = 't';
+				// 		break;
+				// 	case 'k':
+				// 		c = 'a';
+				// 		break;
+				// 	case 'm':
+				// 		c = 'c';
+				// 		break;
+				// 	case 'b':
+				// 		c = 'g';
+				// 		break;
+				// 	case 'd':
+				// 		c = 'a';
+				// 		break;
+				// 	case 'h':
+				// 		c = 't';
+				// 		break;
+				// 	case 'v':
+				// 		c = 'c';
+				// 		break;
+				// 	case 'n':
+				// 		c = 'a';
+				// 		break;
+				// 	default:
+				// 		break;
+				// }
 				append(les_sequences[i],c);
-				// printf("ajout de %c dans %d\n",c,i);
+				// if (flag_tmp) printf("ajout de %c dans %d\n",c,i);
 			}
 
 			ancien_char2 = ancien_char1;
@@ -211,6 +251,7 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 			end: ;
 		}
 
+		// printf("%s\n",les_sequences[i]);
 		*nb_sequences = i + 1;
 		fclose(fichier);
 

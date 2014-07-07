@@ -41,8 +41,7 @@ void help() {
 int main(int argc,char *argv[])
 {
 	
-	int nb_kmer;
-	unsigned long long i,j,val,x;
+	unsigned long long i,j,val,x,nb_kmer;
 	// FILE *tmp;
 	int taille_fenetre = 0;
 	int nb_sequences;
@@ -58,8 +57,9 @@ int main(int argc,char *argv[])
 	
 
 	unsigned long long nb_possibilite;
-	int nombre_sous_sequence ;
+	unsigned long long nombre_sous_sequence ;
 
+	
 
 	static struct option long_options[] = {
 		{"input", required_argument, 0, 'i'},
@@ -71,7 +71,6 @@ int main(int argc,char *argv[])
 		{"help", no_argument, 0, 'h'},
 		{0, 0, 0, 0}
 	};
-
 
 	while (1) {
 
@@ -155,6 +154,7 @@ int main(int argc,char *argv[])
 	my_error(taille_pattern,"Erreur calloc taille_pattern");
 	
 
+
 	for(i=0;i<nb_kmer;i++)
 	{
 		j=0;
@@ -228,9 +228,8 @@ int main(int argc,char *argv[])
 		les_accessions[i][0] = '\0';
 	}
 
-
-
 	read_seq(path_fasta,&nb_sequences,les_sequences,les_accessions);
+
 
 
 	/*********************************************************************************
@@ -263,7 +262,7 @@ int main(int argc,char *argv[])
 	for(x=0;x<nb_sequences;x++)
 	{
 		// printf("\n\n***********************************************\n");
-		// printf("Traitement sequence %d / %d\n",x+1,nb_sequences);
+		// printf("Traitement sequence %llu / %d\n",x+1,nb_sequences);
 		// printf("***********************************************\n");
 		taille_fenetre = taille_fenetre_origine;
 
@@ -344,7 +343,10 @@ int main(int argc,char *argv[])
 
 			for(j=0; j < nombre_sous_sequence;j++)
 			{
+				// printf("Debut Alloc interne\n");	
+				// printf("i = %llu \t j = %llu\n",i,j);	
 				resultat[i][j] = (unsigned long long *)(calloc(nb_possibilite,sizeof(unsigned long long)));
+				// printf("Fin Alloc interne\n");
 				my_error(resultat,"Erreur calloc resultat[i]");
 				// accession_tab[indice_ligne++] = les_accessions[x];
 			}
@@ -370,7 +372,9 @@ int main(int argc,char *argv[])
 				exit(EXIT_FAILURE);
 			}
 
+
 			count(les_sequences[x],taille_seq,tab_bool[i],&taille_kmer[i],resultat[i],taille_fenetre);
+
 		}
 
 
@@ -378,6 +382,7 @@ int main(int argc,char *argv[])
 		// imprime_csv(out,nb_kmer,taille_kmer,nombre_sous_sequence,resultat);
 
 		imprime_weka(out,nb_kmer,taille_kmer,nombre_sous_sequence,resultat,taxid,x,les_accessions[x]);
+
 
 	}
 
@@ -390,17 +395,24 @@ int main(int argc,char *argv[])
 	// free(tab_bool);
 	free_tab_bool(tab_bool,15);
 
+	
+	// printf("Debut Free\n");
 	for(i=0; i < nb_kmer; i++)
 	{
-		for(j=0; j < nombre_sous_sequence; j++)
-		{
-			free(resultat[i][j]);
-		}
+	// 	for(j=0; j < nombre_sous_sequence; j++)
+	// 	{
+	// 		// printf("Debut free interne\n");	
+	// 		// printf("i = %llu \t j = %llu\n",i,j);	
+	// 		free(resultat[i][j]);
+	// 		// printf("Fin free interne\n");	
+	// 	}
 		free(resultat[i]);
 		
 	}
-
+	// printf("FIN FREE\n");
 	free(resultat);
+
+	
 
 	for (i = 0; i < MAX_SEQ; i++)
 	{
@@ -408,6 +420,8 @@ int main(int argc,char *argv[])
 	}
 
 	free(les_sequences);
+
+
 
 	return 0;
 	

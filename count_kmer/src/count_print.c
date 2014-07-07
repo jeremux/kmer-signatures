@@ -118,14 +118,14 @@ void imprime_weka(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_
 
 				for (j = 0; j < nb_possibilite; j++)
 				{
-					// fprintf(out,"%d,",resultat[k][i][j]);
-					fprintf(stdout,"%llu,",resultat[k][i][j]);
+					fprintf(out,"%llu,",resultat[k][i][j]);
+					// fprintf(stdout,"%llu,",resultat[k][i][j]);
 
 				}
 				
 			}
-			// fprintf(out,"%s %% %s\n",taxid,les_accessions);
-			fprintf(stdout,"%s %% %s\n",taxid,les_accessions);
+			fprintf(out,"%s %% %s\n",taxid,les_accessions);
+			// fprintf(stdout,"%s %% %s\n",taxid,les_accessions);
 		}
 
 		fclose(out);

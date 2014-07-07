@@ -15,6 +15,8 @@ my $nom_sequence;
 my $fichier_feuille;
 my $taille_read = -1;
 my %hash_taxid = ();
+my $nb_thread = 0;
+my $p = 0;
 
 my @taille_kmer;
 my $nb_kmer = 0;
@@ -22,11 +24,18 @@ my $nb_kmer = 0;
 
 GetOptions ('pattern|p=s' => \$fichier_pattern,
             'read|r=i' => \$taille_read,	
-            'leaf|f=s' => \$fichier_feuille,	
+            'leaf|f=s' => \$fichier_feuille,
+            'thread|t=i' => \$p,	
             'help|h' => \$help);
 
 
-print "fichier_feuille = $fichier_feuille\n";
+if (! -e "./../count_kmer/src/count_kmer") 
+{
+	print "Lancez le makefile du dossier ./../count_kmer/src\n";
+	exit 1;
+} 
+
+# print "fichier_feuille = $fichier_feuille\n";
 open (FEUILLE,'<',$fichier_feuille) || die "Can't open file $fichier_feuille:$!\n";
 open (KMER,  '<', $fichier_pattern) || die "Can't open file $fichier_pattern:$!\n";
 
@@ -53,7 +62,7 @@ while (<KMER>)
 
 	if ($tmp_size != 0)
 	{
-		print "taille_kmer = $tmp_size\n";
+		# print "taille_kmer = $tmp_size\n";
 		push(@taille_kmer,$tmp_size);
 		$nb_kmer++;
 	}
@@ -87,29 +96,9 @@ sub write_entete
 }
  
 
-# print WEKA "\@relation kmots\n\n";
 my $tmp_size = 0;
 
-# foreach my $k (@taille_kmer)
-# {
-# 	&write_entete($k);
-# }
-
-# print WEKA "\@attribute ID {";
-
 my $cpt;
-
-# foreach my $k (@les_taxids)
-# {
-# 	if(++$cpt == scalar(@les_taxids))
-# 	{
-# 		print WEKA "$k}\n\n\@data\n";
-# 	}
-# 	else
-# 	{
-# 		print WEKA "$k,";
-# 	}
-# }
 
 # ROUTINE COMPTAGE
 
@@ -122,61 +111,27 @@ while (<FEUILLE>)
 	my $k = $_ ;
 	$k =~ s/^\s+//;
 	$k =~ s/\s+$//;
-	print "Je vais push $k\n";
+	# print "Je vais push $k\n";
 	$hash_chemins{1} .= "," . $k ;
 	$nb_feuilles++;
 
-	$k = <FEUILLE> ;
-	
-	
-	if (defined($k))
-	{
-		$k =~ s/^\s+//;
-	$k =~ s/\s+$//;
-		print "Je vais push $k\n";
-		$hash_chemins{2} .= "," . $k ;
-		$nb_feuilles++;
-	}
 
-	$k = <FEUILLE> ;
-	
-	
-	if (defined($k))
+	for (my $i = 2 ; $i <= $nb_thread ;$i++)
 	{
-		$k =~ s/^\s+//;
-	$k =~ s/\s+$//;
-		print "Je vais push $k\n";
-		$hash_chemins{3} .= "," . $k ;
-		$nb_feuilles++;
-	}
-
-	$k = <FEUILLE> ;
+		$k = <FEUILLE> ;
 	
-
-	if (defined($k))
-	{
-		$k =~ s/^\s+//;
-		$k =~ s/\s+$//;
-		print "Je vais push $k\n";
-		$hash_chemins{4} .= "," . $k ;
-		$nb_feuilles++;
+	
+		if (defined($k))
+		{
+			$k =~ s/^\s+//;
+			$k =~ s/\s+$//;
+			# print "Je vais push $k\n";
+			$hash_chemins{$i} .= "," . $k ;
+			$nb_feuilles++;
+		}
 	}
-	# print "k = $k\n";
 }
 
-# print "toto\n";
-
-# while( my ($k,$v) = each(%hash_chemins) ) {
-#    print "#############Clef=$k############\n";
-#    my @tmp = split(',',$v);
-#    foreach my $t (@tmp)
-#    {
-#    	if ($t ne "")
-#    	{
-#    		print " t = $t\n";
-#    	}
-#    }
-# }
 my @childs;
 my @threads;
 my $count = 0;
@@ -187,52 +142,56 @@ my $count = 0;
 ###############    FORK ################################
 ########################################################
 ########################################################
-for ( my $count = 1; $count <= 4; $count++) 
+
+sub doThread
 {
-        my $pid = fork();
-        my $chemin = $hash_chemins{$count};
-        if ($pid) {
-        # parent
-        # print "pid is $pid, parent $$\n";
-        push(@childs, $pid);
-        } elsif ($pid == 0) {
-                # child
-                &write($count,$chemin);
-                exit 0;
-        } else {
-                die "couldnt fork: $!\n";
-        }
+	for ( my $count = 1; $count <= $nb_thread ; $count++) 
+	{
+	        my $pid = fork();
+	        my $chemin = $hash_chemins{$count};
+	        if ($pid) {
+	        # parent
+	        # print "pid is $pid, parent $$\n";
+	        push(@childs, $pid);
+	        } elsif ($pid == 0) {
+	                # child
+	                &writeThread($count,$chemin);
+	                exit 0;
+	        } else {
+	                die "couldnt fork: $!\n";
+	        }
+	}
+
+
+	foreach (@childs) {
+	        my $tmp = waitpid($_, 0);
+	         # print "done with pid $tmp\n";
+	}
 }
 
-
-foreach (@childs) {
-        my $tmp = waitpid($_, 0);
-         # print "done with pid $tmp\n";
+sub normal
+{
+	my ($h) = (@_);
+	my $chemin = $hash_chemins{1};
+	&writeNormal($chemin);
 }
- 
-# print "End of main program\n";
-########################################################
-########################################################
-######### END FORK #####################################
-########################################################
-########################################################
 
-# foreach my $chemin (@les_chemins1) {
-# 		$count++;
-#         my $t = threads->new(\&write, $count,$chemin);
-#         push(@threads,$t);
-# }
-# foreach (@threads) {
-#         my $num = $_->join;
-#         # print "done with $num\n";
-# }
- 
- 
-sub write {
-        my ($num,$chemins) = (@_);
+sub main
+{
+	if ($p==1)
+	{
+		&doThread();
+	}
+	else
+	{
+		&normal(%hash_chemins);
+	}
+}
 
-        print "CHEMIN = $chemins \n";
-        my @tab_chemins = split(',',$chemins);
+sub count_routine
+{
+	my ($chemins) = (@_);
+	my @tab_chemins = split(',',$chemins);
 
         foreach my $k (@tab_chemins)
         {
@@ -251,19 +210,40 @@ sub write {
 				# print "*****les_genomes*****\n";
 				foreach my $j (@liste_genomes)
 				{
-					# print "nom_fichier = $nom_fichier\n";
-					# system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X");
-					# print "./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier\n";
-					system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier");
+					print "###########################\n";
+					print "./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X\n";
+					system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X ");
+					#system("./../count_kmer/src/count_kmer -i $j -k $fichier_pattern -l $taille_read -o $nom_fichier -t X >> $nom_fichier");
+					print "###########END#############\n\n";
 
 				}
 				close(WEKA);
 			}
 		}
+}
+ 
+sub writeThread {
+        my ($num,$chemins) = (@_);
+
+        # print "CHEMIN = $chemins \n";
+        &count_routine($chemins);
         sleep $num;
         # print "done with child process for $num\n";
         return $num;
 }
+
+sub writeNormal {
+        my ($chemins) = (@_);
+
+        my @tab_chemins = split(',',$chemins);
+
+        &count_routine($chemins);
+}
+
+
+&main();
+
+
 
 # system("rm A954xRwm");
 # print WEKA "@relation "
