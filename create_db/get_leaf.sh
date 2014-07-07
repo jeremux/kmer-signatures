@@ -22,8 +22,8 @@ rm -rf ../generate_data/listGenbank.txt ;
 rm -rf scrpit_clean.sh ;
 touch scrpit_clean.sh;
 
-echo "find $1 -type f -exec rm '{}' \;" >> scrpit_clean.sh;
-echo "find $1 -type l -exec rm '{}' \;" >> scrpit_clean.sh;
+echo "find $1 -type f -exec rm '{}' \;" >> scrpit_clean_$3.sh;
+echo "find $1 -type l -exec rm '{}' \;" >> scrpit_clean_$3.sh;
 
 for line in $(cat leaf.txt); do 
 
@@ -31,4 +31,4 @@ for line in $(cat leaf.txt); do
 done
 
 rm -rf leaf.txt
-chmod +x scrpit_clean.sh;
+chmod +x scrpit_clean_$3.sh;

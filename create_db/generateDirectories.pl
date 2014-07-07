@@ -740,7 +740,7 @@ close GENERATE_GEN;
 system "chmod +x script_mkdir.sh";
 system "chmod +x $nom_fichier";
 system "./script_mkdir.sh";
-system "./get_leaf.sh $abs_path_racine listGenbank2.txt";
+system "./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine";
 system "rm -f script_mkdir.sh";
 system  "rm -f listOrganism.txt";
 system "rm -rf listGenbank2.txt";
