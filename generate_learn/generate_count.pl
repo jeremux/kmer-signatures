@@ -20,7 +20,6 @@ my @taille_kmer;
 my $nb_kmer = 0;
 
 
-
 GetOptions ('pattern|p=s' => \$fichier_pattern,
             'read|r=i' => \$taille_read,	
             'leaf|f=s' => \$fichier_feuille,	
@@ -115,11 +114,6 @@ my $cpt;
 # ROUTINE COMPTAGE
 
 my %hash_chemins = ();
-my @les_chemins1;
-my @les_chemins2;
-my @les_chemins3;
-my @les_chemins4;
-
 
 
 my $nb_feuilles = 0;

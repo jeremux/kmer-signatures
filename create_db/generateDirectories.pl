@@ -725,7 +725,7 @@ my $abs_path_racine = $abs_path . $path_racine;
 
 my $abs_genbank = abs_path($genbank);
 print SCRIPT_GET "perl extractGenbank.pl -list listGenbank.txt -gen $abs_genbank -conf conf --root $abs_path;\n";
-print SCRIPT_GET "bash fillAll_v2.sh;"
+print SCRIPT_GET "bash fillAll_v2.sh;";
 # print "path_racine = $abs_path\n";
 
 print NEWICK ";";
