@@ -14,10 +14,11 @@
 
 
 
-unsigned long long premier = 0;
+int premier = 0;
 int taille_premier = 0;
-unsigned long long dernier = 0;
+int dernier = 0;
 unsigned char dernier_char = 0;
+int tmax = 0;
 
 
 /**
@@ -48,9 +49,15 @@ const char map_inverse[4] = { 'A', 'C', 'G', 'T' };
  * @param x 
  * @return 4^x
  * */
-unsigned long long puissance4(unsigned long long x) 
+int puissance4(int x) 
 {
-	return (unsigned long long)1 << (x * 2);
+	int t = (int)1 << (x * 2);
+	
+	if ( t > tmax)
+	{
+		tmax = t;
+	}
+	return (int)1 << (x * 2);
 }
 
 /**
@@ -78,7 +85,7 @@ void my_error(void *ptr, const char *erreur)
  * Retourne val kmer
  * 
  * */
- char *indice_to_kmer(unsigned long long indice, long kmer)  
+ char *indice_to_kmer(int indice, long kmer)  
  {
 
 	size_t i = 0;
@@ -123,7 +130,7 @@ void my_error(void *ptr, const char *erreur)
  *
  *
  **/
- void init(unsigned long long *tab_comptage,int taille_kmer)
+ void init(int *tab_comptage,int taille_kmer)
 {
 
 	const unsigned long taille = puissance4(taille_kmer);
@@ -141,7 +148,7 @@ void my_error(void *ptr, const char *erreur)
  *
  *
  **/
- void affiche(unsigned long long *tab_comptage,int taille_kmer)
+ void affiche(int *tab_comptage,int taille_kmer)
 {
 
 	const unsigned long taille = puissance4(taille_kmer);
@@ -151,17 +158,17 @@ void my_error(void *ptr, const char *erreur)
 	{
 		if (tab_comptage[i]!=0)
 		{
-			printf("%s = %llu\n",indice_to_kmer(i,taille_kmer),tab_comptage[i]);
+			printf("%s = %d\n",indice_to_kmer(i,taille_kmer),tab_comptage[i]);
 		}
 	}
 }
 
 
-void count(const char *seq,const size_t seq_taille,int *tab_bool,int *taille_kmer,unsigned long long **resultat,int taille_sous_sequence)
+void count(const char *seq,const size_t seq_taille,int *tab_bool,int *taille_kmer,int **resultat,int taille_sous_sequence)
 {
 
 
-	unsigned long long i,k;
+	int i,k;
 	int flag_tour = 0;
 	int kmer_taille = 0;
 	int pattern_taille = 0;
@@ -214,7 +221,7 @@ void count(const char *seq,const size_t seq_taille,int *tab_bool,int *taille_kme
 
 			// printf("kmer_taille = %d\n",kmer_taille);
 			memcpy(resultat[i],resultat[i-1],puissance4(kmer_taille)*sizeof(int));
-			// printf("acces à premier = %llu\n",premier);
+			// printf("acces à premier = %d\n",premier);
 			resultat[i][premier] = resultat[i][premier] - 1;
 			add_one(seq_numerique,i,taille_sous_sequence,pattern_taille,resultat[i],tab_bool,kmer_taille);
 
@@ -226,21 +233,22 @@ void count(const char *seq,const size_t seq_taille,int *tab_bool,int *taille_kme
 		}
 	}
 
+	// printf("tmax = %d\n",tmax);
 	free(seq_numerique);
 }
 
 
 
-void add_one(const char *seq,int i,const size_t seq_taille,int pattern_taille,unsigned long long *resultat,int *tab_bool,int kmer_taille)
+void add_one(const char *seq,int i,const size_t seq_taille,int pattern_taille,int *resultat,int *tab_bool,int kmer_taille)
 {
-	unsigned long long alpha =  i + seq_taille - (pattern_taille + 1);
-	unsigned long long beta = i + seq_taille - 1 ;
-	unsigned long long k;
-	unsigned long long l=0;
+	int alpha =  i + seq_taille - (pattern_taille + 1);
+	int beta = i + seq_taille - 1 ;
+	int k;
+	int l=0;
 
 	
 	// printf("seq[%d] = %d\n",beta,seq[beta]);
-	// printf("dernier before = %llu\n",dernier);
+	// printf("dernier before = %d\n",dernier);
 	if (kmer_taille==pattern_taille)
 	{
 		dernier = (dernier - (seq[alpha]*puissance4(kmer_taille-1)))*4 + seq[beta];
@@ -258,10 +266,10 @@ void add_one(const char *seq,int i,const size_t seq_taille,int pattern_taille,un
 				// printf("seq[k] = %d\n",seq[k]);
 			}
 		}
-		// printf("dernier = %llu\n",dernier);
+		// printf("dernier = %d\n",dernier);
 	}
 	
-	// printf("dernier = %llu\n",dernier);
+	// printf("dernier = %d\n",dernier);
 	resultat[dernier] = resultat[dernier] + 1;
 
 	premier = 0;
@@ -287,7 +295,7 @@ void add_one(const char *seq,int i,const size_t seq_taille,int pattern_taille,un
  * @param kmer_taille: la taille du kmer
  * @param tab_comptage: la table de comptage
  * */
-void count_seq(const char *seq, const size_t seq_taille, int *tab_bool, unsigned long long *resultat,int pattern_taille) 
+void count_seq(const char *seq, const size_t seq_taille, int *tab_bool, int *resultat,int pattern_taille) 
 {
 	long long position;
 	long long i;
@@ -295,7 +303,7 @@ void count_seq(const char *seq, const size_t seq_taille, int *tab_bool, unsigned
 	int lk, lp;
 	int cpt = 0;
 	int flag_premier = 1;
-	unsigned long long indice_kmer = 0;
+	int indice_kmer = 0;
 	//~ int flag_inconnu = 0;
 	
 	/* On travaille sur une copie, car en param const char */
@@ -336,7 +344,7 @@ void count_seq(const char *seq, const size_t seq_taille, int *tab_bool, unsigned
 		
 		/* comptage du kmer */
 		cpt++;
-		// printf("kmer %d et indice = %llu\n",cpt,indice_kmer);
+		// printf("kmer %d et indice = %d\n",cpt,indice_kmer);
 		if(flag_premier)
 		{
 			premier= indice_kmer;
@@ -356,7 +364,7 @@ void count_seq(const char *seq, const size_t seq_taille, int *tab_bool, unsigned
 	dernier = indice_kmer;
 
 	// printf("=======================\n");
-	// printf("Premier = %llu\nDernier = %llu\nDernier_char = %d\n",premier,dernier,dernier_char);
+	// printf("Premier = %d\nDernier = %d\nDernier_char = %d\n",premier,dernier,dernier_char);
 	// printf("=======================\n");
 		// bad_nuc: ;
 }

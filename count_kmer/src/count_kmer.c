@@ -15,10 +15,10 @@
 #include "count_print.h"
 
 
-#define TAILLE_MAX_SEQ 100000
-#define MAX_SEQ 15000
+#define TAILLE_MAX_SEQ 100000 /* TAILLE MAX DUNE SEQUENCE */
+#define MAX_SEQ 20000         /* NOMBRE DE SEQUENCES MAX */
 #define VERSION 1.0
-#define TAILLE_FENETRE 100
+#define TAILLE_FENETRE 100    /* TAILLE PAR DEFAUT DES READS */
 #define TAILLE_STRING_ACCESSION 20
 
 
@@ -41,7 +41,7 @@ void help() {
 int main(int argc,char *argv[])
 {
 	
-	unsigned long long i,j,val,x,nb_kmer;
+	int i,j,val,x,nb_kmer;
 	// FILE *tmp;
 	int taille_fenetre = 0;
 	int nb_sequences;
@@ -49,15 +49,15 @@ int main(int argc,char *argv[])
 	char *path_kmer = NULL;
 	char *out = NULL;
 	char *taxid = NULL;
-	unsigned long long ***resultat = NULL;
+	int ***resultat = NULL;
 	// char *taxid = NULL;
 	int flag_fenetre = 1;
 	int taille_fenetre_origine;
 	// int flag_en_tete = 1;
 	
 
-	unsigned long long nb_possibilite;
-	unsigned long long nombre_sous_sequence ;
+	int nb_possibilite;
+	int nombre_sous_sequence ;
 
 	
 
@@ -185,7 +185,7 @@ int main(int argc,char *argv[])
 	**********************************************************************************
 	*******************************READ SEQ*******************************************
 	**********************************************************************************/
-	char **les_sequences = (char **)(malloc(MAX_SEQ*sizeof(char *)));
+	char **les_sequences = (char **)(calloc(MAX_SEQ,sizeof(char *)));
 	char **les_accessions = (char **)(malloc(MAX_SEQ*sizeof(char *)));
 
 
@@ -198,12 +198,15 @@ int main(int argc,char *argv[])
 
 	for (i = 0; i < MAX_SEQ; i++)
 	{
+		// printf("i = %d\n",i);
+		printf("Je vais allouer les_sequences[%d]\n",i);
 		les_sequences[i] = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
 		if(les_sequences[i]==NULL)
 		{
 			fprintf(stderr, "Erreur read_seq (second malloc)\n");
 			exit(EXIT_FAILURE);
 		}
+		printf("Fin allocation\n");
 		les_sequences[i][0] = '\0';
 	}
 
@@ -262,7 +265,7 @@ int main(int argc,char *argv[])
 	for(x=0;x<nb_sequences;x++)
 	{
 		// printf("\n\n***********************************************\n");
-		// printf("Traitement sequence %llu / %d\n",x+1,nb_sequences);
+		// printf("Traitement sequence %d / %d\n",x+1,nb_sequences);
 		// printf("***********************************************\n");
 		taille_fenetre = taille_fenetre_origine;
 
@@ -308,7 +311,7 @@ int main(int argc,char *argv[])
 		
 		if (taille_fenetre > taille_seq)
 		{
-			fprintf(stderr, "the read size is greater than that of the sequence %d > %d (seq n°%llu)\n",taille_fenetre,taille_seq,x);
+			fprintf(stderr, "the read size is greater than that of the sequence %d > %d (seq n°%d)\n",taille_fenetre,taille_seq,x);
 		}
 
 
@@ -326,28 +329,34 @@ int main(int argc,char *argv[])
 		// 	accession_tab[i] = (char *)(malloc(20*sizeof(char)));
 		// 	my_error(accession_tab[i],"Erreur malloc accession_tab[i]");
 		// }
-		resultat = (unsigned long long ***)(calloc(nb_kmer,sizeof(unsigned long long **)));
-	
+		// resultat = (int ***)(malloc(nb_kmer*sizeof(int **)));
+		
+		resultat = (int ***)(calloc(nb_kmer,sizeof(int **)));
 		my_error(resultat,"Erreur malloc resultat");
+	
 		
 		
 
 		for (i = 0; i < nb_kmer; i++)
 		{
-			resultat[i] = (unsigned long long **)(calloc(nombre_sous_sequence,sizeof(unsigned long long *)));
+			// resultat[i] = (int **)(malloc(nombre_sous_sequence*sizeof(int *)));
+			
+			resultat[i] = (int **)(calloc(nombre_sous_sequence,sizeof(int *)));
 			my_error(resultat,"Erreur malloc resultat[i]");
+			
 
 			nb_possibilite = puissance4(taille_kmer[i]);
-			// printf("nb_possibilite = %llu\n",nb_possibilite);
+			// printf("nb_possibilite = %d\n",nb_possibilite);
 
 
 			for(j=0; j < nombre_sous_sequence;j++)
 			{
 				// printf("Debut Alloc interne\n");	
-				// printf("i = %llu \t j = %llu\n",i,j);	
-				resultat[i][j] = (unsigned long long *)(calloc(nb_possibilite,sizeof(unsigned long long)));
+				// printf("i = %d \t j = %d\n",i,j);	
+				// resultat[i][j] = (int *)(malloc(nb_possibilite*sizeof(int )));
+				resultat[i][j] = (int *)(calloc(nb_possibilite,sizeof(int)));
 				// printf("Fin Alloc interne\n");
-				my_error(resultat,"Erreur calloc resultat[i]");
+				my_error(resultat,"Erreur malloc resultat[i][j]");
 				// accession_tab[indice_ligne++] = les_accessions[x];
 			}
 
@@ -355,7 +364,7 @@ int main(int argc,char *argv[])
 		/********** ALLOC FIN **********/
 
 
-		// unsigned long long *tab_comptage = calloc((taille+ 1), sizeof(unsigned long long));
+		// int *tab_comptage = calloc((taille+ 1), sizeof(int));
 
 
 		/**********************************
@@ -383,7 +392,6 @@ int main(int argc,char *argv[])
 
 		imprime_weka(out,nb_kmer,taille_kmer,nombre_sous_sequence,resultat,taxid,x,les_accessions[x]);
 
-
 	}
 
 
@@ -399,27 +407,52 @@ int main(int argc,char *argv[])
 	// printf("Debut Free\n");
 	for(i=0; i < nb_kmer; i++)
 	{
-	// 	for(j=0; j < nombre_sous_sequence; j++)
-	// 	{
-	// 		// printf("Debut free interne\n");	
-	// 		// printf("i = %llu \t j = %llu\n",i,j);	
-	// 		free(resultat[i][j]);
-	// 		// printf("Fin free interne\n");	
-	// 	}
+		for(j=0; j < nombre_sous_sequence; j++)
+		{
+			// printf("Debut free interne\n");	
+			// printf("i = %d \t j = %d\n",i,j);	
+			free(resultat[i][j]);
+			// printf("Fin free interne\n");	
+		}
+		// printf("DEBUT FREE\n");
+		
+		// printf("FIN FREE\n");
+	}
+	// printf("FIN FREE\n");
+	for(i=0; i < nb_kmer; i++)
+	{
+		
 		free(resultat[i]);
 		
 	}
-	// printf("FIN FREE\n");
-	free(resultat);
 
+
+	free(resultat);
 	
+	les_sequences[1] = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
+	les_sequences[2] = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
 
 	for (i = 0; i < MAX_SEQ; i++)
 	{
-		free(les_sequences[i]);
+		printf("Je vais liberer les_sequences[%d]\n",i);
+		// if (i==1 || i==0)
+			free(les_sequences[i]);
+		printf("Fin liberation\n");
+		// free(les_accessions[i]);
 	}
 
+	for (i = 0; i < MAX_SEQ; i++)
+	{
+		printf("Je vais liberer les_accessions[%d]\n",i);
+		if (i==1 || i==0)
+			free(les_accessions[i]);
+		printf("Fin liberation\n");
+		// free(les_accessions[i]);
+	}
+
+
 	free(les_sequences);
+	free(les_accessions);
 
 
 
