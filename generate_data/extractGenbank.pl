@@ -814,6 +814,12 @@ foreach my $un_genbank (@tab_extract)
 		my $tmp = $hash_genbank{$access};
 		my $name = $hash_name{$access};
 		my $la_seq = $hash_sequence{$access};
+		my $copie_seq = $la_seq;
+		my $seq_taille = length($la_seq);
+		if ($seq_taille > 140000)
+		{
+			$la_seq = substr $la_seq, 0, 140000;
+		}
 		
 		# my $cut = &print_cut($la_seq);
 		print GENERATE_GEN "$tmp";
@@ -854,7 +860,7 @@ foreach my $un_genbank (@tab_extract)
 				print PROT ">";
 				print PROT "aa_";
 				print PROT "$name\n";
-				print PROT "$la_proteine\n";
+				print PROT "$la_proteine\n\n";
 
 
 
@@ -872,15 +878,15 @@ foreach my $un_genbank (@tab_extract)
 				
 				if ($take_complement eq "0")
 				{
-					$new_seq = &traite_normal($la_seq,$aa_nom[2]);
+					$new_seq = &traite_normal($copie_seq,$aa_nom[2]);
 				}
 				elsif ($take_complement eq "1")
 				{
-					$new_seq = &traite_complement($la_seq,$aa_nom[2]);
+					$new_seq = &traite_complement($copie_seq,$aa_nom[2]);
 				}
 				else
 				{
-					$new_seq = &traite_join($la_seq,$aa_nom[2]);
+					$new_seq = &traite_join($copie_seq,$aa_nom[2]);
 				}
 
 				$new_seq = &print_cut($new_seq);
