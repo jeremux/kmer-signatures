@@ -19,8 +19,7 @@ recursiveSearch $1;
 sed -i -e "s/\/\//\//g" leaf.txt;
 
 rm -rf ../generate_data/listGenbank.txt ;
-rm -rf scrpit_clean.sh ;
-touch scrpit_clean.sh;
+rm -rf scrpit_clean_$3.sh ;
 
 echo "find $1 -type f -exec rm '{}' \;" >> scrpit_clean_$3.sh;
 echo "find $1 -type l -exec rm '{}' \;" >> scrpit_clean_$3.sh;

@@ -741,7 +741,6 @@ system "chmod +x script_mkdir.sh";
 system "chmod +x $nom_fichier";
 system "./script_mkdir.sh";
 system "./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine";
-system "mv script_mkdir.sh script_mkdir_$nom_racine.sh";
 system  "rm -f listOrganism.txt";
 system "rm -rf listGenbank2.txt";
 
