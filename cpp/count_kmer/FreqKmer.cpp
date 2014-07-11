@@ -86,6 +86,7 @@ void FreqKmer::initPatterns(string fichier)
 void FreqKmer::initFromList(string fichier)
 {
 	string ligne;
+	int cpt=0;
 	ifstream file(fichier.c_str());
 	getline(file,ligne);
 	int nbFichier = 0;
@@ -95,6 +96,18 @@ void FreqKmer::initFromList(string fichier)
 		if(tailleLigne!=0)
 		{
 			nbFichier++;
+		}
+	}
+	data=new Data*[nbFichier];
+	ifstream file2(fichier.c_str());
+	getline(file2,ligne);
+	while (file2)
+	{
+		if(tailleLigne!=0)
+		{
+			data[cpt] = new Data(Yes);
+			data[cpt]->initFrom(ligne,Fasta);
+			/* Ajouter des attributs */
 		}
 	}
 }
