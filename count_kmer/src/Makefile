@@ -30,7 +30,7 @@ count_print.o: count_print.c count_print.h count_lib.h
 ###------------------------------------------------------------
 .PHONY: clean realclean depend
 clean::
-	$(RM) $(BINARIES)
+	$(RM) $(BINARIES) $(OBJECTS)
 realclean:: clean 
 	$(RM) $(OBJECTS) 
 depend: 

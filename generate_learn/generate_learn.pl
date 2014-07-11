@@ -59,25 +59,25 @@ system("mkdir -p $path_racine/learn/");
 foreach my $d (@les_sous_dossier)
 {
 	# print "d = $d\n";
-	if ($d =~ m/(.*)__(.*)\// )
+	if (!($d =~ /learn/))
 	{
-		my $tmp = abs_path($d);
-		my $abs = abs_path($d);
-		if (!($d =~ /learn/))
+		if ($d =~ m/(.*)__(.*)\// )
 		{
-			push(@path_sous_dossier,$abs);
-			if ($d =~ /$others/)
-			{
-				$hash_taxid{$abs} = "others";
-				push(@les_taxids, "others");
-			}
-			else
-			{
-				$hash_taxid{$abs} = "$2";
-				push(@les_taxids, "$2");
-			}	
+			my $tmp = abs_path($d);
+			my $abs = abs_path($d);
+				push(@path_sous_dossier,$abs);
+				if ($d =~ /$others/)
+				{
+					$hash_taxid{$abs} = "others";
+					push(@les_taxids, "others");
+				}
+				else
+				{
+					$hash_taxid{$abs} = "$2";
+					push(@les_taxids, "$2");
+				}
+			
 		}
-		
 	}
 }
 

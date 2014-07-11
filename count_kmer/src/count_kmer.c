@@ -15,7 +15,7 @@
 #include "count_print.h"
 
 
-#define TAILLE_MAX_SEQ 100000 /* TAILLE MAX DUNE SEQUENCE */
+#define TAILLE_MAX_SEQ 150000 /* TAILLE MAX DUNE SEQUENCE */
 #define MAX_SEQ 20000         /* NOMBRE DE SEQUENCES MAX */
 #define VERSION 1.0
 #define TAILLE_FENETRE 100    /* TAILLE PAR DEFAUT DES READS */
@@ -199,15 +199,15 @@ int main(int argc,char *argv[])
 	for (i = 0; i < MAX_SEQ; i++)
 	{
 		// printf("i = %d\n",i);
-		printf("Je vais allouer les_sequences[%d]\n",i);
+		// printf("Je vais allouer les_sequences[%d]\n",i);
 		les_sequences[i] = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
 		if(les_sequences[i]==NULL)
 		{
 			fprintf(stderr, "Erreur read_seq (second malloc)\n");
 			exit(EXIT_FAILURE);
 		}
-		printf("Fin allocation\n");
-		les_sequences[i][0] = '\0';
+		// printf("Fin allocation\n");
+		// les_sequences[i][0] = '\0';
 	}
 
 
@@ -264,9 +264,9 @@ int main(int argc,char *argv[])
 	// printf("nb_sequences = %d\n",nb_sequences);
 	for(x=0;x<nb_sequences;x++)
 	{
-		// printf("\n\n***********************************************\n");
-		// printf("Traitement sequence %d / %d\n",x+1,nb_sequences);
-		// printf("***********************************************\n");
+		//printf("\n\n***********************************************\n");
+		//printf("Traitement sequence %d / %d\n",x+1,nb_sequences);
+		//printf("***********************************************\n");
 		taille_fenetre = taille_fenetre_origine;
 
 		if(x>0)
@@ -286,9 +286,9 @@ int main(int argc,char *argv[])
 		
 
 
-		// printf("seq = %s\n",les_sequences[x]);
+		// printf("x = %d\n",x);
 
-		int taille_seq = strlen(les_sequences[x]);
+		size_t taille_seq = strlen(les_sequences[x]);
 
 		// printf("taille_seq = %d\n",taille_seq);
 			
@@ -354,9 +354,13 @@ int main(int argc,char *argv[])
 				// printf("Debut Alloc interne\n");	
 				// printf("i = %d \t j = %d\n",i,j);	
 				// resultat[i][j] = (int *)(malloc(nb_possibilite*sizeof(int )));
+				// if (j > 2833 && j < 2837)
+					//printf("alloc resultat[%d][%d]\n",i,j);
 				resultat[i][j] = (int *)(calloc(nb_possibilite,sizeof(int)));
 				// printf("Fin Alloc interne\n");
 				my_error(resultat,"Erreur malloc resultat[i][j]");
+				// if (j > 2833 && j < 2837)
+					//printf("fin alloc resultat[%d][%d]\n",i,j);
 				// accession_tab[indice_ligne++] = les_accessions[x];
 			}
 
@@ -381,8 +385,9 @@ int main(int argc,char *argv[])
 				exit(EXIT_FAILURE);
 			}
 
-
+			// printf("Début Comptage\n");
 			count(les_sequences[x],taille_seq,tab_bool[i],&taille_kmer[i],resultat[i],taille_fenetre);
+			// printf("Fin Comptage\n");
 
 		}
 
@@ -390,35 +395,48 @@ int main(int argc,char *argv[])
 
 		// imprime_csv(out,nb_kmer,taille_kmer,nombre_sous_sequence,resultat);
 
+		// printf("Début impression\n");
 		imprime_weka(out,nb_kmer,taille_kmer,nombre_sous_sequence,resultat,taxid,x,les_accessions[x]);
-
+		// printf("Fin impression\n");
 	}
 
+	
 
 	/**************************
 	**********FREE*************
 	***************************/
 	free(taille_kmer);
 	free(taille_pattern);
-	// free(tab_bool);
 	free_tab_bool(tab_bool,15);
 
 	
 	// printf("Debut Free\n");
+	
+	// free_init(MAX_SEQ,les_sequences);
+	for (i = 0; i < MAX_SEQ; i++)
+	{
+		free(les_sequences[i]);
+	}
+	
+
+	for (i = 0; i < MAX_SEQ; i++)
+	{
+		free(les_accessions[i]);
+	}
+
 	for(i=0; i < nb_kmer; i++)
 	{
 		for(j=0; j < nombre_sous_sequence; j++)
-		{
-			// printf("Debut free interne\n");	
-			// printf("i = %d \t j = %d\n",i,j);	
+		{	
+			// if (j>2833)
+			// printf("Debut free resultat[%d][%d]\n",i,j);
 			free(resultat[i][j]);
-			// printf("Fin free interne\n");	
+			// if (j>2833)
+			// printf("fin free\n");	
 		}
-		// printf("DEBUT FREE\n");
-		
-		// printf("FIN FREE\n");
 	}
-	// printf("FIN FREE\n");
+
+
 	for(i=0; i < nb_kmer; i++)
 	{
 		
@@ -428,28 +446,6 @@ int main(int argc,char *argv[])
 
 
 	free(resultat);
-	
-	les_sequences[1] = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
-	les_sequences[2] = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
-
-	for (i = 0; i < MAX_SEQ; i++)
-	{
-		printf("Je vais liberer les_sequences[%d]\n",i);
-		// if (i==1 || i==0)
-			free(les_sequences[i]);
-		printf("Fin liberation\n");
-		// free(les_accessions[i]);
-	}
-
-	for (i = 0; i < MAX_SEQ; i++)
-	{
-		printf("Je vais liberer les_accessions[%d]\n",i);
-		if (i==1 || i==0)
-			free(les_accessions[i]);
-		printf("Fin liberation\n");
-		// free(les_accessions[i]);
-	}
-
 
 	free(les_sequences);
 	free(les_accessions);

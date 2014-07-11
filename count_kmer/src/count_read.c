@@ -53,6 +53,15 @@ void free_tab_bool(int **tab,int nb_kmer)
 	free(tab);
 }
 
+void free_init(int m, char **sequences)
+{
+	int i;
+	for (i = 0; i < m; i++)
+	{
+		sequences[i] = (char *)(calloc(m,sizeof(char)));
+	}
+}
+
 int read_pattern(const char *path,int **tab_bool)
 {
 	int c,val;
@@ -139,10 +148,10 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 	int flag_take_seq = 0;
 	int ancien_char1='\0';
 	int ancien_char2='\0';
-
-	// int flag_tmp = 0;
+	int x = -1;
+	int flag_tmp = 0;
 	FILE* fichier = NULL;
-
+	int max = 0;
 
 	// char *result = (char *)(calloc(TAILLE_MAX_SEQ,sizeof(char)));
 	// result[0] = '\0';
@@ -168,6 +177,11 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 			{	
 				flag_take_acc = 1;
 				i++;
+				if (i>0)
+				{
+					les_sequences[i-1][x]='\0';
+				}
+				x = 0;
 			}
 
 			// printf("test\n");
@@ -202,47 +216,53 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 
 			if (flag_take_seq && c!=' ' && c!='\n' && c!='\t')
 			{
-				// flag_tmp = 0;
-				// switch(c)
-				// {
+				flag_tmp = 0;
+				switch(c)
+				{
 
-				// 	case 'y':
-				// 		c = 'c';
-				// 		break;
-				// 	case 's':
-				// 		c = 'g';
-				// 		break;
-				// 	case 'w':
-				// 		printf("rencontre\n");
-				// 		flag_tmp = 1;
-				// 		c = 't';
-				// 		break;
-				// 	case 'k':
-				// 		c = 'a';
-				// 		break;
-				// 	case 'm':
-				// 		c = 'c';
-				// 		break;
-				// 	case 'b':
-				// 		c = 'g';
-				// 		break;
-				// 	case 'd':
-				// 		c = 'a';
-				// 		break;
-				// 	case 'h':
-				// 		c = 't';
-				// 		break;
-				// 	case 'v':
-				// 		c = 'c';
-				// 		break;
-				// 	case 'n':
-				// 		c = 'a';
-				// 		break;
-				// 	default:
-				// 		break;
-				// }
-				append(les_sequences[i],c);
-				// if (flag_tmp) printf("ajout de %c dans %d\n",c,i);
+					case 'y':
+						c = 'c';
+						break;
+					case 's':
+						c = 'g';
+						break;
+					case 'w':
+						printf("rencontre\n");
+						flag_tmp = 1;
+						c = 't';
+						break;
+					case 'k':
+						c = 'a';
+						break;
+					case 'm':
+						c = 'c';
+						break;
+					case 'b':
+						c = 'g';
+						break;
+					case 'd':
+						c = 'a';
+						break;
+					case 'h':
+						c = 't';
+						break;
+					case 'v':
+						c = 'c';
+						break;
+					case 'n':
+						c = 'a';
+						break;
+					default:
+						break;
+				}
+				// append(les_sequences[i],c);
+				if(x >= max)
+				{
+					max = x;
+				}
+				
+				les_sequences[i][x++]=c;
+				if (flag_tmp) printf("ajout de %c dans %d\n",c,i);
 			}
 
 			ancien_char2 = ancien_char1;
@@ -252,7 +272,9 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 		}
 
 		// printf("%s\n",les_sequences[i]);
+		les_sequences[i][x]='\0';
 		*nb_sequences = i + 1;
+		// printf("max = %d\n",max);
 		fclose(fichier);
 
 		// printf("\n******************\n");

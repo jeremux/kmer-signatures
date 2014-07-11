@@ -14,4 +14,6 @@ char *read_seq(const char *path, int *nb,char **seq,char **acc);
 
 void free_tab_bool(int **tab,int nb_kmer);
 
+void free_init(int m, char **sequences);
+
 #endif
