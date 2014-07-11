@@ -1,22 +1,44 @@
-\documentclass[a4wide,10pt]{article}
-\usepackage[dvips]{epsfig,color}
-\usepackage{latexsym}
-\usepackage{amssymb}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-%\usepackage[vlined,french,boxed,linesnumbered,figure]{algorithm2e} % for styled algorithms
-\usepackage{color}
-\usepackage[mathscr,mathcal]{eucal}
-%\usepackage{a4wide}
-%\usepackage{subfigure}
-\usepackage{epsfig}
+\pdfminorversion 7
+\pdfobjcompresslevel 3
+
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[10pt,a4paper]{article}
+%\documentclass[10pt,oneside,noprintercorrection]{article}
+\special{papersize=210mm,297mm}
+
+
+\usepackage[absolute]{textpos} 
+\usepackage{pdfpages}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage[francais]{babel}
+\usepackage[bookmarks=false,colorlinks,linkcolor=blue]{hyperref}
+\usepackage[top=4cm,bottom=3cm,left=3cm,right=3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{eso-pic}
 \usepackage{array}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage{url}
+\usepackage{eurosym}
+\usepackage{url}
+\usepackage{textcomp}
+\usepackage{fancyhdr} 
+\usepackage{amsmath}
+\usepackage{pict2e}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage[toc,page]{appendix} 
+\onehalfspacing
+\lstset{escapeinside={<@}{@>}}
+\definecolor{lightgray}{gray}{0.9}
 
-\addtolength{\textwidth}{+1.0cm}
-\addtolength{\hoffset}{-0.7cm}
-
-\addtolength{\textheight}{+0.5in}
-\addtolength{\voffset}{-9ex}
 
 \title{Kmer signature in mitochondrial genomes for metagenome taxonomic assignation}
 
@@ -26,21 +48,13 @@
 \begin{document}
 \maketitle
 
-\section{Section Mardi 8 Juillet}
+\section{Semaine 1: Mardi 2 Juillet}
 
-\subsection{subsection}
+\input{./semaine1.tex}
 
-\subsubsection{subsubsection}
+\section{Semaine 2: Lundi 7 Juillet}
 
-\begin{itemize}
-\item item 1
-\item item 2
-\item item 3
-\end{itemize}
-
-\begin{equation}
-y=ax+b
-\end{equation}
+\input{./semaine2.tex}
 
 %commentaire
 
