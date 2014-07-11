@@ -61,6 +61,7 @@ Data::~Data()
 		if(takeAcc==Yes)
 			delete[] listAcc;
 	}
+	takeAcc = No;
 	if(verbose){
 		cout << "end Data::~Data()\n";
 		cout.flush();
@@ -322,10 +323,9 @@ Switch Data::readNexus(string filename)
 		cout << "Data::readNexus()\n";
 		cout.flush();
 	}
+
 	return ok;
 }
-
-
 
 Switch Data::readPhylip(string filename)
 {

@@ -14,7 +14,7 @@ using namespace std;
 
 FreqKmer::FreqKmer() {
 	/* On veut les accessions donc Yes */
-	data=new Data(Yes);
+	data=NULL;
 	freq=NULL;
 	patterns=NULL;
 	nCol=0;
@@ -26,7 +26,7 @@ FreqKmer::FreqKmer() {
 }
 
 FreqKmer::FreqKmer(int tailleF) {
-	data=new Data(Yes);
+	data=NULL;
 	freq=NULL;
 	patterns=NULL;
 	nCol=0;
@@ -83,19 +83,40 @@ void FreqKmer::initPatterns(string fichier)
 
 }
 
-void FreqKmer::initData(string fichier)
+void FreqKmer::initFromList(string fichier)
 {
+	string ligne;
+	ifstream file(fichier.c_str());
+	getline(file,ligne);
+	int nbFichier = 0;
+	int tailleLigne = ligne.length();
+	while (file)
+	{
+		if(tailleLigne!=0)
+		{
+			nbFichier++;
+		}
+	}
+}
 
-	data->initFrom(fichier,Fasta);
-	nData = data->getNtaxa();
-
+void FreqKmer::initFromFasta(string fichier)
+{
+	data=new Data*[1];
+	data[0] = new Data(Yes);
+	data[0]->initFrom(fichier,Fasta);
+	nData = data[0]->getNtaxa();
+//	cout << "ntaxa = " << nData << "\n";
 	int tailleSeq=0;
 	if (tailleFenetre>0)
 	{
 		for (int var = 0; var < nData; var++)
 		{
-
-			tailleSeq = data->getPrimarySequence(var).length();
+//			cout << "FAIL !!! et var = " << var << "\n";
+//			cout.flush();
+//			cout << " seq = " << (data[0]->getPrimarySequence(var)).length()  << "\n";
+			tailleSeq = data[0]->getPrimarySequence(var).length();
+//			cout << "FAIL 2 !!! \n";
+//			cout.flush();
 			if (tailleSeq<tailleFenetre)
 			{
 				nLigne += 1;

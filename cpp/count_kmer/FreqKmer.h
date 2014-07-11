@@ -15,7 +15,7 @@ class FreqKmer {
 private:
 	double **freq;
 	Pattern **patterns;
-	Data *data;
+	Data **data;
 
 	int nLigne, nCol, nPattern, tailleFenetre, nData;
 
@@ -25,7 +25,8 @@ public:
 	virtual ~FreqKmer();
 
 	void	initPatterns(string fichier);
-	void 	initData(string fichier);
+	void 	initFromList(string fichier);
+	void 	initFromFasta(string fichier);
 	int 	getNPattern(){return nPattern;}
 	int 	getNCol(){return nCol;}
 	int 	getNLigne(){return nLigne;}

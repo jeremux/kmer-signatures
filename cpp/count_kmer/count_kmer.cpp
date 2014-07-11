@@ -27,18 +27,21 @@ int main(int argc, char **argv) {
 	FreqKmer *f = new FreqKmer(50);
 	string filename = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/";
 	filename += argv[1];
-//	cout << filename << "\n";
+	cout << filename << "\n";
 	f->initPatterns("pattern.txt");
 
-	f->initData(filename);
+
+//	f->initFromFasta("file2.fasta");
+	f->initFromFasta(filename);
+
 
 	//int nbTaxa = d->getNtaxa();
 //	cout << "sequence = \n" << seq <<"\n";
 //	cout << "accession = " << acc << "\n";
 //	cout << "Nombre de sequences = " << nbTaxa << "\n";
 
-	int nbPattern = f->getNPattern();
-	int nbCol = f->getNCol();
+//	int nbPattern = f->getNPattern();
+//	int nbCol = f->getNCol();
 //	cout << "Nombre de Pattern = " << nbPattern << "\n";
 //	cout << "Nombre de col = " << nbCol << "\n";
 	cout << f->getNLigne() << "\n";
