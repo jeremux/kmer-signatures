@@ -18,21 +18,22 @@
 #include "classData.h"
 #include "FreqKmer.h"
 
+
 int main(int argc, char **argv) {
 
 //	Data *d = new Data(Yes);
 //	d->initFrom("file.fasta",Fasta);
 
 
-	FreqKmer *f = new FreqKmer(50);
-	string filename = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/";
-	filename += argv[1];
-	cout << filename << "\n";
+	FreqKmer *f = new FreqKmer(4);
+	string filename = "liste.txt";
+//	cout << filename << "\n";
 	f->initPatterns("pattern.txt");
+	Pattern *p = new Pattern("##");
 
 
 //	f->initFromFasta("file2.fasta");
-	f->initFromFasta(filename);
+	f->initFromList(filename);
 
 
 	//int nbTaxa = d->getNtaxa();
@@ -40,11 +41,8 @@ int main(int argc, char **argv) {
 //	cout << "accession = " << acc << "\n";
 //	cout << "Nombre de sequences = " << nbTaxa << "\n";
 
-//	int nbPattern = f->getNPattern();
-//	int nbCol = f->getNCol();
-//	cout << "Nombre de Pattern = " << nbPattern << "\n";
-//	cout << "Nombre de col = " << nbCol << "\n";
-	cout << f->getNLigne() << "\n";
+	f->fillFreq();
+	f->imprimeCSV();
 	return 0;
 }
 

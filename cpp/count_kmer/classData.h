@@ -56,6 +56,7 @@ class Data{
   void           removeTaxa(int index);
   void           removeSite(int index);
   void           concatenate(Data *ali);
+  int**			 getDataObject(){return data;}
 
   int operator() (int taxa, int site) const
   {

@@ -8,6 +8,9 @@
 #include "classPattern.h"
 #include <algorithm>
 #include <cmath>
+#include<iostream>
+
+using namespace std;
 
 Pattern::Pattern() {
 	// TODO Auto-generated constructor stub
@@ -51,14 +54,16 @@ bool Pattern::extraire(int i)
 	return (this->pattern[i]=='#');
 }
 
-string Pattern::getKmer(string seq,int coord)
+int Pattern::getKmer(int* seq,int coord)
 {
-	string res = "";
+	int res = 0;
+	int cpt = 0;
 	for (int var = 0; var < getTaillePattern() ; var++)
 	{
 		if(extraire(var))
 		{
-			res += seq[coord];
+			res += seq[coord]*pow(4,getTailleKmer()-1-cpt);
+			cpt++;
 		}
 		coord++;
 	}

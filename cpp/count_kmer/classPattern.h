@@ -24,7 +24,7 @@ public:
 	int getTaillePattern();
 	int getTailleKmer();
 	bool isContinue();
-	string getKmer(string seq,int coord); /* coord de 0 à taille(seq)-1 */
+	int getKmer(int* seq,int coord); /* coord de 0 à taille(seq)-1 */
 	bool extraire(int i);
 };
 

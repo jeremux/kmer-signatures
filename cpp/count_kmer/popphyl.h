@@ -31,6 +31,7 @@ using namespace std;
 #define CONSTANTS
 
 const double PI = 3.14159265358979;
+const int TAILLE_FENETRE=100;
 
 const int nAA=20;
 const int     MAXSITE=1000000;
