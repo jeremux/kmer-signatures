@@ -216,7 +216,7 @@ my $hist  = $objetEUtil->next_History || die 'Pas d\'historique\n';
 #########################################
 ##### PARAMETRE DU FORMAT DE SORTIE #####
 #########################################
-$objetEUtil->set_parameters(-eutil   => 'efetch', -rettype => 'fasta', -history => $hist, -verbose=> 2);
+$objetEUtil->set_parameters(-eutil   => 'efetch', -rettype => 'gb', -history => $hist, -verbose=> 2);
 
 my $recommencer = 0;
 
