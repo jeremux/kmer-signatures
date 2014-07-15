@@ -18,7 +18,7 @@
 #include "classData.h"
 #include "FreqKmer.h"
 
-void doTest()
+void doTest1()
 {
 	FreqKmer *f = new FreqKmer(4);
 	string filename = "tests/test1/liste.txt";
@@ -99,9 +99,13 @@ void doTest()
 
 }
 
+void executeTests()
+{
+	doTest1();
+}
 int main(int argc, char **argv) {
 
-	doTest();
+	executeTests();
 
 //	for(int j=0;j<col;j++)
 //		{
