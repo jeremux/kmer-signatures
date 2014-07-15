@@ -211,11 +211,11 @@ void FreqKmer::copieLigneFreq(int src,int dest,int indicePattern)
 		freq[dest][i]=freq[src][i];
 	}
 
-	cerr << "*****Avant****** " << "\n";
-	cerr << "freq[" << index << "][" << premier << "] = " << freq[dest][premier] <<"\n";
+//	cerr << "*****Avant****** " << "\n";
+//	cerr << "freq[" << index << "][" << premier << "] = " << freq[dest][premier] <<"\n";
 	freq[dest][premier] = freq[dest][premier] - 1;
-	cerr << "*****Après****** " << "\n";
-	cerr << "freq[" << index << "][" << premier << "] = " << freq[dest][premier] <<"\n";
+//	cerr << "*****Après****** " << "\n";
+//	cerr << "freq[" << index << "][" << premier << "] = " << freq[dest][premier] <<"\n";
 }
 
 void FreqKmer::initFreq()
@@ -304,7 +304,7 @@ void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut,int col,Pattern *
 
 void FreqKmer::compteFenetre2(int *seq,int seq_taille,int debut ,int indicePattern)
 {
-	cerr << "===\n";
+//	cerr << "===\n";
 	for(int i = debut; i <= debut+seq_taille-patterns[indicePattern]->getTaillePattern() ; i++)
 	{
 //		cerr << "On va travailler entre " << debut << "et " << debut+seq_taille-1 << "pour l'index "<< index << "\n";
@@ -330,16 +330,25 @@ void FreqKmer::add_one(int *seq,int i,int seq_taille,int indicePattern)
 	int l=0;
 	int kmer_taille = patterns[indicePattern]->getTailleKmer();
 
+	int decalage = 0;
+
+	for(int i=0 ; i < indicePattern ; i++)
+	{
+		decalage += patterns[i]->getAllCombi();
+	}
 
 	// printf("seq[%d] = %d\n",beta,seq[beta]);
 	// printf("dernier before = %d\n",dernier);
 	if (patterns[indicePattern]->isContinue())
 	{
-		dernier = (dernier - (seq[alpha]*pow(4,kmer_taille-1)))*4 + seq[beta];
+		dernier = (dernier-decalage - (seq[alpha]*pow(4,kmer_taille-1)))*4 + seq[beta];
+		dernier += decalage;
+		//cerr << "dernier = " << dernier << "\n";
 	}
 	else
 	{
 		dernier = getCol(indicePattern,seq,i+seq_taille-pattern_taille);
+		cerr << "dernier = " << dernier << "\n";
 //		for (k = i+seq_taille-pattern_taille,l=0; k < i+seq_taille; k++)
 //		{
 //
@@ -355,6 +364,7 @@ void FreqKmer::add_one(int *seq,int i,int seq_taille,int indicePattern)
 
 	// printf("dernier = %d\n",dernier);
 
+	cerr << "on va augmenter freq[" << index << "][" << dernier << "]\n";
 	freq[index][dernier] = freq[index][dernier] + 1;
 
 	premier = 0;
