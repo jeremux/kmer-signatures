@@ -18,7 +18,7 @@
 #include "classData.h"
 #include "FreqKmer.h"
 
-void doTest1()
+void doTest2()
 {
 	FreqKmer *f = new FreqKmer(4);
 	string filename = "tests/test1/liste.txt";
@@ -90,22 +90,88 @@ void doTest1()
 	}
 	if (res)
 	{
-		cerr << "Test OK !\n";
+		cerr << "Test2 OK !\n";
 	}
 	else
 	{
-		cerr << "Test fail...\n";
+		cerr << "Test2 fail...\n";
 	}
 
 }
 
+void doTest1()
+{
+	FreqKmer *g = new FreqKmer(4);
+	string filename = "tests/test1/liste.txt";
+	g->initPatterns("tests/test2/pattern2.txt");
+	g->initFromList(filename);
+
+	int ligne = 7;
+	int col = 16;
+	double ** freq = new double *[ligne];
+	for(int i=0 ; i<ligne ; i++)
+	{
+		freq[i] = new double[col];
+		for(int j=0 ; j<col ; j++)
+		{
+			freq[i][j]=0.0;
+		}
+	}
+	freq[0][0] = 1;
+	freq[0][5] = 1;
+	freq[1][3] = 1;
+	freq[1][5] = 1;
+	freq[2][3] = 1;
+	freq[2][6] = 1;
+	freq[3][3] = 1;
+	freq[3][13] = 1;
+	freq[4][12] = 1;
+	freq[4][13] = 1;
+	freq[5][6] = 1;
+	freq[5][12] = 1;
+	freq[6][6] = 1;
+	freq[6][1] = 1;
+
+	g->fillFreq();
+//	cout << "Fin fillFreq\n";
+//	cout << "Debut Impression\n";
+	bool res=true;
+	for(int i=0;i<ligne;i++)
+	{
+		for(int j=0;j<col;j++)
+		{
+			if(g->getFreq()[i][j]!=freq[i][j])
+			{
+				res=false;
+				break;
+			}
+		}
+	}
+	if (res)
+	{
+		cerr << "Test1 OK !\n";
+	}
+	else
+	{
+		cerr << "Test1 fail...\n";
+	}
+
+}
+
+
 void executeTests()
 {
+	cerr << "===Début des tests===\n";
+	cerr << "**test pattern simple**\n";
 	doTest1();
+	cerr << "**test multi-pattern**\n";
+	doTest2();
+	cerr << "===Début des tests===\n";
 }
 int main(int argc, char **argv) {
 
-	executeTests();
+	if (doTest)
+		executeTests();
 
 //	for(int j=0;j<col;j++)
 //		{
