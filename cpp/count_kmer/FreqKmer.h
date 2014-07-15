@@ -28,13 +28,16 @@ public:
 	void 	initFreq();
 	void 	initFromList(string fichier);
 	void 	initFromFasta(string fichier);
-	void 	copieLigneFreq(int src, int dest,int col,Pattern *p);
+	void 	copieLigneFreq(int src, int dest,int p);
 	void 	compteFenetre(int *seq,int seq_taille,int debut,int col,Pattern *p);
+	void 	compteFenetre2(int *seq,int seq_taille,int pos,int indicePattern);
 	void 	imprimeCSV();
-	void 	add_one(int *seq,int i,int seq_taille,Pattern *p,int col);
-	void	count(int *seq,int seq_taille,Pattern *p,int col);
+	void 	add_one(int *seq,int i,int seq_taille,int p);
+	void	count(int *seq,int seq_taille,int indicePattern);
 	void 	fillFreq();
 	int		tailleSeq(int *seq,int n);
+	int		getCol(int indicePattern,int *seq,int pos);
+	double** getFreq(){return freq;}
 	int 	getNPattern(){return nPattern;}
 	int 	getNbFichierFasta(){return nbFichierFasta;}
 	int 	getNCol(){return nCol;}
