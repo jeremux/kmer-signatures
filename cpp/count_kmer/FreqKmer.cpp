@@ -47,12 +47,16 @@ FreqKmer::FreqKmer(int tailleF) {
 }
 
 FreqKmer::~FreqKmer() {
-	delete data;
+
 	for (int var = 0; var < nPattern ; var++)
 	{
 		delete patterns[var];
 	}
 	delete[] patterns;
+	for (int var=0; var < nbFichierFasta ; var++)
+	{
+
+	}
 }
 
 void FreqKmer::initPatterns(string fichier)
@@ -231,7 +235,7 @@ void FreqKmer::initFreq()
 	}
 }
 
-void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut,int col,Pattern *p)
+void FreqKmer::compteFenetre2(int *seq,int seq_taille,int debut,int col,Pattern *p)
 {
 	int position;
 	int i;
@@ -265,49 +269,34 @@ void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut,int col,Pattern *
 				goto bad_nuc;
 			}
 
-
-			/* calcul de l'indice */
-
 			if(p->extraire(pattern_taille-(lp+1)))
 			{
-				// printf("tab_bool[%d] = %d\n", pattern_taille-(lp+1),tab_bool[pattern_taille-(lp+1)]);
 				indice_kmer += seq[i] * pow(4,lk);
 				lk++;
-
 			}
-
 		}
-
-		/* comptage du kmer */
 		cpt++;
 		if(flag_premier==1)
 		{
 			premier= indice_kmer;
 			flag_premier = 0;
 			cerr << "indice premier toto = " << premier << "\n";
-
 		}
 		else
 		{
 			dernier = indice_kmer;
-//			cerr << "indice dernier toto = " << dernier << "\n";
 		}
 
 		freq[index][col+indice_kmer]++;
 		bad_nuc: ;
 
 	}
-
-//	cout << "indice dernier = " << dernier << "\n";
-
 }
 
-void FreqKmer::compteFenetre2(int *seq,int seq_taille,int debut ,int indicePattern)
+void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePattern)
 {
-//	cerr << "===\n";
 	for(int i = debut; i <= debut+seq_taille-patterns[indicePattern]->getTaillePattern() ; i++)
 	{
-//		cerr << "On va travailler entre " << debut << "et " << debut+seq_taille-1 << "pour l'index "<< index << "\n";
 		int col = getCol(indicePattern,seq,i);
 		if(i==0)
 		{
@@ -317,7 +306,6 @@ void FreqKmer::compteFenetre2(int *seq,int seq_taille,int debut ,int indicePatte
 		{
 			dernier = col;
 		}
-//		cerr << "On increment freq[" << index <<"][" << col << "]\n";
 		freq[index][col]+=1;
 	}
 }
@@ -332,9 +320,9 @@ void FreqKmer::add_one(int *seq,int i,int seq_taille,int indicePattern)
 
 	int decalage = 0;
 
-	for(int i=0 ; i < indicePattern ; i++)
+	for(int j=0 ; j < indicePattern ; j++)
 	{
-		decalage += patterns[i]->getAllCombi();
+		decalage += patterns[j]->getAllCombi();
 	}
 
 	// printf("seq[%d] = %d\n",beta,seq[beta]);
@@ -348,38 +336,20 @@ void FreqKmer::add_one(int *seq,int i,int seq_taille,int indicePattern)
 	else
 	{
 		dernier = getCol(indicePattern,seq,i+seq_taille-pattern_taille);
-		cerr << "dernier = " << dernier << "\n";
-//		for (k = i+seq_taille-pattern_taille,l=0; k < i+seq_taille; k++)
-//		{
-//
-//			if(patterns[indicePattern]->extraire(k-(i+seq_taille-pattern_taille)))
-//			{
-//				dernier += seq[k] * pow(4,(kmer_taille-l-1));
-//				l++;
-//				// printf("seq[k] = %d\n",seq[k]);
-//			}
-//		}
-		// printf("dernier = %d\n",dernier);
 	}
 
-	// printf("dernier = %d\n",dernier);
-
-	cerr << "on va augmenter freq[" << index << "][" << dernier << "]\n";
 	freq[index][dernier] = freq[index][dernier] + 1;
 
 	premier = 0;
 	for (k = 0,l=0; k < pattern_taille; k++)
 	{
-
 		if(patterns[indicePattern]->extraire(k))
 		{
 			premier += seq[i+k] * pow(4,(kmer_taille-l-1));
 			l++;
 		}
 	}
-//	cerr << "indice premier = " << premier << "\n";
-//	cerr << "indice dernier = " << dernier << "\n";
-
+	premier += decalage;
 }
 
 void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
@@ -412,8 +382,8 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 		else
 		{
 
-			//compteFenetre(seq,taille_sous_sequence,i,col,p);
-			compteFenetre2(seq,taille_sous_sequence,i,indicePattern);
+			//compteFenetre2(seq,taille_sous_sequence,i,col,p);
+			compteFenetre(seq,taille_sous_sequence,i,indicePattern);
 
 		}
 		index++;

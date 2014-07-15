@@ -1,0 +1,2 @@
+/home/jeremy/mitomer/trunk/cpp/count_kmer/Debug/file2.fasta
+/home/jeremy/mitomer/trunk/cpp/count_kmer/Debug/file.fasta

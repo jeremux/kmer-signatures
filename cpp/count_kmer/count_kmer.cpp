@@ -18,35 +18,15 @@
 #include "classData.h"
 #include "FreqKmer.h"
 
-
-int main(int argc, char **argv) {
-
-//	Data *d = new Data(Yes);
-//	d->initFrom("file.fasta",Fasta);
-
-
+void doTest()
+{
 	FreqKmer *f = new FreqKmer(4);
-	string filename = "liste.txt";
-//	cout << filename << "\n";
-//	cout << "Debut initPatterns\n";
-	f->initPatterns("pattern.txt");
-//	cout << "Fin initPatterns\n";
-
-//	f->initFromFasta("file2.fasta");
-//	cout << "Debut init fasta\n";
+	string filename = "tests/test1/liste.txt";
+	f->initPatterns("tests/test1/pattern.txt");
 	f->initFromList(filename);
-//	cout << "Fin init fasta\n";
 
-
-	//int nbTaxa = d->getNtaxa();
-//	cout << "sequence = \n" << seq <<"\n";
-//	cout << "accession = " << acc << "\n";
-//	cout << "Nombre de sequences = " << nbTaxa << "\n";
-//	int col = f->getCol(1,f->getData()[0]->getDataObject()[0],2);
-	//cerr << "Col recherchee = " << col << "\n";
-//	cout << "Debut fillFreq\n";
 	int ligne = 7;
-	int col = 16;
+	int col = 20;
 	double ** freq = new double *[ligne];
 	for(int i=0 ; i<ligne ; i++)
 	{
@@ -70,28 +50,28 @@ int main(int argc, char **argv) {
 	freq[5][12] = 1;
 	freq[6][6] = 1;
 	freq[6][1] = 1;
-//	freq[0][16] = 2;
-//	freq[0][17] = 2;
-//	freq[1][16] = 1;
-//	freq[1][17] = 2;
-//	freq[1][19] = 1;
-//	freq[2][16] = 1;
-//	freq[2][17] = 1;
-//	freq[2][18] = 1;
-//	freq[2][19] = 1;
-//	freq[3][16] = 1;
-//	freq[3][17] = 1;
-//	freq[3][19] = 2;
-//	freq[4][16] = 1;
-//	freq[4][17] = 1;
-//	freq[4][19] = 2;
-//	freq[5][16] = 1;
-//	freq[5][17] = 1;
-//	freq[5][18] = 1;
-//	freq[5][19] = 1;
-//	freq[6][16] = 1;
-//	freq[6][17] = 2;
-//	freq[6][18] = 1;
+	freq[0][16] = 2;
+	freq[0][17] = 2;
+	freq[1][16] = 1;
+	freq[1][17] = 2;
+	freq[1][19] = 1;
+	freq[2][16] = 1;
+	freq[2][17] = 1;
+	freq[2][18] = 1;
+	freq[2][19] = 1;
+	freq[3][16] = 1;
+	freq[3][17] = 1;
+	freq[3][19] = 2;
+	freq[4][16] = 1;
+	freq[4][17] = 1;
+	freq[4][19] = 2;
+	freq[5][16] = 1;
+	freq[5][17] = 1;
+	freq[5][18] = 1;
+	freq[5][19] = 1;
+	freq[6][16] = 1;
+	freq[6][17] = 2;
+	freq[6][18] = 1;
 
 	f->fillFreq();
 //	cout << "Fin fillFreq\n";
@@ -110,12 +90,18 @@ int main(int argc, char **argv) {
 	}
 	if (res)
 	{
-		cerr << "Success !\n";
+		cerr << "Test OK !\n";
 	}
 	else
 	{
-		cerr << "Try again...\n";
+		cerr << "Test fail...\n";
 	}
+
+}
+
+int main(int argc, char **argv) {
+
+	doTest();
 
 //	for(int j=0;j<col;j++)
 //		{
