@@ -18,8 +18,10 @@
 #include "classData.h"
 #include "FreqKmer.h"
 
-void doTest2()
+void doTest3()
 {
+	cerr << "\n**test multi-pattern**\n";
+
 	FreqKmer *f = new FreqKmer(4);
 	string filename = "tests/test1/liste.txt";
 	f->initPatterns("tests/test1/pattern.txt");
@@ -90,17 +92,18 @@ void doTest2()
 	}
 	if (res)
 	{
-		cerr << "Test2 OK !\n";
+		cerr << "Test3 OK !\n";
 	}
 	else
 	{
-		cerr << "Test2 fail...\n";
+		cerr << "Test3 fail...\n";
 	}
-
+	delete f;
 }
 
-void doTest1()
+void doTest2()
 {
+	cerr << "\n**test pattern simple**\n";
 	FreqKmer *g = new FreqKmer(4);
 	string filename = "tests/test1/liste.txt";
 	g->initPatterns("tests/test2/pattern2.txt");
@@ -149,45 +152,73 @@ void doTest1()
 	}
 	if (res)
 	{
-		cerr << "Test1 OK !\n";
+		cerr << "Test2 OK !\n";
 	}
 	else
 	{
+		cerr << "Test2 fail...\n";
+	}
+	delete g;
+}
+
+void doTest1()
+{
+	cerr << "\n**test dimension tableau**\n";
+	FreqKmer *f = new FreqKmer(6);
+	string filename = "tests/test3/test.fasta";
+
+	f->initPatterns("tests/test3/3patterns.txt");
+	f->initFromFasta(filename);
+	if(f->getNCol()!=84 || f->getNLigne()!=107)
+	{
 		cerr << "Test1 fail...\n";
 	}
+	else
+	{
+		cerr << "Test1 OK !\n";
+	}
 
+	delete f;
+}
+
+void callTest(int i)
+{
+	switch (i) {
+		case 1:
+			doTest1();
+			break;
+		case 2:
+			doTest2();
+			break;
+		case 3:
+			doTest3();
+			break;
+		default:
+			break;
+	}
 }
 
 
-void executeTests()
+
+void executeTests(int k)
 {
 	cerr << "===Début des tests===\n";
-	cerr << "**test pattern simple**\n";
-	doTest1();
-	cerr << "**test multi-pattern**\n";
-	doTest2();
-	cerr << "===Début des tests===\n";
+	for(int i=1; i <= k ; i++)
+	{
+		callTest(i);
+	}
+	cerr << "\n===Fin des tests===\n";
 }
 int main(int argc, char **argv) {
 
 	if (doTest)
-		executeTests();
+		executeTests(3);
+	//FreqKmer *f = new FreqKmer(50);
+//	f->initFromFasta("/home/jeremy/Bureau/boug.fasta");
+//	f->initPatterns("/home/jeremy/mitomer/trunk/generate_learn/pattern_test");
+	//f->fillFreq();
+	//f->imprimeCSV();
 
-//	for(int j=0;j<col;j++)
-//		{
-//			cout << j << ";";
-//		}
-//		cout << "\n";
-//		for(int i=0;i<ligne;i++)
-//		{
-//			for(int j=0;j<col;j++)
-//			{
-//				cout << freq[i][j] << ";";
-//			}
-//			cout << "\n";
-//		}
-//	f->imprimeCSV();
-//	cout << "Fin Impression\n";
 	return 0;
 }
 

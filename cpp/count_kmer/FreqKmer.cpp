@@ -55,7 +55,17 @@ FreqKmer::~FreqKmer() {
 	delete[] patterns;
 	for (int var=0; var < nbFichierFasta ; var++)
 	{
+		delete data[var];
+	}
+	delete[] data;
 
+	if (freq!=NULL)
+	{
+		for (int var=0; var < nLigne ; var++)
+		{
+			delete freq[var];
+		}
+		delete[] freq;
 	}
 }
 
@@ -163,19 +173,19 @@ void FreqKmer::initFromFasta(string fichier)
 	data[0] = new Data(Yes);
 	data[0]->initFrom(fichier,Fasta);
 	nData = data[0]->getNtaxa();
-	int tailleSeq=0;
+	int taille=0;
 	if (tailleFenetre>0)
 	{
 		for (int var = 0; var < nData; var++)
 		{
-			tailleSeq = data[0]->getPrimarySequence(var).length();
-			if (tailleSeq<tailleFenetre)
+			taille= data[0]->getPrimarySequence(var).length();
+			if (taille<tailleFenetre)
 			{
 				nLigne += 1;
 			}
 			else
 			{
-				nLigne += tailleSeq-tailleFenetre+1;
+				nLigne += taille-tailleFenetre+1;
 			}
 		}
 	}
@@ -426,10 +436,10 @@ void FreqKmer::fillFreq()
 
 void FreqKmer::imprimeCSV()
 {
-	for(int j=0;j<nCol;j++)
-	{
-		cout << j << ";";
-	}
+//	for(int j=0;j<nCol;j++)
+//	{
+//		cout << j << ";";
+//	}
 	cout << "\n";
 	for(int i=0;i<nLigne;i++)
 	{
