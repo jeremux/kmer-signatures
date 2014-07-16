@@ -213,6 +213,8 @@ int main(int argc, char **argv) {
 
 	if (doTest)
 		executeTests(3);
+	Pattern *p = new Pattern("####");
+	p->getCombi();
 	//FreqKmer *f = new FreqKmer(50);
 //	f->initFromFasta("/home/jeremy/Bureau/boug.fasta");
 //	f->initPatterns("/home/jeremy/mitomer/trunk/generate_learn/pattern_test");

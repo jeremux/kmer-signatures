@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cmath>
 #include<iostream>
+#include <vector>
 
 using namespace std;
 
@@ -70,7 +71,38 @@ int Pattern::getKmer(int* seq,int coord)
 	return res;
 }
 
+vector<string> Pattern::getCombi()
+{
+	vector<string> bases;
+	bases.push_back("A");
+	bases.push_back("C");
+	bases.push_back("G");
+	bases.push_back("T");
+	vector<string> words;
+	words = bases;
 
+	vector<string> newords;
+	for(int i=0;i<getTailleKmer()-1;i++)
+	{
+		newords.clear();
+		for(size_t j=0;j<words.size();j++)
+		{
+			for(size_t k=0;k<bases.size();k++)
+			{
+				newords.push_back(words[j]+bases[k]);
+			}
+		}
+		words.clear();
+		words = newords;
+	}
+
+//	for(size_t l=0;l<words.size();l++)
+//	{
+//		cerr << "@attribute " << words[l] << " numeric \n";
+//	}
+
+	return words;
+}
 Pattern::~Pattern() {
 
 }

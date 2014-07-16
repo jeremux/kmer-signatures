@@ -8,6 +8,7 @@
 #ifndef CLASSPATTERN_H_
 #define CLASSPATTERN_H_
 #include <string>
+#include <vector>
 using namespace std;
 
 class Pattern {
@@ -23,6 +24,7 @@ public:
 	int getAllCombi();
 	int getTaillePattern();
 	int getTailleKmer();
+	vector<string> getCombi();
 	bool isContinue();
 	int getKmer(int* seq,int coord); /* coord de 0 à taille(seq)-1 */
 	bool extraire(int i);
