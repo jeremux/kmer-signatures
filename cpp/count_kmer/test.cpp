@@ -10,6 +10,36 @@
 #include "classData.h"
 #include "FreqKmer.h"
 
+void printResult(bool res,int i)
+{
+	if (res)
+	{
+			cerr << "Test" <<i <<" OK !\n";
+	}
+	else
+	{
+			cerr << "Test"<<i <<" fail...\n";
+	}
+}
+
+void doTest4()
+{
+	cerr << "\n**Test taille des sequences**\n";
+	FreqKmer *f = new FreqKmer(4);
+	bool res = true;
+	string filename = "tests/test1/liste.txt";
+	f->initPatterns("tests/test1/pattern.txt");
+	f->initFromList(filename);
+
+	if (f->getData()[0]->getLengthSeq(0)!=6 || f->getData()[1]->getLengthSeq(0)!=7)
+	{
+		res=false;
+	}
+
+	printResult(res,4);
+
+
+}
 void doTest3()
 {
         cerr << "\n**test multi-pattern**\n";
@@ -185,6 +215,9 @@ void callTest(int i)
                 case 3:
                         doTest3();
                         break;
+                case 4:
+                		doTest4();
+                		break;
                 default:
                         break;
         }

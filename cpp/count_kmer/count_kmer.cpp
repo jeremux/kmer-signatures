@@ -197,7 +197,7 @@ int main(int argc, char **argv) {
 	}
 	if (opt.doTest)
 	{
-          executeTests(3);
+          executeTests(4);
           exit(0);
 	}
 
