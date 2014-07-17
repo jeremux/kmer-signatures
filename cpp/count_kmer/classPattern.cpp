@@ -1,8 +1,13 @@
-/*
- * classPattern.cpp
+/**
+ * \file classPattern.cpp
+ * \brief classe permettant de gérer un pattern de kmer.
+ * \author Jeremy FONTAINE
+ * \version 0.1
+ * \date 13/07/2014
  *
- *  Created on: 10 juil. 2014
- *      Author: jeremy
+ * Cette classe est utilisé pour réprenster
+ * un pattern de kmer sous la forme de ##_##
+ *
  */
 
 #include "classPattern.h"

@@ -28,7 +28,6 @@ FreqKmer::FreqKmer() {
 	premier=0;
 	dernier=0;
 	index=0;
-
 }
 
 FreqKmer::FreqKmer(int tailleF) {
@@ -402,18 +401,6 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 	}
 }
 
-
-int FreqKmer::tailleSeq(int *seq,int n)
-{
-	int res=0;
-	for(int i=0;i<n;i++)
-	{
-		if(seq[i]<4 && seq[i]>=0)
-			res++;
-	}
-	return res;
-}
-
 void FreqKmer::fillFreq()
 {
 	initFreq();
@@ -429,7 +416,7 @@ void FreqKmer::fillFreq()
 			for(int j=0;j<data[i]->getNtaxa();j++)
 			{
 
-				count(data[i]->getDataObject()[j],tailleSeq(data[i]->getDataObject()[j],data[i]->getNsite()),k);
+				count(data[i]->getDataObject()[j],data[i]->getLengthSeq(j),k);
 			}
 		}
 

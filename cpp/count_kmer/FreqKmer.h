@@ -35,7 +35,6 @@ public:
 	void 	add_one(int *seq,int i,int seq_taille,int p);
 	void	count(int *seq,int seq_taille,int indicePattern);
 	void 	fillFreq();
-	int		tailleSeq(int *seq,int n);
 	int		getCol(int indicePattern,int *seq,int pos);
 	double** getFreq(){return freq;}
 	int 	getNPattern(){return nPattern;}
