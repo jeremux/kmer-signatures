@@ -31,7 +31,7 @@ public:
 	void 	copieLigneFreq(int src, int dest,int p);
 	void 	compteFenetre2(int *seq,int seq_taille,int debut,int col,Pattern *p);
 	void 	compteFenetre(int *seq,int seq_taille,int pos,int indicePattern);
-	void 	imprimeCSV();
+	void 	imprimeCSV(string output);
 	void 	add_one(int *seq,int i,int seq_taille,int p);
 	void	count(int *seq,int seq_taille,int indicePattern);
 	void 	fillFreq();

@@ -9,6 +9,7 @@
 #include "classPattern.h"
 #include <fstream>
 #include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -162,6 +163,7 @@ void FreqKmer::initFromList(string fichier)
 			}
 			cpt++;
 		}
+
 		getline(file2,ligne);
 	}
 }
@@ -434,19 +436,24 @@ void FreqKmer::fillFreq()
 	}
 }
 
-void FreqKmer::imprimeCSV()
+void FreqKmer::imprimeCSV(string ouput)
 {
-//	for(int j=0;j<nCol;j++)
-//	{
-//		cout << j << ";";
-//	}
-	cout << "\n";
+	ofstream myfile;
+	myfile.open(ouput.c_str());
+
+
+	for(int j=0;j<nCol;j++)
+	{
+		myfile << j << ";";
+	}
+	myfile << endl;
 	for(int i=0;i<nLigne;i++)
 	{
 		for(int j=0;j<nCol;j++)
 		{
-			cout << freq[i][j] << ";";
+			myfile << freq[i][j] << ";";
 		}
-		cout << "\n";
+		myfile << endl;
 	}
+	myfile.close();
 }
