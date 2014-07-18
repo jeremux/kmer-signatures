@@ -38,6 +38,7 @@ void doTest5()
 
 	printResult(res,5);
 
+	delete f;
 }
 void doTest4()
 {
@@ -55,7 +56,7 @@ void doTest4()
 
 	printResult(res,4);
 
-
+	delete f;
 }
 void doTest3()
 {
