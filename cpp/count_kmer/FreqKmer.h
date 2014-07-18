@@ -17,6 +17,14 @@ private:
 	Pattern **patterns;
 	Data **data;
 
+	/**
+	 * Pour les kmers ## et # le tableau kmerSpace sera
+	 * kmerSpace[0]=15; kmerSpace[1]=15+4=19
+	 * utile pour enlever un kmer si on enleve le #:
+	 * on retire les colonnes de 15+1 à 19.
+	 */
+	int* kmerSpace;
+
 	int nLigne, nCol, nPattern, tailleFenetre, nData, nbFichierFasta,premier,dernier,index;
 
 public:
@@ -43,6 +51,8 @@ public:
 	int 	getNLigne(){return nLigne;}
 	int 	getTailleFenetre(){return tailleFenetre;}
 	int 	getNData(){return nData;}
+	int 	getStartColKmer(int i);
+	int 	getEndColKmer(int i);
 	Data** 	getData(){return data;}
 };
 

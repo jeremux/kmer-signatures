@@ -18,6 +18,7 @@ FreqKmer::FreqKmer() {
 	data=NULL;
 	freq=NULL;
 	patterns=NULL;
+	kmerSpace=NULL;
 	nCol=0;
 	nData=0;
 	nLigne=0;
@@ -34,6 +35,7 @@ FreqKmer::FreqKmer(int tailleF) {
 	data=NULL;
 	freq=NULL;
 	patterns=NULL;
+	kmerSpace=NULL;
 	nCol=0;
 	nData=0;
 	nLigne=0;
@@ -67,6 +69,7 @@ FreqKmer::~FreqKmer() {
 		}
 		delete[] freq;
 	}
+	delete[] kmerSpace;
 }
 
 void FreqKmer::initPatterns(string fichier)
@@ -97,14 +100,40 @@ void FreqKmer::initPatterns(string fichier)
 
 	}
 
+	kmerSpace = new int[nPattern];
+
 	for(int i=0 ; i<nPattern ; i++)
 	{
-
+		if (i==0)
+		{
+			kmerSpace[i]=patterns[i]->getAllCombi()-1;
+		}
+		else
+		{
+			kmerSpace[i]=kmerSpace[i-1]+patterns[i]->getAllCombi();
+		}
 		nCol += patterns[i]->getAllCombi();
-
 	}
 
 }
+
+int FreqKmer::getStartColKmer(int i)
+{
+	if (i==0)
+	{
+		return 0;
+	}
+	else
+	{
+		return kmerSpace[i-1]+1;
+	}
+}
+
+int FreqKmer::getEndColKmer(int i)
+{
+	return kmerSpace[i];
+}
+
 
 void FreqKmer::initFromList(string fichier)
 {

@@ -22,6 +22,23 @@ void printResult(bool res,int i)
 	}
 }
 
+void doTest5()
+{
+	cerr << "\n**Test espace des kmers**\n";
+	FreqKmer *f = new FreqKmer(4);
+	bool res = true;
+	string filename = "tests/test1/liste.txt";
+	f->initPatterns("tests/test1/pattern.txt");
+	f->initFromList(filename);
+
+	if (f->getStartColKmer(0)!=0 || f->getStartColKmer(1)!=16 || f->getEndColKmer(0)!=15 || f->getEndColKmer(1)!=19)
+	{
+		res=false;
+	}
+
+	printResult(res,5);
+
+}
 void doTest4()
 {
 	cerr << "\n**Test taille des sequences**\n";
@@ -217,6 +234,9 @@ void callTest(int i)
                         break;
                 case 4:
                 		doTest4();
+                		break;
+                case 5:
+                		doTest5();
                 		break;
                 default:
                         break;

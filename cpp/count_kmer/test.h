@@ -8,6 +8,7 @@
 #ifndef TEST_H_
 #define TEST_H_
 
+void doTest5();
 void doTest3();
 void doTest2();
 void doTest1();
