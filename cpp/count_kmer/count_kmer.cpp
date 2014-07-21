@@ -25,6 +25,7 @@
 #define optional_argument 2
 #define VERSION 1.0
 
+#define NB_TEST 7
 
 typedef struct {
   string listFastaPath;
@@ -197,7 +198,7 @@ int main(int argc, char **argv) {
 	}
 	if (opt.doTest)
 	{
-          executeTests(5);
+          executeTests(NB_TEST);
           exit(0);
 	}
 

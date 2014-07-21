@@ -77,6 +77,7 @@ enum Alphabet{dna=0,protein=1};
 
 
 
+
 static string printSwitch(Switch s)
 {
   if(s==Yes)

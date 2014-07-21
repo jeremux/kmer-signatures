@@ -16,6 +16,8 @@ private:
 	double **freq;
 	Pattern **patterns;
 	Data **data;
+	int *indexLineData;
+	int **indexLineDataSeq;
 
 	/**
 	 * Pour les kmers ## et # le tableau kmerSpace sera
@@ -54,6 +56,12 @@ public:
 	int 	getStartColKmer(int i);
 	int 	getEndColKmer(int i);
 	Data** 	getData(){return data;}
+	int		getNbLineData(int i);
+	int 	getStartLineData(int i);
+	int 	getEndLineData(int i);
+	int 	getStartLineDataSeq(int i,int j);
+	int 	getEndLineDataSeq(int i,int j);
+	int 	getNbLineDataSeq(int i,int j);
 };
 
 #endif /* FREQKMER_H_ */

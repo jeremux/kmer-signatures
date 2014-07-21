@@ -19,6 +19,8 @@ FreqKmer::FreqKmer() {
 	freq=NULL;
 	patterns=NULL;
 	kmerSpace=NULL;
+	indexLineDataSeq=NULL;
+	indexLineData=NULL;
 	nCol=0;
 	nData=0;
 	nLigne=0;
@@ -45,6 +47,8 @@ FreqKmer::FreqKmer(int tailleF) {
 	premier=0;
 	dernier=0;
 	index=0;
+	indexLineDataSeq=NULL;
+	indexLineData=NULL;
 
 }
 
@@ -58,8 +62,10 @@ FreqKmer::~FreqKmer() {
 	for (int var=0; var < nbFichierFasta ; var++)
 	{
 		delete data[var];
+		delete indexLineDataSeq[var];
 	}
 	delete[] data;
+	delete[] indexLineDataSeq;
 
 	if (freq!=NULL)
 	{
@@ -139,6 +145,7 @@ void FreqKmer::initFromList(string fichier)
 {
 	string ligne;
 	int cpt=0;
+	int cpt2=-1;
 	int tailleSeq = 0;
 	ifstream file(fichier.c_str());
 	getline(file,ligne);
@@ -155,17 +162,20 @@ void FreqKmer::initFromList(string fichier)
 
 	nbFichierFasta=nbFichier;
 	data=new Data*[nbFichier];
+	indexLineData = new int[nbFichier];
 	ifstream file2(fichier.c_str());
 	getline(file2,ligne);
 	/* J'init à partir de chaque ligne du fichier */
-
+	indexLineDataSeq = new int*[nbFichierFasta];
 	while (file2)
 	{
 		if(tailleLigne!=0)
 		{
 			data[cpt] = new Data(Yes);
+//			cerr << "lecture de " << ligne << "\n";
 			data[cpt]->initFrom(ligne,Fasta);
 			/* Ajouter des attributs ??*/
+			indexLineDataSeq[cpt] = new int[data[cpt]->getNtaxa()];
 			nData += data[cpt]->getNtaxa();
 			if (tailleFenetre>0)
 			{
@@ -183,12 +193,22 @@ void FreqKmer::initFromList(string fichier)
 					{
 						nLigne += tailleSeq-tailleFenetre+1;
 					}
+
+//					cerr << "indexLineDataSeq[cpt][var] <-- " << nLigne << "\n";
+					indexLineDataSeq[cpt][var]=nLigne-1;
 				}
 			}
 			else
 			{
 				nLigne +=  data[cpt]->getNtaxa();
+				for(int i=0;i<data[cpt]->getNtaxa();i++)
+				{
+					indexLineDataSeq[cpt][i] = cpt2++;
+				}
+
 			}
+
+			indexLineData[cpt]=nLigne-1;
 			cpt++;
 		}
 
@@ -200,9 +220,14 @@ void FreqKmer::initFromFasta(string fichier)
 {
 	nbFichierFasta=1;
 	data=new Data*[1];
+	indexLineData = new int[1];
+	int cpt2=-1;
+
 	data[0] = new Data(Yes);
 	data[0]->initFrom(fichier,Fasta);
 	nData = data[0]->getNtaxa();
+	indexLineDataSeq = new int *[1];
+	indexLineDataSeq[0] = new int[nData];
 	int taille=0;
 	if (tailleFenetre>0)
 	{
@@ -217,12 +242,18 @@ void FreqKmer::initFromFasta(string fichier)
 			{
 				nLigne += taille-tailleFenetre+1;
 			}
+			indexLineDataSeq[0][var]=nLigne-1;
 		}
 	}
 	else
 	{
+		for (int var = 0; var < nData; var++)
+		{
+			indexLineDataSeq[0][var]=cpt2++;
+		}
 		nLigne = nData;
 	}
+	indexLineData[0] = nLigne-1;
 }
 
 int FreqKmer::getCol(int indicePattern,int *seq,int pos)
@@ -472,4 +503,63 @@ void FreqKmer::imprimeCSV(string ouput)
 		myfile << endl;
 	}
 	myfile.close();
+}
+
+int FreqKmer::getNbLineData(int i)
+{
+	if(i==0)
+	{
+		return indexLineData[i]+1;
+	}
+	else
+	{
+		return indexLineData[i]-indexLineData[i-1];
+	}
+}
+
+int FreqKmer::getStartLineData(int i)
+{
+	if(i==0)
+	{
+		return 0;
+	}
+	else
+	{
+		return indexLineData[i-1]+1;
+	}
+}
+
+int FreqKmer::getEndLineData(int i)
+{
+	return indexLineData[i];
+}
+
+int FreqKmer::getStartLineDataSeq(int i,int j)
+{
+	if(j==0)
+	{
+		if(i==0)
+		{
+			return 0;
+		}
+		else
+		{
+			return indexLineDataSeq[i-1][data[i-1]->getNtaxa()-1]+1;
+		}
+	}
+	else
+	{
+		return indexLineDataSeq[i][j-1]+1;
+	}
+	return 0;
+}
+
+int FreqKmer::getEndLineDataSeq(int i,int j)
+{
+	return indexLineDataSeq[i][j];
+}
+
+int FreqKmer::getNbLineDataSeq(int i,int j)
+{
+	return getEndLineDataSeq(i,j)-getStartLineDataSeq(i,j)+1;
 }

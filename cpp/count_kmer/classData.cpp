@@ -464,10 +464,12 @@ Switch Data::readPhylip(string filename)
 
 Switch Data::readFasta(string filename)
 {
-  if(verbose){
+  if(verbose)
+  {
       cout << "Data::readFasta(" << filename <<")\n";
       cout.flush();
-  } /**********************/
+  }
+  /**********************/
   Switch ok=Yes;
   Switch seen;
   char line[MAXSITE];
@@ -487,69 +489,68 @@ Switch Data::readFasta(string filename)
       fstream map_is(filename.c_str(),ios::in);
       // compter nomber d especes et de sites
       while(!map_is.eof())
-        {
-
-          map_is.getline(line,MAXSITE);
-          str=line;
-          if(str.length()>0)
-            {
-              tmp=str.at(0);
-              if(tmp==">")
-                {
-                  if(tmpnsite!=0)
-                    {
-                      nbsite=tmpnsite;
-                      if(nbsite > maxnbsite)
-                        maxnbsite=nbsite;
-                      nbsite=0;
-                      tmpnsite=0;
-                    }
-                  nbsp++;
-                } else {
-                    if(nbsite==0)
-                      {
-                        if(sizebloc==0)
-                          sizebloc=str.length();
-                        tmpnsite+=str.length();
-                      }
-                    tmpsize=str.length();
-                    for(int j=0;j<tmpsize;j++)
-                      {
-                        seen=No;
-                        for(int k=0;k<=4;k++)
-                          {
-                            if(str.at(j)==DNAletters[k])
-                              {
-                                seen=Yes;
-                                break;
-                              }
-                            if(str.at(j)==dnaletters[k])
-                              {
-                                seen=Yes;
-                                break;
-                              }
-                          }
-                        if(seen==Yes)
-                          isdna++;
-                        else
-                          notdna++;
-                      }
-                }
-            }
-        }
+      {
+    	  map_is.getline(line,MAXSITE);
+    	  str=line;
+    	  if(str.length()>0)
+    	  {
+    		  tmp=str.at(0);
+    		  if(tmp==">")
+    		  {
+    			  if(tmpnsite!=0)
+    			  {
+    				  nbsite=tmpnsite;
+    				  if(nbsite > maxnbsite)
+    					  maxnbsite=nbsite;
+    				  nbsite=0;
+    				  tmpnsite=0;
+    			  }
+    			  nbsp++;
+    		  } else {
+    			  if(nbsite==0)
+    			  {
+    				  if(sizebloc==0)
+    					  sizebloc=str.length();
+    				  tmpnsite+=str.length();
+    			  }
+    			  tmpsize=str.length();
+    			  for(int j=0;j<tmpsize;j++)
+    			  {
+    				  seen=No;
+    				  for(int k=0;k<=4;k++)
+    				  {
+    					  if(str.at(j)==DNAletters[k])
+    					  {
+    						  seen=Yes;
+    						  break;
+    					  }
+    					  if(str.at(j)==dnaletters[k])
+    					  {
+    						  seen=Yes;
+    						  break;
+    					  }
+    				  }
+    				  if(seen==Yes)
+    					  isdna++;
+    				  else
+    					  notdna++;
+    			  }
+    		  }
+    	  }
+      }
 
       if((isdna/double(isdna+notdna))>0.9)
-        {
-          alphabet=dna;
-          charalphabet=DNAletters;
-          Nstate=4;
-        } else {
-            alphabet=protein;
-            charalphabet=AminoAcids;
-            Nstate=20;
-        }
+      {
+    	  alphabet=dna;
+    	  charalphabet=DNAletters;
+    	  Nstate=4;
+      } else {
+    	  alphabet=protein;
+    	  charalphabet=AminoAcids;
+    	  Nstate=20;
+      }
       if(tmpnsite > maxnbsite)
-        maxnbsite=tmpnsite;
+    	  maxnbsite=tmpnsite;
       //if(nbsp==1)
       //maxnbsite=tmpnsite;
 
@@ -562,99 +563,104 @@ Switch Data::readFasta(string filename)
       SPname=new string[Ntaxa];
 
       if(takeAcc==Yes)
-        listAcc=new string[Ntaxa];
+    	  listAcc=new string[Ntaxa];
 
       for(int i=0;i<Ntaxa;i++)
-        {
-          data[i]=new int[Nsite];
-          for(int j=0;j<Nsite;j++)
-            data[i][j]=Nstate;
-        }
+      {
+    	  data[i]=new int[Nsite];
+    	  for(int j=0;j<Nsite;j++)
+    		  data[i][j]=Nstate;
+      }
       map_is.close();
       fstream map_is2(filename.c_str(),ios::in);
       int length;
       nbsp=-1;
+
+
       // lire les sequences et nom d especes
       while(!map_is2.eof())
-        {
-          map_is2.getline(line,MAXSITE);
-          str=line;
-          length=str.length();
-          if(length>0)
-            {
-              tmp=str.at(0);
-              if(tmp!=">")
-                {
-                  for(int i=0;i<length;i++)
-                    {
-                      int k;
-                      seen=No;
-                      if(alphabet==dna)
-                        {
-                          for(k=0;k<=(Nstate+1);k++)
-                            {
-                              if(str.at(i)==DNAletters[k])
-                                {
-                                  seen=Yes;
-                                  break;
-                                }
-                              if(str.at(i)==dnaletters[k])
-                                {
-                                  seen=Yes;
-                                  break;
-                                }
-                            }
-                        }
-                      if(alphabet==protein)
-                        {
-                          for(k=0;k<=(Nstate+1);k++)
-                            {
-                              if(str.at(i)==AminoAcids[k])
-                                {
-                                  seen=Yes;
-                                  break;
-                                }
-                            }
-                        }
-                      if(seen==No)
-                        {
-                          k--;
-                          if(verbose){
-                              cout << "WARNING: expected alphabet ";
-                              if(alphabet==dna)
-                                cout << "DNA";
-                              else
-                                cout << "Protein";
-                              cout << " and read unknown state: " << str.at(i) << " at taxa " << SPname[nbsp] <<"; state replaced by: " << charalphabet[k] << "\n";
-                          }
-                          ok=No;
-                        }
-                      data[nbsp][(sizebloc*nbbloc)+i]=k;
-                    }
-                  nbbloc++;
-                } else {
-                    nbsp++;
-                    nbbloc=0;
-                    SPname[nbsp]=str.substr(1,str.length());
-                    if(takeAcc==Yes)
-                      {
-                        int x = str.find( "__" ) + 2 ;
-                        listAcc[indexAcc++] = str.substr(x,str.length());
+      {
+    	  map_is2.getline(line,MAXSITE);
+    	  str=line;
+    	  length=str.length();
+    	  if(length>0)
+    	  {
 
-                      }
-                }
-            }
-        }
-  } catch( ... )      {
-      if(verbose){
-          cerr << "failed to read Fasta file: " << filename <<"\n";
-          cerr.flush();
+    		  tmp=str.at(0);
+    		  if(tmp!=">")
+    		  {
+    			  for(int i=0;i<length;i++)
+    			  {
+    				  int k;
+    				  seen=No;
+    				  if(alphabet==dna)
+    				  {
+    					  for(k=0;k<=(Nstate+1);k++)
+    					  {
+    						  if(str.at(i)==DNAletters[k])
+    						  {
+    							  seen=Yes;
+    							  break;
+    						  }
+    						  if(str.at(i)==dnaletters[k])
+    						  {
+    							  seen=Yes;
+    							  break;
+    						  }
+    					  }
+    				  }
+    				  if(alphabet==protein)
+    				  {
+    					  for(k=0;k<=(Nstate+1);k++)
+    					  {
+    						  if(str.at(i)==AminoAcids[k])
+    						  {
+    							  seen=Yes;
+    							  break;
+    						  }
+    					  }
+    				  }
+    				  if(seen==No)
+    				  {
+    					  k--;
+    					  if(verbose){
+    						  cout << "WARNING: expected alphabet ";
+    						  if(alphabet==dna)
+    							  cout << "DNA";
+    						  else
+    							  cout << "Protein";
+    						  cout << " and read unknown state: " << str.at(i) << " at taxa " << SPname[nbsp] <<"; state replaced by: " << charalphabet[k] << "\n";
+    					  }
+    					  ok=No;
+    				  }
+    				  data[nbsp][(sizebloc*nbbloc)+i]=k;
+    			  }
+    			  nbbloc++;
+    		  }
+    		  else
+    		  {
+    			  nbsp++;
+    			  nbbloc=0;
+    			  SPname[nbsp]=str.substr(1,str.length());
+    			  if(takeAcc==Yes)
+    			  {
+    				  int x = str.find( "__" ) + 2 ;
+    				  listAcc[indexAcc++] = str.substr(x,str.length());
+
+    			  }
+    		  }
+    	  }
       }
-      throw;
+  } catch( ... )      {
+	  if(verbose){
+		  cerr << "failed to read Fasta file: " << filename <<"\n";
+		  cerr.flush();
+	  }
+	  throw;
   }
   if(verbose){
-      cout << "end Data::readFasta()\n";
-      cout.flush();
+	  cout << "end Data::readFasta()\n";
+	  cout.flush();
   }
 
 

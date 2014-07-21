@@ -22,6 +22,59 @@ void printResult(bool res,int i)
 	}
 }
 
+void doTest7()
+{
+	cerr << "\n**Test de la map deux**\n";
+	FreqKmer *f = new FreqKmer(4);
+	bool res = true;
+	string filename = "tests/test4/liste.txt";
+	f->initPatterns("tests/test4/pattern.txt");
+	f->initFromList(filename);
+
+	res = (
+		   f->getStartLineDataSeq(0,0)==0
+		&& f->getEndLineDataSeq(0,0)==2
+		&& f->getNbLineDataSeq(0,0)==3
+
+		&& f->getStartLineDataSeq(0,1)==3
+		&& f->getEndLineDataSeq(0,1)==3
+		&& f->getNbLineDataSeq(0,1)==1
+
+		&& f->getStartLineDataSeq(1,0)==4
+		&& f->getEndLineDataSeq(1,0)==7
+		&& f->getNbLineDataSeq(1,0)==4
+
+		&& f->getStartLineDataSeq(1,1)==8
+		&& f->getEndLineDataSeq(1,1)==9
+		&& f->getNbLineDataSeq(1,1)==2
+
+		&& f->getStartLineDataSeq(1,2)==10
+		&& f->getEndLineDataSeq(1,2)==14
+		&& f->getNbLineDataSeq(1,2)==5
+	);
+
+
+
+	printResult(res,7);
+
+	delete f;
+}
+
+void doTest6()
+{
+	cerr << "\n**Test de la map une**\n";
+	FreqKmer *f = new FreqKmer(4);
+	bool res = true;
+	string filename = "tests/test1/liste.txt";
+	f->initPatterns("tests/test1/pattern.txt");
+	f->initFromList(filename);
+
+	res = !(f->getNbLineData(0)!=3 || f->getNbLineData(1)!=4 || f->getStartLineData(0)!=0 || f->getEndLineData(0)!=2 || f->getStartLineData(1)!=3 || f->getEndLineData(1)!=6);
+
+	printResult(res,6);
+
+	delete f;
+}
 void doTest5()
 {
 	cerr << "\n**Test espace des kmers**\n";
@@ -238,6 +291,12 @@ void callTest(int i)
                 		break;
                 case 5:
                 		doTest5();
+                		break;
+                case 6:
+                		doTest6();
+                		break;
+                case 7:
+                		doTest7();
                 		break;
                 default:
                         break;
