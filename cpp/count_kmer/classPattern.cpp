@@ -68,10 +68,10 @@ int Pattern::getKmer(int* seq,int coord)
 	{
 		if(extraire(var))
 		{
-			res += seq[coord]*pow(4,getTailleKmer()-1-cpt);
+			res += seq[coord+var]*pow(4,getTailleKmer()-1-cpt);
 			cpt++;
 		}
-		coord++;
+
 	}
 	return res;
 }

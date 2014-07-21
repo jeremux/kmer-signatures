@@ -202,7 +202,7 @@ int main(int argc, char **argv) {
           exit(0);
 	}
 
-	if (opt.listFastaPath=="null" && opt.listFastaPath=="null")
+	if (opt.listFastaPath=="null" && opt.fastaPath=="null")
 	{
           cerr << "Need a fasta file (-f file.fasta) or a list of fasta path (-F listFasta_file) \n";
           error = true;
@@ -231,15 +231,21 @@ int main(int argc, char **argv) {
 
 	if(initFromList)
 	{
-		f->initFromList(opt.listFastaPath);
+		f->initDataFromListFastaPath(opt.listFastaPath);
 	}
 	else
 	{
+		cerr << "Debut init fasta \n";
 		f->initFromFasta(opt.fastaPath);
+		cerr << "Fin init fasta\n";
 	}
+	cerr << "Debut init patterns\n";
 	f->initPatterns(opt.kmerPath);
+	cerr << "Fin init patterns\n";
 
+	cerr << "Debut fill \n";
 	f->fillFreq();
+	cerr << "Fin fill \n";
 	f->imprimeCSV(opt.output);
 
 	return 0;

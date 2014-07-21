@@ -29,7 +29,7 @@ void doTest9()
 	        FreqKmer *f = new FreqKmer(5,2);
 	        string filename = "tests/test5/liste.txt";
 	        f->initPatterns("tests/test5/pattern.txt");
-	        f->initFromList(filename);
+	        f->initDataFromListFastaPath(filename);
 
 
 
@@ -112,7 +112,7 @@ void doTest8()
         FreqKmer *f = new FreqKmer(3,2);
         string filename = "tests/test1/liste.txt";
         f->initPatterns("tests/test1/pattern.txt");
-        f->initFromList(filename);
+        f->initDataFromListFastaPath(filename);
 
 
 
@@ -194,28 +194,28 @@ void doTest7()
 	bool res = true;
 	string filename = "tests/test4/liste.txt";
 	f->initPatterns("tests/test4/pattern.txt");
-	f->initFromList(filename);
+	f->initDataFromListFastaPath(filename);
 
 	res = (
-		   f->getStartLineDataSeq(0,0)==0
-		&& f->getEndLineDataSeq(0,0)==2
-		&& f->getNbLineDataSeq(0,0)==3
+		   f->obtainStartLineDataSeq(0,0)==0
+		&& f->obtainEndLineDataSeq(0,0)==2
+		&& f->obtainNbLineDataSeq(0,0)==3
 
-		&& f->getStartLineDataSeq(0,1)==3
-		&& f->getEndLineDataSeq(0,1)==3
-		&& f->getNbLineDataSeq(0,1)==1
+		&& f->obtainStartLineDataSeq(0,1)==3
+		&& f->obtainEndLineDataSeq(0,1)==3
+		&& f->obtainNbLineDataSeq(0,1)==1
 
-		&& f->getStartLineDataSeq(1,0)==4
-		&& f->getEndLineDataSeq(1,0)==7
-		&& f->getNbLineDataSeq(1,0)==4
+		&& f->obtainStartLineDataSeq(1,0)==4
+		&& f->obtainEndLineDataSeq(1,0)==7
+		&& f->obtainNbLineDataSeq(1,0)==4
 
-		&& f->getStartLineDataSeq(1,1)==8
-		&& f->getEndLineDataSeq(1,1)==9
-		&& f->getNbLineDataSeq(1,1)==2
+		&& f->obtainStartLineDataSeq(1,1)==8
+		&& f->obtainEndLineDataSeq(1,1)==9
+		&& f->obtainNbLineDataSeq(1,1)==2
 
-		&& f->getStartLineDataSeq(1,2)==10
-		&& f->getEndLineDataSeq(1,2)==14
-		&& f->getNbLineDataSeq(1,2)==5
+		&& f->obtainStartLineDataSeq(1,2)==10
+		&& f->obtainEndLineDataSeq(1,2)==14
+		&& f->obtainNbLineDataSeq(1,2)==5
 	);
 
 
@@ -232,9 +232,9 @@ void doTest6()
 	bool res = true;
 	string filename = "tests/test1/liste.txt";
 	f->initPatterns("tests/test1/pattern.txt");
-	f->initFromList(filename);
+	f->initDataFromListFastaPath(filename);
 
-	res = !(f->getNbLineData(0)!=3 || f->getNbLineData(1)!=4 || f->getStartLineData(0)!=0 || f->getEndLineData(0)!=2 || f->getStartLineData(1)!=3 || f->getEndLineData(1)!=6);
+	res = !(f->obtainNbLineData(0)!=3 || f->obtainNbLineData(1)!=4 || f->obtainStartLineData(0)!=0 || f->obtainEndLineData(0)!=2 || f->obtainStartLineData(1)!=3 || f->obtainEndLineData(1)!=6);
 
 	printResult(res,6);
 
@@ -247,9 +247,9 @@ void doTest5()
 	bool res = true;
 	string filename = "tests/test1/liste.txt";
 	f->initPatterns("tests/test1/pattern.txt");
-	f->initFromList(filename);
+	f->initDataFromListFastaPath(filename);
 
-	if (f->getStartColKmer(0)!=0 || f->getStartColKmer(1)!=16 || f->getEndColKmer(0)!=15 || f->getEndColKmer(1)!=19)
+	if (f->obtainStartColKmer(0)!=0 || f->obtainStartColKmer(1)!=16 || f->obtainEndColKmer(0)!=15 || f->obtainEndColKmer(1)!=19)
 	{
 		res=false;
 	}
@@ -265,7 +265,7 @@ void doTest4()
 	bool res = true;
 	string filename = "tests/test1/liste.txt";
 	f->initPatterns("tests/test1/pattern.txt");
-	f->initFromList(filename);
+	f->initDataFromListFastaPath(filename);
 
 	if (f->getData()[0]->getLengthSeq(0)!=6 || f->getData()[1]->getLengthSeq(0)!=7)
 	{
@@ -283,7 +283,7 @@ void doTest3()
         FreqKmer *f = new FreqKmer(4);
         string filename = "tests/test1/liste.txt";
         f->initPatterns("tests/test1/pattern.txt");
-        f->initFromList(filename);
+        f->initDataFromListFastaPath(filename);
 
         int ligne = 7;
         int col = 20;
@@ -365,7 +365,7 @@ void doTest2()
         FreqKmer *g = new FreqKmer(4);
         string filename = "tests/test1/liste.txt";
         g->initPatterns("tests/test2/pattern2.txt");
-        g->initFromList(filename);
+        g->initDataFromListFastaPath(filename);
 
         int ligne = 7;
         int col = 16;

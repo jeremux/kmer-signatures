@@ -477,13 +477,20 @@ Switch Data::readFasta(string filename)
   int nbbloc, nbsp=0, nbsite=0, maxnbsite=0, tmpnsite=0, sizebloc=0,indexAcc=0;
   int isdna=0,notdna=0, tmpsize;
 
+
+  cout.flush();
   try {
       fstream map_is0(filename.c_str(),ios::in);
       map_is0.getline(line,MAXSITE);
       str=line;
 
+      cout.flush();
+
       if(str.at(0)!='>')
         throw "baformat";
+
+
+      cout.flush();
 
       map_is0.close();
       fstream map_is(filename.c_str(),ios::in);
@@ -576,7 +583,8 @@ Switch Data::readFasta(string filename)
       int length;
       nbsp=-1;
 
-
+//      cout << "debut lire sequence et espece\n";
+//      cout.flush();
       // lire les sequences et nom d especes
       while(!map_is2.eof())
       {
@@ -642,6 +650,8 @@ Switch Data::readFasta(string filename)
     			  nbsp++;
     			  nbbloc=0;
     			  SPname[nbsp]=str.substr(1,str.length());
+//			  cout << SPname[nbsp] << "\n";
+//			  cout.flush();
     			  if(takeAcc==Yes)
     			  {
     				  int x = str.find( "__" ) + 2 ;

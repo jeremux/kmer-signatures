@@ -147,7 +147,7 @@ void FreqKmer::initPatterns(string fichier)
 
 }
 
-int FreqKmer::getStartColKmer(int i)
+int FreqKmer::obtainStartColKmer(int i)
 {
 	if (i==0)
 	{
@@ -159,13 +159,13 @@ int FreqKmer::getStartColKmer(int i)
 	}
 }
 
-int FreqKmer::getEndColKmer(int i)
+int FreqKmer::obtainEndColKmer(int i)
 {
 	return kmerSpace[i];
 }
 
 
-void FreqKmer::initFromList(string fichier)
+void FreqKmer::initDataFromListFastaPath(string fichier)
 {
 	string ligne;
 	int cpt=0;
@@ -216,7 +216,7 @@ void FreqKmer::initFromList(string fichier)
 					else
 					{
 						//nLigne += tailleSeq-tailleFenetre+1;
-						nLigne += getNbLineWindow(0,tailleSeq-1,tailleFenetre);
+						nLigne += obtainNbLineWindow(0,tailleSeq-1,tailleFenetre,shift);
 					}
 
 //					cerr << "indexLineDataSeq[cpt][var] <-- " << nLigne << "\n";
@@ -249,9 +249,12 @@ void FreqKmer::initFromFasta(string fichier)
 
 	data[0] = new Data(Yes);
 	data[0]->initFrom(fichier,Fasta);
+
 	nData = data[0]->getNtaxa();
 	indexLineDataSeq = new int *[1];
+
 	indexLineDataSeq[0] = new int[nData];
+
 	int taille=0;
 	if (tailleFenetre>0)
 	{
@@ -265,7 +268,7 @@ void FreqKmer::initFromFasta(string fichier)
 			else
 			{
 				//nLigne += taille-tailleFenetre+1;
-				nLigne += getNbLineWindow(0,taille-1,tailleFenetre);
+				nLigne += obtainNbLineWindow(0,taille-1,tailleFenetre,shift);
 			}
 			indexLineDataSeq[0][var]=nLigne-1;
 		}
@@ -281,15 +284,13 @@ void FreqKmer::initFromFasta(string fichier)
 	indexLineData[0] = nLigne-1;
 }
 
-int FreqKmer::getCol(int indicePattern,int *seq,int pos)
+int FreqKmer::obtainColIndex(int indicePattern,int *seq,int pos)
 {
-	int tmp = patterns[indicePattern]->getKmer(seq,pos);
-	int s=0;
-	for(int i=0; i<indicePattern ; i++)
-	{
-		s += patterns[i]->getAllCombi();
-	}
-	return s+tmp;
+//	int tmp = patterns[indicePattern]->getKmer(seq,pos);
+//	int s=obtainStartColKmer(indicePattern);
+//	return s+tmp;
+
+	return obtainStartColKmer(indicePattern)+patterns[indicePattern]->getKmer(seq,pos);
 }
 /**
  * Permet de copier une ligne
@@ -304,7 +305,7 @@ void FreqKmer::copieLigneFreq(int src,int dest,int indicePattern)
 	{
 		decalage += patterns[i]->getAllCombi();
 	}
-//	cerr << "decalage = " << decalage << "\n";
+
 //	cerr << "on va copier de " << decalage << " a " << patterns[indicePattern]->getAllCombi()+decalage-1 << "\n";
 	for(int i=decalage; i<patterns[indicePattern]->getAllCombi()+decalage ; i++)
 	{
@@ -336,26 +337,49 @@ void FreqKmer::initFreq()
 	}
 }
 
-
+/***
+ * effectue le comptage dans une sous sequence
+ * @param	seq: sequence où compter
+ * @param	seq_taille: taille de la sous sequence
+ * @param	debut: où commencer à compter
+ * @param	indicePattern: indice du kmer courant
+ */
 void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePattern)
 {
 	int col;
+	/* on s'arrête à la dernière fenetre possible */
 	int fin = debut+seq_taille-patterns[indicePattern]->getTaillePattern();
 	for(int i = debut; i <= fin ; i++)
 	{
-		col = getCol(indicePattern,seq,i);
+		/* indice du kmer à la position i */
+		col = obtainColIndex(indicePattern,seq,i);
+
+		/* si on traite les shift premiers kmer */
 		if(i-debut<shift)
 		{
-
+			/* alors on les mémorise (pour ensuite décrémenter, lors du prochain decalage */
 			tabPremier[i-debut] = col;
 		}
-		if(i>fin-shift)
+		/* on recupere le dernier kmer, pour ensuite calculer les shift-1 derniers kmers restants */
+		if(i==fin)
 		{
-			tabDernier[i-fin+1] = col;
+			tabDernier[0] = col;
 		}
+		/* dans tous les cas on augmente la frequence du kmer rencontré */
 		freq[index][col]+=1;
 	}
 }
+
+/**
+ * Permet de passer de mettre a jour la
+ * table des frequence en incrementer les
+ * nouveaux derniers et en mettant à jour
+ * les nouveaux premier
+ * @param	seq	sequence où l'on compte
+ * @param	i	endroit où on se trouve dans la seq
+ * @param	seq_taille	taille de la sequence (ici la fenetre)
+ * @param 	indicePattern indice du pattern courant
+ */
 void FreqKmer::add_one(int *seq,int i,int seq_taille,int indicePattern)
 {
 	int pattern_taille = patterns[indicePattern]->getTaillePattern();
@@ -403,7 +427,7 @@ void FreqKmer::setDernier(int *seq,int alpha,int beta,int kmer_taille,int indice
 //	else
 	{
 		for(int j=0;j<shift;j++)
-			tabDernier[j] = getCol(indicePattern,seq,i+seq_taille-pattern_taille-j);
+			tabDernier[j] = obtainColIndex(indicePattern,seq,i+seq_taille-pattern_taille-j);
 	}
 //	for(int j=0;j< shift ;j++)
 //	{
@@ -432,16 +456,28 @@ void FreqKmer::setPremier(int *seq,int pattern_taille,int indicePattern,int kmer
 //			cerr << "tabPremier[" << j << "] = " << tabPremier[j] << "\n";
 //		}
 }
-
+/**
+ * Effectue le comptaga pour seq
+ * @param 	seq: la sequence ou compter
+ * @param 	seq_taille : taille de la sequence
+ * @parm	indicePattern : indice du kmer actuel
+ */
 void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 {
 	int i=0;
 	int j=0;
+
+	/*taille de la sous sequence où travailler */
 	int taille_sous_sequence = 0;
 	int z;
 
+	/* Initialisation
+	 * des tableaux premier
+	 * et dernier
+	 */
 	initPremier();
 	initDernier();
+
 	if (tailleFenetre==-1 || tailleFenetre>seq_taille)
 	{
 		taille_sous_sequence = seq_taille;
@@ -451,7 +487,10 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 		taille_sous_sequence = tailleFenetre;
 	}
 	
-	z=getNbLineWindow(0,seq_taille-1,taille_sous_sequence);
+	/* on recupère le nombre de ligne pour la sequence
+	 * afin d'iterer le bon nombre de fois
+	 */
+	z=obtainNbLineWindow(0,seq_taille-1,taille_sous_sequence,shift);
 
 	while(j < z)
 	{
@@ -465,9 +504,12 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 //		}
 //		else
 		{
+			/* compteFenetre(seq,tailleFenetre,indiceDepart,indice pattern */
 			compteFenetre(seq,taille_sous_sequence,i,indicePattern);
 
 		}
+
+		/* On decale de shift nucle */
 		i = i + shift;
 		j = j + 1;
 		index++;
@@ -481,19 +523,22 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 
 void FreqKmer::fillFreq()
 {
+	/* init les cases à 0 */
 	initFreq();
 
-	/* Pour chaque fichier fasta */
+	/* Pour chaque kmer */
 	for(int k=0;k<nPattern;k++)
 	{
+		/* numéro de ligne */
 		index=0;
 
+		/* Pour chaque fichier fasta */
 		for(int i=0;i<nbFichierFasta;i++)
 		{
 			/* Pour chaque Data du fichier */
 			for(int j=0;j<data[i]->getNtaxa();j++)
 			{
-
+				/*count(int *seq,int tailleDeLaSequence,int indiceKmer) */
 				count(data[i]->getDataObject()[j],data[i]->getLengthSeq(j),k);
 			}
 		}
@@ -535,14 +580,22 @@ void FreqKmer::imprimeCSV(string ouput)
 	myfile.close();
 }
 
-int FreqKmer::getNbLineWindow(int i,int j,int l)
+/**
+ * Permet d'avoir le nombre de ligne (decalage)
+ * pour une sous sequence selon une taille de fenetre
+ * @param	i	indice du debut (varie de 0 à taille de la sequence  -1 )
+ * @param	j 	indice de fin
+ * @param	l	taille de la fenetre
+ * @return	le nombre de ligne.
+ */
+int FreqKmer::obtainNbLineWindow(int i,int j,int l,int pas)
 {
 	int res = 0;
 
 	do
 	{
 		res += 1;
-		i += shift;
+		i += pas;
 
 	} while (i<=(j-l+1));
 
@@ -550,7 +603,14 @@ int FreqKmer::getNbLineWindow(int i,int j,int l)
 	return res;
 }
 
-int FreqKmer::getNbLineData(int i)
+/**
+ * Permet d'avoir le nombre de ligne
+ * pour la donnée Data à l'indice i
+ * (soit un ensemble de sequence)
+ * @param i	indice du data à considérer
+ * @return le nombre de ligne pour data[i]
+ */
+int FreqKmer::obtainNbLineData(int i)
 {
 	if(i==0)
 	{
@@ -562,7 +622,14 @@ int FreqKmer::getNbLineData(int i)
 	}
 }
 
-int FreqKmer::getStartLineData(int i)
+/**
+ * Permet d'avoir le nombre de ligne
+ * pour la donnée Data à l'indice i
+ * (soit un ensemble de sequence)
+ * @param i	indice du data à considérer
+ * @return le nombre de ligne pour data[i]
+ */
+int FreqKmer::obtainStartLineData(int i)
 {
 	if(i==0)
 	{
@@ -574,12 +641,12 @@ int FreqKmer::getStartLineData(int i)
 	}
 }
 
-int FreqKmer::getEndLineData(int i)
+int FreqKmer::obtainEndLineData(int i)
 {
 	return indexLineData[i];
 }
 
-int FreqKmer::getStartLineDataSeq(int i,int j)
+int FreqKmer::obtainStartLineDataSeq(int i,int j)
 {
 	if(j==0)
 	{
@@ -599,12 +666,12 @@ int FreqKmer::getStartLineDataSeq(int i,int j)
 	return 0;
 }
 
-int FreqKmer::getEndLineDataSeq(int i,int j)
+int FreqKmer::obtainEndLineDataSeq(int i,int j)
 {
 	return indexLineDataSeq[i][j];
 }
 
-int FreqKmer::getNbLineDataSeq(int i,int j)
+int FreqKmer::obtainNbLineDataSeq(int i,int j)
 {
-	return getEndLineDataSeq(i,j)-getStartLineDataSeq(i,j)+1;
+	return obtainEndLineDataSeq(i,j)-obtainStartLineDataSeq(i,j)+1;
 }
