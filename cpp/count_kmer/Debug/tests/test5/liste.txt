@@ -1,0 +1,2 @@
+./tests/test5/file2.fasta
+./tests/test5/file.fasta

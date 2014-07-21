@@ -22,6 +22,171 @@ void printResult(bool res,int i)
 	}
 }
 
+void doTest9()
+{
+	cerr << "\n**test decalage 2**\n";
+
+	        FreqKmer *f = new FreqKmer(5,2);
+	        string filename = "tests/test5/liste.txt";
+	        f->initPatterns("tests/test5/pattern.txt");
+	        f->initFromList(filename);
+
+
+
+	        int ligne = 5;
+	        int col = 20;
+	        double ** freq = new double *[ligne];
+	        for(int i=0 ; i<ligne ; i++)
+	        {
+	                freq[i] = new double[col];
+	                for(int j=0 ; j<col ; j++)
+	                {
+	                        freq[i][j]=0.0;
+	                }
+	        }
+
+	        freq[0][0] = 1 ;
+	        freq[0][3] = 1 ;
+	        freq[0][5] = 1 ;
+	        freq[0][16] = 2 ;
+	        freq[0][17] = 2 ;
+	        freq[0][19] = 1 ;
+	        freq[1][3] = 1 ;
+	        freq[1][6] = 1 ;
+	        freq[1][12] = 1 ;
+	        freq[1][16] = 2 ;
+	        freq[1][17] = 1 ;
+	        freq[1][18] = 1 ;
+	        freq[1][19] = 1 ;
+	        freq[2][3] = 1 ;
+	        freq[2][12] = 1 ;
+	        freq[2][13] = 1 ;
+	        freq[2][16] = 2 ;
+	        freq[2][17] = 1 ;
+	        freq[2][19] = 2 ;
+	        freq[3][1] = 1 ;
+	        freq[3][6] = 1 ;
+	        freq[3][12] = 1 ;
+	        freq[3][16] = 1 ;
+	        freq[3][17] = 2 ;
+	        freq[3][18] = 1 ;
+	        freq[3][19] = 1 ;
+	        freq[4][1] = 1 ;
+	        freq[4][7] = 1 ;
+	        freq[4][8] = 1 ;
+	        freq[4][16] = 2 ;
+	        freq[4][17] = 1 ;
+	        freq[4][18] = 1 ;
+	        freq[4][19] = 1 ;
+
+
+	        f->fillFreq();
+	        f->imprimeCSV("out.csv");
+
+	        if (f->getNLigne()!=5 || f->getNCol()!=20)
+	        {
+	        	cerr << "Test sur nLigne non ok\n";
+	        }
+	//      cout << "Fin fillFreq\n";
+	//      cout << "Debut Impression\n";
+	        bool res=true;
+	        for(int i=0;i<ligne;i++)
+	        {
+	                for(int j=0;j<col;j++)
+	                {
+	                        if(f->getFreq()[i][j]!=freq[i][j])
+	                        {
+	                                res=false;
+	                                break;
+	                        }
+	                }
+	        }
+	        printResult(res,9);
+	        delete f;
+}
+
+void doTest8()
+{
+        cerr << "\n**test decalage**\n";
+
+        FreqKmer *f = new FreqKmer(3,2);
+        string filename = "tests/test1/liste.txt";
+        f->initPatterns("tests/test1/pattern.txt");
+        f->initFromList(filename);
+
+
+
+        int ligne = 5;
+        int col = 20;
+        double ** freq = new double *[ligne];
+        for(int i=0 ; i<ligne ; i++)
+        {
+                freq[i] = new double[col];
+                for(int j=0 ; j<col ; j++)
+                {
+                        freq[i][j]=0;
+                }
+        }
+
+        freq[0][0] = 1;
+
+		freq[1][3] = 1;
+
+		freq[2][3] = 1;
+
+		freq[3][12] = 1;
+
+		freq[4][1] = 1;
+
+
+        freq[0][16] = 2;
+        freq[0][17] = 1;
+
+        freq[1][16] = 1;
+        freq[1][17] = 1;
+        freq[1][19] = 1;
+
+        freq[2][16] = 1;
+        freq[2][19] = 2;
+
+        freq[3][16] = 1;
+        freq[3][17] = 1;
+        freq[3][19] = 1;
+
+        freq[4][16] = 1;
+        freq[4][17] = 1;
+        freq[4][18] = 1;
+
+
+        f->fillFreq();
+
+        if (f->getNLigne()!=5 || f->getNCol()!=20)
+        {
+        	cerr << "Test sur nLigne non ok\n";
+        }
+//      cout << "Fin fillFreq\n";
+//      cout << "Debut Impression\n";
+        bool res=true;
+        for(int i=0;i<ligne;i++)
+        {
+                for(int j=0;j<col;j++)
+                {
+//                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
+                        if(f->getFreq()[i][j]!=freq[i][j])
+                        {
+                                res=false;
+
+                        }
+                        if(!res)
+                        	break;
+                }
+                if(!res)
+					break;
+        }
+        printResult(res,8);
+        delete f;
+}
+
 void doTest7()
 {
 	cerr << "\n**Test de la map deux**\n";
@@ -228,7 +393,9 @@ void doTest2()
         freq[6][6] = 1;
         freq[6][1] = 1;
 
+
         g->fillFreq();
+
 //      cout << "Fin fillFreq\n";
 //      cout << "Debut Impression\n";
         bool res=true;
@@ -297,6 +464,12 @@ void callTest(int i)
                 		break;
                 case 7:
                 		doTest7();
+                		break;
+				case 8:
+                		doTest8();
+                		break;
+				case 9:
+                		doTest9();
                 		break;
                 default:
                         break;

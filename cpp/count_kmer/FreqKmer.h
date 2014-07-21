@@ -26,10 +26,13 @@ private:
 	 * on retire les colonnes de 15+1 à 19.
 	 */
 	int* kmerSpace;
+	int *tabPremier;
+	int *tabDernier;
 
-	int nLigne, nCol, nPattern, tailleFenetre, nData, nbFichierFasta,premier,dernier,index;
+	int nLigne, nCol, nPattern, tailleFenetre, nData, nbFichierFasta,index,shift;
 
 public:
+	FreqKmer(int tailleF, int shift);
 	FreqKmer(int tailleF);
 	FreqKmer();
 	virtual ~FreqKmer();
@@ -62,6 +65,14 @@ public:
 	int 	getStartLineDataSeq(int i,int j);
 	int 	getEndLineDataSeq(int i,int j);
 	int 	getNbLineDataSeq(int i,int j);
+
+	void	decrementPremier(int ligne);
+	void 	incrementDernier(int ligne);
+	void 	initPremier();
+	void 	initDernier();
+	int 	getNbLineWindow(int i,int j,int l);
+	void 	setPremier(int *seq,int pattern_taille,int indicePattern,int kmer_taille,int decalage,int i);
+	void 	setDernier(int *seq,int alpha,int beta,int kmer_taille,int indicePattern,int i,int pattern_taille,int seq_taille,int d);
 };
 
 #endif /* FREQKMER_H_ */
