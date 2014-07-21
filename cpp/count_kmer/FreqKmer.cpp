@@ -292,37 +292,7 @@ int FreqKmer::obtainColIndex(int indicePattern,int *seq,int pos)
 
 	return obtainStartColKmer(indicePattern)+patterns[indicePattern]->getKmer(seq,pos);
 }
-/**
- * Permet de copier une ligne
- * et mettant a jour les frequences
- * dans le cas d'une graine continue
- */
-void FreqKmer::copieLigneFreq(int src,int dest,int indicePattern)
-{
-	int decalage = 0;
 
-	for(int i=0 ; i < indicePattern ; i++)
-	{
-		decalage += patterns[i]->getAllCombi();
-	}
-
-//	cerr << "on va copier de " << decalage << " a " << patterns[indicePattern]->getAllCombi()+decalage-1 << "\n";
-	for(int i=decalage; i<patterns[indicePattern]->getAllCombi()+decalage ; i++)
-	{
-		freq[dest][i]=freq[src][i];
-	}
-
-	decrementPremier(dest);
-}
-
-void FreqKmer::decrementPremier(int ligne)
-{
-	for(int i=0;i<shift;i++)
-	{
-
-		freq[ligne][tabPremier[i]] = freq[ligne][tabPremier[i]] - 1;
-	}
-}
 
 void FreqKmer::initFreq()
 {
@@ -354,108 +324,11 @@ void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePatter
 		/* indice du kmer à la position i */
 		col = obtainColIndex(indicePattern,seq,i);
 
-		/* si on traite les shift premiers kmer */
-		if(i-debut<shift)
-		{
-			/* alors on les mémorise (pour ensuite décrémenter, lors du prochain decalage */
-			tabPremier[i-debut] = col;
-		}
-		/* on recupere le dernier kmer, pour ensuite calculer les shift-1 derniers kmers restants */
-		if(i==fin)
-		{
-			tabDernier[0] = col;
-		}
-		/* dans tous les cas on augmente la frequence du kmer rencontré */
 		freq[index][col]+=1;
 	}
 }
 
-/**
- * Permet de passer de mettre a jour la
- * table des frequence en incrementer les
- * nouveaux derniers et en mettant à jour
- * les nouveaux premier
- * @param	seq	sequence où l'on compte
- * @param	i	endroit où on se trouve dans la seq
- * @param	seq_taille	taille de la sequence (ici la fenetre)
- * @param 	indicePattern indice du pattern courant
- */
-void FreqKmer::add_one(int *seq,int i,int seq_taille,int indicePattern)
-{
-	int pattern_taille = patterns[indicePattern]->getTaillePattern();
-	int alpha =  i + seq_taille - (pattern_taille + 1);
-	int beta = i + seq_taille - 1 ;
-	int kmer_taille = patterns[indicePattern]->getTailleKmer();
 
-	int decalage = 0;
-
-	for(int j=0 ; j < indicePattern ; j++)
-	{
-		decalage += patterns[j]->getAllCombi();
-	}
-
-	// printf("seq[%d] = %d\n",beta,seq[beta]);
-	// printf("dernier before = %d\n",dernier);
-	setDernier(seq,alpha,beta,kmer_taille,indicePattern,i,pattern_taille,seq_taille,decalage);
-
-	incrementDernier(index);
-
-
-	initPremier();
-	setPremier(seq,pattern_taille,indicePattern,kmer_taille,decalage,i);
-
-}
-
-void FreqKmer::incrementDernier(int ligne)
-{
-	for(int i=0;i<shift;i++)
-		freq[index][tabDernier[i]] = freq[index][tabDernier[i]] + 1;
-}
-
-void FreqKmer::setDernier(int *seq,int alpha,int beta,int kmer_taille,int indicePattern,int i,int pattern_taille,int seq_taille,int d)
-{
-
-//	if (patterns[indicePattern]->isContinue())
-//	{
-//		for(int j=0;j<shift;j++)
-//		{
-//			tabDernier[j] = (tabDernier[j]-d - (seq[alpha+j]*pow(4,kmer_taille-1)))*4 + seq[beta+j];
-//			tabDernier[j] += d;
-//		}
-//		//cerr << "dernier = " << dernier << "\n";
-//	}
-//	else
-	{
-		for(int j=0;j<shift;j++)
-			tabDernier[j] = obtainColIndex(indicePattern,seq,i+seq_taille-pattern_taille-j);
-	}
-//	for(int j=0;j< shift ;j++)
-//	{
-//		cerr << "tabDernier[" << j << "] = " << tabDernier[j] << "\n";
-//	}
-}
-
-void FreqKmer::setPremier(int *seq,int pattern_taille,int indicePattern,int kmer_taille,int decalage,int i)
-{
-	int k,l;
-	for(int j=0;j<shift;j++)
-	{
-		for (k = 0,l=0; k < pattern_taille; k++)
-		{
-			if(patterns[indicePattern]->extraire(k))
-			{
-				tabPremier[j] += seq[i+k+j] * pow(4,(kmer_taille-l-1));
-				l++;
-			}
-		}
-		tabPremier[j] += decalage;
-	}
-
-//	for(int j=0;j< shift ;j++)
-//		{
-//			cerr << "tabPremier[" << j << "] = " << tabPremier[j] << "\n";
-//		}
-}
 /**
  * Effectue le comptaga pour seq
  * @param 	seq: la sequence ou compter
@@ -475,8 +348,7 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 	 * des tableaux premier
 	 * et dernier
 	 */
-	initPremier();
-	initDernier();
+
 
 	if (tailleFenetre==-1 || tailleFenetre>seq_taille)
 	{
@@ -495,19 +367,8 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 	while(j < z)
 	{
 
-//		if (j>0)
-//		{
-//
-//			copieLigneFreq(index-1,index,indicePattern);
-//			add_one(seq,i,taille_sous_sequence,indicePattern);
-//
-//		}
-//		else
-		{
-			/* compteFenetre(seq,tailleFenetre,indiceDepart,indice pattern */
-			compteFenetre(seq,taille_sous_sequence,i,indicePattern);
-
-		}
+		/* compteFenetre(seq,tailleFenetre,indiceDepart,indice pattern */
+		compteFenetre(seq,taille_sous_sequence,i,indicePattern);
 
 		/* On decale de shift nucle */
 		i = i + shift;
@@ -546,17 +407,6 @@ void FreqKmer::fillFreq()
 	}
 }
 
-void FreqKmer::initPremier()
-{
-	for(int i=0;i<shift;i++)
-		tabPremier[i]=0;
-}
-
-void FreqKmer::initDernier()
-{
-	for(int i=0;i<shift;i++)
-		tabPremier[i]=0;
-}
 
 void FreqKmer::imprimeCSV(string ouput)
 {

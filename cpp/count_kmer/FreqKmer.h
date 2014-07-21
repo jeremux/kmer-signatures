@@ -33,15 +33,6 @@ private:
 	int nLigne, nCol, nPattern, tailleFenetre, nData, nbFichierFasta,index,shift;
 
 	/**
-	 * Permet de copier une ligne vers une autre
-	 * de la table freq
-	 * @param 	src: source de la copie
-	 * @param	dest: destination de la copi
-	 * @param 	p: indice du pattern
-	 */
-	void 	copieLigneFreq(int src, int dest,int p);
-
-	/**
 	 * Effectue le comptage dans une fenetre
 	 * @param	seq: la sequence où effectuer le comptage
 	 * @param	seq_taille: taille de la sous sequence (fenetre)
@@ -50,15 +41,6 @@ private:
 	 */
 	void 	compteFenetre(int *seq,int seq_taille,int pos,int indicePattern);
 
-	/**
-	 * Met à jour une ligne de la table freq
-	 * à partir d'une ligne compté pour la meme sequence
-	 * @param	seq: la sequence où effectuer le comptage
-	 * @param	i: position dans la sequence où l'on se trouve
-	 * @param	seq_taille: taille de la sous sequence
-	 * @param 	p: indice du pattern courant
-	 */
-	void 	add_one(int *seq,int i,int seq_taille,int p);
 
 	/**
 	 * Effectue le comptage de kmer
@@ -68,41 +50,6 @@ private:
 	 */
 	void	count(int *seq,int seq_taille,int indicePattern);
 
-	/**
-	 * Decrement tous les premiers à la ligne l
-	 * @param l: indice de la ligne où decrementer
-	 */
-	void	decrementPremier(int l);
-
-	/**
-	 * Increment tous les premiers à la ligne l
-	 * @param l: indice de la ligne où incrementer
-	 */
-	void 	incrementDernier(int ligne);
-
-	/**
-	 * Met chaque case du
-	 * tableau tabPremier à 0.
-	 */
-	void 	initPremier();
-
-	/**
-	 * Met chaque case du
-	 * tableau tabDermier à 0.
-	 */
-	void 	initDernier();
-
-	/**
-	 * Met à jour la table tabPremier
-	 * @param	seq				: sequence où on compte
-	 * @param	pattern_taille  : taille du pattern
-	 * @param	indicePattern   : indice du pattern courant
-	 * @param	kmer_taille     : taille du kmer
-	 * @param	decalage        : decalage (en nucleotide)
-	 * @param   i               : position où l'on se trouve dans la sequence seq.
-	 */
-	void 	setPremier(int *seq,int pattern_taille,int indicePattern,int kmer_taille,int decalage,int i);
-	void 	setDernier(int *seq,int alpha,int beta,int kmer_taille,int indicePattern,int i,int pattern_taille,int seq_taille,int d);
 
 public:
 
