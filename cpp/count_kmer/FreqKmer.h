@@ -39,7 +39,7 @@ private:
 	 * @param	pos: là où commencer le comptage
 	 * @param 	indicePattern: indice du pattern courant
 	 */
-	void 	compteFenetre(int *seq,int seq_taille,int pos,int indicePattern);
+	void 	compteFenetre(int *seq,int seq_taille,int pos,int indicePattern,int *courant);
 
 
 	/**
@@ -50,6 +50,9 @@ private:
 	 */
 	void	count(int *seq,int seq_taille,int indicePattern);
 
+	void swapBuffAndCount(int *courant,int *precedent,int tailleF, int indicePattern,int *seq,int pos);
+	void swap(int *courant,int *precedent,int tailleBuf);
+	void printBuf(int *buf,int taille);
 
 public:
 

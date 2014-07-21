@@ -314,9 +314,10 @@ void FreqKmer::initFreq()
  * @param	debut: où commencer à compter
  * @param	indicePattern: indice du kmer courant
  */
-void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePattern)
+void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePattern,int *precedent)
 {
 	int col;
+	int cpt=0;
 	/* on s'arrête à la dernière fenetre possible */
 	int fin = debut+seq_taille-patterns[indicePattern]->getTaillePattern();
 	for(int i = debut; i <= fin ; i++)
@@ -325,9 +326,48 @@ void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePatter
 		col = obtainColIndex(indicePattern,seq,i);
 
 		freq[index][col]+=1;
+		precedent[cpt]=col;
+//		cerr << "precedent[" << i << "] reçoit " << col <<"\n";
+		cpt++;
+	}
+
+
+}
+
+void FreqKmer::swapBuffAndCount(int *courant,int *precedent,int tailleF, int indicePattern,int *seq,int pos)
+{
+	for(int i=0;i<tailleF-shift;i++)
+	{
+		courant[i]=precedent[i+shift];
+		cerr << "courant[" << i << "] reçoit " << precedent[i+shift] <<"\n";
+	}
+	for(int i=tailleF-shift;i<tailleF;i++)
+	{
+		courant[i] = obtainColIndex(indicePattern,seq,pos+i);
+		cerr << "courant[" << i << "] reçoit " << obtainColIndex(indicePattern,seq,pos+i)<<"\n";
 	}
 }
 
+void FreqKmer::swap(int *courant,int *precedent,int tailleBuf)
+{
+	int *tmp = new int[tailleBuf];
+	for(int i=0;i<tailleBuf;i++)
+	{
+		tmp[i]=precedent[i];
+		precedent[i]=courant[i];
+		courant[i]=tmp[i];
+	}
+	delete[] tmp;
+}
+
+void FreqKmer::printBuf(int *buf,int taille)
+{
+	cerr << "[";
+	for(int i=0;i<taille;i++)
+	{
+		cerr << buf[i] << "][";
+	}
+}
 
 /**
  * Effectue le comptaga pour seq
@@ -359,6 +399,10 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 		taille_sous_sequence = tailleFenetre;
 	}
 	
+	int tailleBuf = taille_sous_sequence-patterns[indicePattern]->getTaillePattern()+1;
+	int *precedent = new int[tailleBuf];
+	int *courant = new int[tailleBuf];
+
 	/* on recupère le nombre de ligne pour la sequence
 	 * afin d'iterer le bon nombre de fois
 	 */
@@ -368,7 +412,24 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 	{
 
 		/* compteFenetre(seq,tailleFenetre,indiceDepart,indice pattern */
-		compteFenetre(seq,taille_sous_sequence,i,indicePattern);
+//		if (j>0)
+//		{
+//
+//			swapBuffAndCount(courant,precedent,taille_sous_sequence,indicePattern,seq,i);
+//
+//			swap(courant,precedent,tailleBuf);
+//
+//			for(int k=0;k<tailleBuf;k++)
+//			{
+//				freq[index][courant[k]]+=1;
+//			}
+//		}
+//		else
+		{
+			compteFenetre(seq,taille_sous_sequence,i,indicePattern,precedent);
+		}
+
+
 
 		/* On decale de shift nucle */
 		i = i + shift;
@@ -440,17 +501,17 @@ void FreqKmer::imprimeCSV(string ouput)
  */
 int FreqKmer::obtainNbLineWindow(int i,int j,int l,int pas)
 {
-	int res = 0;
+//	int res = 0;
 
-	do
-	{
-		res += 1;
-		i += pas;
+//	do
+//	{
+//		res += 1;
+//		i += pas;
+//
+//	} while (i<=(j-l+1));
 
-	} while (i<=(j-l+1));
-
-
-	return res;
+//	return res;
+	return ((j-i+1-l)/pas)+1;
 }
 
 /**
