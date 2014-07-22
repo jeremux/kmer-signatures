@@ -336,20 +336,29 @@ void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePatter
 
 void FreqKmer::swapBuffAndCount(int *courant,int *precedent,int tailleF, int indicePattern,int *seq,int pos)
 {
-	for(int i=0;i<tailleF-shift;i++)
+	cerr << "=======DEBUT FEN===========\n";
+	for(int i=shift;i<tailleF-1;i++)
 	{
-		courant[i]=precedent[i+shift];
-		cerr << "courant[" << i << "] reçoit " << precedent[i+shift] <<"\n";
+		courant[i-shift]=precedent[i];
+		cerr << "courant[" << i-shift << "] reçoit " << "precedent["<< i << "]" <<"\n";
+		cerr << "courant[" << i-shift << "] = " << courant[i-shift] << "\n";
 	}
-	for(int i=tailleF-shift;i<tailleF;i++)
+	cerr << "*************\n";
+	for(int i=tailleF-1-shift;i<tailleF-1;i++)
 	{
-		courant[i] = obtainColIndex(indicePattern,seq,pos+i);
-		cerr << "courant[" << i << "] reçoit " << obtainColIndex(indicePattern,seq,pos+i)<<"\n";
+		courant[i] = obtainColIndex(indicePattern,seq,i+pos);
+		//		freq[index][courant[i-pos]]+=1;
+		cerr << "courant[" << i << "] reçoit " << obtainColIndex(indicePattern,seq,i+pos)<<"\n";
 	}
 }
 
 void FreqKmer::swap(int *courant,int *precedent,int tailleBuf)
 {
+	cerr << "\nAvant SWAP\n";
+	cerr << "COURANT = ";
+	printBuf(courant,tailleBuf);
+	cerr << "\nPRECEDENT = ";
+		printBuf(precedent,tailleBuf);
 	int *tmp = new int[tailleBuf];
 	for(int i=0;i<tailleBuf;i++)
 	{
@@ -357,6 +366,12 @@ void FreqKmer::swap(int *courant,int *precedent,int tailleBuf)
 		precedent[i]=courant[i];
 		courant[i]=tmp[i];
 	}
+	cerr << "\nApres SWAP\n";
+	cerr << "COURANT = ";
+		printBuf(courant,tailleBuf);
+		cerr << "\nPRECEDENT = ";
+			printBuf(precedent,tailleBuf);
+			cerr << "\n";
 	delete[] tmp;
 }
 
@@ -408,23 +423,27 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 	 */
 	z=obtainNbLineWindow(0,seq_taille-1,taille_sous_sequence,shift);
 
+	cerr << "taille buf = " << tailleBuf << "\n";
+
 	while(j < z)
 	{
 
 		/* compteFenetre(seq,tailleFenetre,indiceDepart,indice pattern */
-//		if (j>0)
-//		{
-//
-//			swapBuffAndCount(courant,precedent,taille_sous_sequence,indicePattern,seq,i);
-//
-//			swap(courant,precedent,tailleBuf);
-//
-//			for(int k=0;k<tailleBuf;k++)
-//			{
-//				freq[index][courant[k]]+=1;
-//			}
-//		}
-//		else
+		if (j>0)
+		{
+
+			swapBuffAndCount(courant,precedent,taille_sous_sequence,indicePattern,seq,i);
+
+			for(int k=0;k<tailleBuf;k++)
+			{
+				freq[index][courant[k]]+=1;
+			}
+
+			swap(courant,precedent,tailleBuf);
+
+
+		}
+		else
 		{
 			compteFenetre(seq,taille_sous_sequence,i,indicePattern,precedent);
 		}
