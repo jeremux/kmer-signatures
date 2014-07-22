@@ -326,7 +326,7 @@ void doTest8()
 					break;
         }
         printResult(res,8);
-        delete f;
+//        delete f;
 }
 
 void doTest7()
