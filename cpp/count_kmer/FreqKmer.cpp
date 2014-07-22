@@ -529,9 +529,6 @@ void FreqKmer::imprimeCSV(string ouput)
 				  cerr.flush();
 			 }
 
-	  cerr << "rcriture en tête imprimeCSV("<< ouput << ")\n ";
-						  cerr.flush();
-
 		  if(dataVerbose){
 						  cerr << "Debut FreqKmer::imprimeCSV("<< ouput << ")\n ";
 						  cerr.flush();
@@ -548,7 +545,7 @@ void FreqKmer::imprimeCSV(string ouput)
 				  				  cerr.flush();
 				  			 }
 
-		//  myfile.open(ouput.c_str());
+		  myfile.open(ouput.c_str());
 
 		if(dataVerbose){
 						  				  cerr << "Impression en tete\n ";
@@ -557,19 +554,19 @@ void FreqKmer::imprimeCSV(string ouput)
 	for(int j=0;j<nCol;j++)
 	{
 		myfile << j << ";";
-		cout << j << ";";
+//		cout << j << ";";
 	}
 	myfile << endl;
-	cout << endl;
+//	cout << endl;
 	for(int i=0;i<nLigne;i++)
 	{
 		for(int j=0;j<nCol;j++)
 		{
 			myfile << freq[i][j] << ";";
-			cout << freq[i][j] << ";";
+//			cout << freq[i][j] << ";";
 		}
 		myfile << endl;
-		cout << endl;
+//		cout << endl;
 	}
 	myfile.close();
 	if(dataVerbose){
