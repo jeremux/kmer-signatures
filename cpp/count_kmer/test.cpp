@@ -22,6 +22,63 @@ void printResult(bool res,int i)
 	}
 }
 
+void doTest10()
+{
+        cerr << "\n**test decalage bis**\n";
+
+        FreqKmer *f = new FreqKmer(3,2);
+        string filename = "tests/test1/liste2.txt";
+        f->initPatterns("tests/test1/pattern2.txt");
+        f->initDataFromListFastaPath(filename);
+
+
+
+        int ligne = 2;
+        int col = 16;
+        double ** freq = new double *[ligne];
+        for(int i=0 ; i<ligne ; i++)
+        {
+                freq[i] = new double[col];
+                for(int j=0 ; j<col ; j++)
+                {
+                        freq[i][j]=0;
+                }
+        }
+
+        freq[0][0] = 1;
+
+		freq[1][3] = 1;
+
+
+        f->fillFreq();
+
+        if (f->getNLigne()!=2 || f->getNCol()!=16)
+        {
+        	cerr << "Test sur nLigne non ok\n";
+        }
+//      cout << "Fin fillFreq\n";
+//      cout << "Debut Impression\n";
+        bool res=true;
+        for(int i=0;i<ligne;i++)
+        {
+                for(int j=0;j<col;j++)
+                {
+                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
+                        if(f->getFreq()[i][j]!=freq[i][j])
+                        {
+                                res=false;
+
+                        }
+                        if(!res)
+                        	break;
+                }
+                if(!res)
+					break;
+        }
+        printResult(res,10);
+        delete f;
+}
+
 void doTest9()
 {
 	cerr << "\n**test decalage 2**\n";
@@ -171,7 +228,7 @@ void doTest8()
         {
                 for(int j=0;j<col;j++)
                 {
-//                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
+                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
                         if(f->getFreq()[i][j]!=freq[i][j])
                         {
                                 res=false;
@@ -471,6 +528,9 @@ void callTest(int i)
 				case 9:
                 		doTest9();
                 		break;
+				case 10:
+						doTest10();
+						break;
                 default:
                         break;
         }

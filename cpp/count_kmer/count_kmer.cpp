@@ -198,17 +198,16 @@ int main(int argc, char **argv) {
 	}
 	if (opt.doTest)
 	{
-          //executeTests(NB_TEST);
-		FreqKmer *f = new FreqKmer(5,2);
-		string filename = "test.fasta";
-		f->initPatterns("pattern.txt");
-		f->initFromFasta(filename);
+      //  executeTests(NB_TEST);
+//		FreqKmer *f = new FreqKmer(5,2);
+//		string filename = "test.fasta";
+//		f->initPatterns("pattern.txt");
+//		f->initFromFasta(filename);
+//
+//		f->fillFreq();
+//		f->imprimeCSV("tata.csv");
+		doTest10();
 
-		f->fillFreq();
-		f->imprimeCSV("tata.csv");
-
-		cerr << "===============TEST 9===============\n";
-		doTest9();
 		exit(0);
 	}
 
