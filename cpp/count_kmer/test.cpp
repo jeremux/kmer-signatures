@@ -63,7 +63,7 @@ void doTest10()
         {
                 for(int j=0;j<col;j++)
                 {
-                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
+//                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
                         if(f->getFreq()[i][j]!=freq[i][j])
                         {
                                 res=false;
@@ -228,7 +228,7 @@ void doTest8()
         {
                 for(int j=0;j<col;j++)
                 {
-                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
+//                		cerr << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || fb[" << i << "][" << j << "] = " << freq[i][j]<< "\n";
                         if(f->getFreq()[i][j]!=freq[i][j])
                         {
                                 res=false;

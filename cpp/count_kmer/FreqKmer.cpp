@@ -338,19 +338,11 @@ void FreqKmer::swapBuffAndCount(int *courant,int *precedent,int tailleF, int ind
 {
 	for(int i=shift;i<tailleF;i++)
 	{
-
 		courant[i-shift]=precedent[i];
-		freq[index][courant[i-shift]]+=1;
-
 	}
 	for(int i=tailleF;i<tailleF+shift;i++)
 	{
 		courant[i-shift] = obtainColIndex(indicePattern,seq,pos+i-shift);
-		freq[index][courant[i-shift]]+=1;
-		if(index==1 && courant[i-shift]==5)
-		{
-			cerr << "On a fait le calcul à la pos: " << pos+i-shift << "\n";
-		}
 	}
 }
 
@@ -417,8 +409,6 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 	 */
 	z=obtainNbLineWindow(0,seq_taille-1,taille_sous_sequence,shift);
 
-	cerr << "nb ligne = " << z << "\n";
-
 	while(j < z)
 	{
 
@@ -427,9 +417,11 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 		{
 
 
-			cerr << "Je vais compter à partir de " << i << "\n";
 			swapBuffAndCount(courant,precedent,tailleBuf,indicePattern,seq,i);
-
+			for(int i=0;i<tailleBuf;i++)
+			{
+				freq[index][courant[i]]+=1;
+			}
 			swap(courant,precedent,tailleBuf);
 
 
@@ -444,9 +436,8 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 
 
 		/* On decale de shift nucle */
-		cerr << "i avant = " << i << "\n";
+
 		i = i + shift;
-		cerr << "i après = " << i << "\n";
 		j = j + 1;
 		index++;
 	}

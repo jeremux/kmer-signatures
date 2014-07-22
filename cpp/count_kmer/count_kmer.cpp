@@ -25,7 +25,7 @@
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 9
+#define NB_TEST 10
 
 typedef struct {
   string listFastaPath;
@@ -198,7 +198,7 @@ int main(int argc, char **argv) {
 	}
 	if (opt.doTest)
 	{
-      //  executeTests(NB_TEST);
+        executeTests(NB_TEST);
 //		FreqKmer *f = new FreqKmer(5,2);
 //		string filename = "test.fasta";
 //		f->initPatterns("pattern.txt");
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
 //
 //		f->fillFreq();
 //		f->imprimeCSV("tata.csv");
-		doTest10();
+//		doTest10();
 
 		exit(0);
 	}
