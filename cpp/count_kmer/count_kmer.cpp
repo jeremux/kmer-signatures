@@ -25,7 +25,7 @@
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 10
+#define NB_TEST 11
 
 typedef struct {
   string listFastaPath;
@@ -253,10 +253,14 @@ int main(int argc, char **argv) {
 	cerr << "Fin init patterns\n";
 
 	cerr << "Debut fill \n";
+	cerr << "Nombre de ligne = " << f->getNLigne() << "\n";
+	cerr << "Nombre de colonne = " << f->getNCol() << "\n";
+
 	f->fillFreq();
 	cerr << "Fin fill \n";
 	f->imprimeCSV(opt.output);
 
+	delete f;
 	return 0;
 }
 

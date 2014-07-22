@@ -6,6 +6,7 @@
  */
 #include "classPattern.h"
 #include "classData.h"
+#include "popphyl.h"
 
 #ifndef FREQKMER_H_
 #define FREQKMER_H_
@@ -27,8 +28,7 @@ private:
 	 * on retire les colonnes de 15+1 à 19.
 	 */
 	int *kmerSpace;	/* Map pour les kmers */
-	int *tabPremier;
-	int *tabDernier;
+
 
 	int nLigne, nCol, nPattern, tailleFenetre, nData, nbFichierFasta,index,shift;
 

@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 
+
 using namespace std;
 
 FreqKmer::FreqKmer() {
@@ -30,8 +31,6 @@ FreqKmer::FreqKmer() {
 	tailleFenetre=TAILLE_FENETRE;
 	index=0;
 	shift=1;
-	tabDernier=new int[shift];
-	tabPremier=new int[shift];
 }
 
 FreqKmer::FreqKmer(int tailleF, int s) {
@@ -47,8 +46,6 @@ FreqKmer::FreqKmer(int tailleF, int s) {
 	nbFichierFasta=0;
 	tailleFenetre=tailleF;
 	index=0;
-	tabDernier=new int[shift];
-	tabPremier=new int[shift];
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
 
@@ -67,8 +64,6 @@ FreqKmer::FreqKmer(int tailleF) {
 	tailleFenetre=tailleF;
 	index=0;
 	shift=1;
-	tabPremier=new int[shift];
-	tabDernier=new int[shift];
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
 
@@ -76,6 +71,10 @@ FreqKmer::FreqKmer(int tailleF) {
 
 FreqKmer::~FreqKmer() {
 
+	if(dataVerbose){
+				  cerr << "Debut FreqKmer::~FreqKmer()\n ";
+				  cerr.flush();
+			 }
 	for (int var = 0; var < nPattern ; var++)
 	{
 		delete patterns[var];
@@ -89,17 +88,30 @@ FreqKmer::~FreqKmer() {
 	delete[] data;
 	delete[] indexLineDataSeq;
 
+	if(dataVerbose){
+		  cerr << "Debut delete freq\n ";
+		  cerr.flush();
+	}
 	if (freq!=NULL)
 	{
+
 		for (int var=0; var < nLigne ; var++)
 		{
 			delete freq[var];
 		}
+
 		delete[] freq;
 	}
+	if(dataVerbose){
+			  cerr << "fin delete freq\n ";
+			  cerr.flush();
+		}
 	delete[] kmerSpace;
-	delete[] tabPremier;
-	delete[] tabDernier;
+
+	if(dataVerbose){
+					  cerr << "Debut FreqKmer::~FreqKmer()\n ";
+					  cerr.flush();
+				 }
 }
 
 void FreqKmer::initPatterns(string fichier)
@@ -296,6 +308,10 @@ int FreqKmer::obtainColIndex(int indicePattern,int *seq,int pos)
 
 void FreqKmer::initFreq()
 {
+	if(dataVerbose){
+			  cerr << "Debut FreqKmer::initFreq()\n ";
+			  cerr.flush();
+		 }
 	freq = new double *[nLigne];
 	for(int i=0 ; i<nLigne ; i++)
 	{
@@ -305,6 +321,10 @@ void FreqKmer::initFreq()
 			freq[i][j]=0.0;
 		}
 	}
+	if(dataVerbose){
+			  cerr << "Fin FreqKmer::fillFreq()\n ";
+			  cerr.flush();
+		 }
 }
 
 /***
@@ -324,7 +344,6 @@ void FreqKmer::compteFenetre(int *seq,int seq_taille,int debut ,int indicePatter
 	{
 		/* indice du kmer à la position i */
 		col = obtainColIndex(indicePattern,seq,i);
-
 		freq[index][col]+=1;
 		precedent[cpt]=col;
 //		cerr << "precedent[" << i << "] reçoit " << col <<"\n";
@@ -378,6 +397,11 @@ void FreqKmer::printBuf(int *buf,int taille)
  */
 void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 {
+	if(dataVerbose)
+	{
+			  cerr << "FreqKmer::count()\n ";
+			  cerr.flush();
+	 }
 	int i=0;
 	int j=0;
 
@@ -450,6 +474,11 @@ void FreqKmer::count(int *seq,int seq_taille,int indicePattern)
 
 void FreqKmer::fillFreq()
 {
+	 if(dataVerbose){
+		  cerr << "FreqKmer::fillFreq()\n ";
+		  cerr.flush();
+	 }
+
 	/* init les cases à 0 */
 	initFreq();
 
@@ -457,43 +486,96 @@ void FreqKmer::fillFreq()
 	for(int k=0;k<nPattern;k++)
 	{
 		/* numéro de ligne */
+		 if(dataVerbose){
+			  cerr << "--Traitement pattern "<< k+1 << "\n ";
+			  cerr.flush();
+		 }
 		index=0;
 
 		/* Pour chaque fichier fasta */
 		for(int i=0;i<nbFichierFasta;i++)
 		{
+			if(dataVerbose)
+			{
+			  cerr << "--------Traitement Data["<< i << "]\n ";
+			  cerr.flush();
+			}
 			/* Pour chaque Data du fichier */
 			for(int j=0;j<data[i]->getNtaxa();j++)
 			{
+				if(dataVerbose)
+				{
+				  cerr << "----------------Traitement Data["<< i << "]["<< j << "]\n ";
+				  cerr.flush();
+				}
 				/*count(int *seq,int tailleDeLaSequence,int indiceKmer) */
 				count(data[i]->getDataObject()[j],data[i]->getLengthSeq(j),k);
 			}
 		}
 
 	}
+
+	if(dataVerbose){
+			  cerr << "Fin FreqKmer::fillFreq()\n ";
+			  cerr.flush();
+		 }
 }
 
 
 void FreqKmer::imprimeCSV(string ouput)
 {
-	ofstream myfile;
-	myfile.open(ouput.c_str());
+	if(dataVerbose){
+				  cerr << "Debut FreqKmer::imprimeCSV("<< ouput << ")\n ";
+				  cerr.flush();
+			 }
 
+	  cerr << "rcriture en tête imprimeCSV("<< ouput << ")\n ";
+						  cerr.flush();
 
+		  if(dataVerbose){
+						  cerr << "Debut FreqKmer::imprimeCSV("<< ouput << ")\n ";
+						  cerr.flush();
+					 }
+
+		  if(dataVerbose){
+		  				  cerr << "Ouverture srteam\n ";
+		  				  cerr.flush();
+		  			 }
+		ofstream myfile ;
+
+		  if(dataVerbose){
+				  				  cerr << "Ouverture fichier\n ";
+				  				  cerr.flush();
+				  			 }
+
+		//  myfile.open(ouput.c_str());
+
+		if(dataVerbose){
+						  				  cerr << "Impression en tete\n ";
+						  				  cerr.flush();
+						  			 }
 	for(int j=0;j<nCol;j++)
 	{
 		myfile << j << ";";
+		cout << j << ";";
 	}
 	myfile << endl;
+	cout << endl;
 	for(int i=0;i<nLigne;i++)
 	{
 		for(int j=0;j<nCol;j++)
 		{
 			myfile << freq[i][j] << ";";
+			cout << freq[i][j] << ";";
 		}
 		myfile << endl;
+		cout << endl;
 	}
 	myfile.close();
+	if(dataVerbose){
+		  cerr << "Fin FreqKmer::imprimeCSV("<< ouput << ")\n ";
+		  cerr.flush();
+	 }
 }
 
 /**
