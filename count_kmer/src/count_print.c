@@ -44,8 +44,6 @@ void imprime_csv(const char *path,int nb_kmer,int *taille_kmer,int nombre_sous_s
 	  //	  imprime_kmer(out,taille_kmer[i]);
 	}
 		
-      fprintf(out, "\n");
-
       for(i=0;i<nombre_sous_sequence;i++)
 	{
 	  // printf("J'itère\n");

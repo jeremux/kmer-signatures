@@ -149,7 +149,7 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 	int ancien_char1='\0';
 	int ancien_char2='\0';
 	int x = -1;
-	int flag_tmp = 0;
+
 	FILE* fichier = NULL;
 	int max = 0;
 
@@ -216,7 +216,7 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 
 			if (flag_take_seq && c!=' ' && c!='\n' && c!='\t')
 			{
-				flag_tmp = 0;
+		
 				switch(c)
 				{
 
@@ -227,8 +227,8 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 						c = 'g';
 						break;
 					case 'w':
-						printf("rencontre\n");
-						flag_tmp = 1;
+						// printf("rencontre\n");
+		
 						c = 't';
 						break;
 					case 'k':
@@ -262,7 +262,7 @@ char **read_seq(const char *path,int *nb_sequences,char **les_sequences, char **
 				}
 				
 				les_sequences[i][x++]=c;
-				if (flag_tmp) printf("ajout de %c dans %d\n",c,i);
+				// if (flag_tmp) printf("ajout de %c dans %d\n",c,i);
 			}
 
 			ancien_char2 = ancien_char1;
