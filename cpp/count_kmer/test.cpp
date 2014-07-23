@@ -22,6 +22,58 @@ void printResult(bool res,int i)
 	}
 }
 
+void doTest12()
+{
+        cerr << "\n**test map get DataSeq from line**\n";
+
+    	FreqKmer *f = new FreqKmer(4);
+    	bool res = true;
+    	string filename = "tests/test4/liste.txt";
+    	f->initPatterns("tests/test4/pattern.txt");
+    	f->initDataFromListFastaPath(filename);
+
+        int idData0,idData1,idData2,idData3,idData4,idData5,idData6,
+        	idSeq0,idSeq1,idSeq2,idSeq3,idSeq4,idSeq5,idSeq6;
+
+        f->obtainDataSeqFromLine(0,idData0,idSeq0);
+                f->obtainDataSeqFromLine(3,idData1,idSeq1);
+                f->obtainDataSeqFromLine(5,idData2,idSeq2);
+                f->obtainDataSeqFromLine(6,idData3,idSeq3);
+                f->obtainDataSeqFromLine(8,idData4,idSeq4);
+                f->obtainDataSeqFromLine(11,idData5,idSeq5);
+                f->obtainDataSeqFromLine(14,idData6,idSeq6);
+
+
+
+
+
+
+
+
+
+        res = (idData0 == 0)
+		&& (idData1 == 0)
+		&& (idData2 == 1)
+		&& (idData3 == 1)
+		&& (idData4 == 1)
+		&& (idData5 == 1)
+		&& (idData6 == 1)
+		&& (idSeq0 == 0)
+		&& (idSeq1 == 1)
+		&& (idSeq2 == 0)
+		&& (idSeq3 == 0)
+		&& (idSeq4 == 1)
+		&& (idSeq5 == 2)
+		&& (idSeq6 == 2);
+
+        f->fillFreq();
+
+        printResult(res,12);
+
+
+        delete f;
+}
+
 void doTest11()
 {
         cerr << "\n**Données réelles validées par perl/C**\n";
@@ -514,7 +566,8 @@ void doTest3()
     	        	   {
     	        			   delete freq[i];
     	        	   }
-    	                delete[] freq;
+		delete[] freq;
+
         delete f;
 }
 
@@ -640,6 +693,9 @@ void callTest(int i)
 						break;
 				case 11:
 						doTest11();
+						break;
+				case 12:
+						doTest12();
 						break;
                 default:
                         break;

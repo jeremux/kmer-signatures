@@ -693,3 +693,25 @@ int FreqKmer::obtainNbLineDataSeq(int i,int j)
 {
 	return obtainEndLineDataSeq(i,j)-obtainStartLineDataSeq(i,j)+1;
 }
+
+void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
+{
+	bool res = false;
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		for(int j=0;j<data[i]->getNtaxa();j++)
+		{
+			if(line >= obtainStartLineDataSeq(i,j) && line <= obtainEndLineDataSeq(i,j))
+			{
+				idData = i;
+				idSeq = j;
+				res = true;
+			}
+			if (res)
+				break;
+		}
+		if(res)
+			break;
+	}
+}
+

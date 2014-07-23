@@ -25,7 +25,7 @@ private:
 	double **freq; /* tableau des frequences de taille nLine*nCol */
 	Pattern **patterns; /* tableau de pointeur de pattern définissant les kmers */
 	Data **data; /* Tableau de pointeur sur les jeux de données contenant les séquences à analyser */
-	int *indexLineData; /* indication sur la ligne de fin dans table freq pour une data donnée */
+	int *indexLineData; /* indication sur la ligne de fin dans table freq pour une Data donnée */
 	int **indexLineDataSeq; /* indication sur la ligne de fin dans table freq pour une sequence d'une data donnée */
 	int *kmerSpace;	/* Map pour les kmers avec une taille nPattern, permet de se deplacer horizontalement */
 
@@ -295,6 +295,8 @@ public:
 	 * une taille de fenetre l et un decalage de z
 	 */
 	int 		obtainNbLineWindow(int i,int j,int l, int z);
+
+	void		obtainDataSeqFromLine(int line,int &idData,int &idSeq);
 
 };
 
