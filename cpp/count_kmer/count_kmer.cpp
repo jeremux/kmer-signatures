@@ -253,7 +253,7 @@ int main(int argc, char **argv) {
 	cerr << "Fin init patterns\n";
 
 	cerr << "Debut fill \n";
-	cerr << "Nombre de ligne = " << f->getNLigne() << "\n";
+	cerr << "Nombre de ligne = " << f->getNLine() << "\n";
 	cerr << "Nombre de colonne = " << f->getNCol() << "\n";
 
 	f->fillFreq();

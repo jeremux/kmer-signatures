@@ -67,7 +67,7 @@ void doTest11()
 
 
         f->fillFreq();
-        if (f->getNLigne()!=1 || f->getNCol()!=1024)
+        if (f->getNLine()!=1 || f->getNCol()!=1024)
         {
         	cerr << "Test sur nLigne non ok\n";
         }
@@ -131,7 +131,7 @@ void doTest10()
 
         f->fillFreq();
 
-        if (f->getNLigne()!=2 || f->getNCol()!=16)
+        if (f->getNLine()!=2 || f->getNCol()!=16)
         {
         	cerr << "Test sur nLigne non ok\n";
         }
@@ -225,7 +225,7 @@ void doTest9()
 
 	        f->fillFreq();
 
-	        if (f->getNLigne()!=5 || f->getNCol()!=20)
+	        if (f->getNLine()!=5 || f->getNCol()!=20)
 	        {
 	        	cerr << "Test sur nLigne non ok\n";
 	        }
@@ -302,7 +302,7 @@ void doTest8()
 
         f->fillFreq();
 
-        if (f->getNLigne()!=5 || f->getNCol()!=20)
+        if (f->getNLine()!=5 || f->getNCol()!=20)
         {
         	cerr << "Test sur nLigne non ok\n";
         }
@@ -571,7 +571,7 @@ void doTest1()
 
         f->initPatterns("tests/test3/3patterns.txt");
         f->initFromFasta(filename);
-        if(f->getNCol()!=84 || f->getNLigne()!=107)
+        if(f->getNCol()!=84 || f->getNLine()!=107)
         {
                 cerr << "Test1 fail...\n";
         }

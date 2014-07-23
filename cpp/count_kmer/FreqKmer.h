@@ -15,60 +15,61 @@ class FreqKmer {
 
 private:
 
-	double **freq; /* tableau des frequences */
-	Pattern **patterns; /* les patterns */
-	Data **data; /* les sequences */
-	int *indexLineData; /* Map pour les Data */
-	int **indexLineDataSeq; /* Map pour les seq de Data */
 
-	/**
-	 * Pour les kmers ## et # le tableau kmerSpace sera
-	 * kmerSpace[0]=15; kmerSpace[1]=15+4=19
-	 * utile pour enlever un kmer si on enleve le #:
-	 * on retire les colonnes de 15+1 à 19.
-	 */
-	int *kmerSpace;	/* Map pour les kmers */
+	double **freq; /* tableau des frequences de taille nLine*nCol */
+	Pattern **patterns; /* tableau de pointeur de pattern définissant les kmers */
+	Data **data; /* Tableau de pointeur sur les jeux de données contenant les séquences à analyser */
+	int *indexLineData; /* indication sur la ligne de fin dans table freq pour une data donnée */
+	int **indexLineDataSeq; /* indication sur la ligne de fin dans table freq pour une sequence d'une data donnée */
+	int *kmerSpace;	/* Map pour les kmers avec une taille nPattern, permet de se deplacer horizontalement */
 
 
-	int nLigne, nCol, nPattern, tailleFenetre, nData, nbFichierFasta,index,shift;
+	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
+	nCol, /* Nombre de colonne définit par les patterns: nombre de kmer possible */
+	nPattern, /* Nombre de pattern définissant les kmers */
+	winSize, /* Taille de fenetre dans laquelle il faut effectuer le comptage de kmer */
+	nSeq, /* Nombre total de sequence à traiter */
+	nbFichierFasta, /* Nombre de fichier fasta entrée */
+	index, /* marqueur de ligne lors du comptage */
+	shift; /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
 
 	/**
 	 * Effectue le comptage dans une fenetre
 	 * @param	seq: la sequence où effectuer le comptage
-	 * @param	seq_taille: taille de la sous sequence (fenetre)
+	 * @param	win_length: taille de la sous sequence (fenetre)
 	 * @param	pos: là où commencer le comptage
-	 * @param 	indicePattern: indice du pattern courant
+	 * @param 	indexPattern: indice du pattern courant
 	 */
-	void 	compteFenetre(int *seq,int seq_taille,int pos,int indicePattern,int *courant);
+	void 	winCount(int *seq,int win_length,int pos,int indexPattern,int *current);
 
 
 	/**
 	 * Effectue le comptage de kmer
 	 * @param	seq: la sequence où effectuer le comptage
-	 * @param	seq_taille: taille de la sous sequence
-	 * @param 	indicePattern: indice du pattern courant
+	 * @param	seq_length: taille de la sous sequence
+	 * @param 	indexPattern: indice du pattern courant
 	 */
-	void	count(int *seq,int seq_taille,int indicePattern);
+	void	count(int *seq,int seq_length,int indexPattern);
 
-	void swapBuffAndCount(int *courant,int *precedent,int tailleF, int indicePattern,int *seq,int pos);
-	void swap(int *courant,int *precedent,int tailleBuf);
-	void printBuf(int *buf,int taille);
+	void swapBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos);
+	void swap(int *current,int *previous,int buf_size);
+	void printBuf(int *buf,int buf_size);
 
 public:
 
 	/**********************************************************************************/
 	/**
 	 * Contruit l'object FreqKmer
-	 * @param	tailleF: taille de la fenetre
+	 * @param	win_size: taille de la fenetre
 	 * @param	shift: taille du decalage en nucletoide
 	 */
-	FreqKmer(int tailleF, int shift);
+	FreqKmer(int win_size, int shift);
 
 	/**
 	 * Contruit l'object FreqKmer
-	 * @param	tailleF: taille de la fenetre
+	 * @param	win_size: taille de la fenetre
 	 */
-	FreqKmer(int tailleF);
+	FreqKmer(int win_size);
 
 	FreqKmer();
 	virtual ~FreqKmer();
@@ -120,9 +121,9 @@ public:
 	int 		getNPattern(){return nPattern;}
 	int 		getNbFichierFasta(){return nbFichierFasta;}
 	int 		getNCol(){return nCol;}
-	int 		getNLigne(){return nLigne;}
-	int 		getTailleFenetre(){return tailleFenetre;}
-	int 		getNData(){return nData;}
+	int 		getNLine(){return nLine;}
+	int 		getWinSize(){return winSize;}
+	int 		getNSeq(){return nSeq;}
 	Data** 		getData(){return data;}
 
 
@@ -148,7 +149,7 @@ public:
 	 * @return l'indice de fin de colonne
 	 * du kmer i
 	 */
-	int			obtainColIndex(int indicePattern,int *seq,int pos);
+	int			obtainColIndex(int indexPattern,int *seq,int pos);
 
 	/*******************************DEPLACEMENT VERTICAL*****************************************/
 	/******** Pour un Data ********/
