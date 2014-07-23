@@ -162,7 +162,7 @@ void doTest10()
 	   }
         delete freq;
 
-        //delete f;
+        delete f;
 }
 
 void doTest9()
