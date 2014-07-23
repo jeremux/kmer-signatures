@@ -65,7 +65,6 @@ void doTest11()
 				freq[0][j]=val[j];
 		}
 
-
         f->fillFreq();
         if (f->getNLine()!=1 || f->getNCol()!=1024)
         {
@@ -96,9 +95,9 @@ void doTest11()
 	   {
 			   delete freq[i];
 	   }
-        delete freq;
+        delete[] freq;
 
-    //    delete f;
+        delete f;
 }
 
 void doTest10()
@@ -160,7 +159,7 @@ void doTest10()
 	   {
 			   delete freq[i];
 	   }
-        delete freq;
+        delete[] freq;
 
         delete f;
 }
@@ -169,10 +168,10 @@ void doTest9()
 {
 	cerr << "\n**test decalage 2**\n";
 
-	        FreqKmer *f = new FreqKmer(5,2);
+	        FreqKmer *o = new FreqKmer(5,2);
 	        string filename = "tests/test5/liste.txt";
-	        f->initPatterns("tests/test5/pattern.txt");
-	        f->initDataFromListFastaPath(filename);
+	        o->initPatterns("tests/test5/pattern.txt");
+	        o->initDataFromListFastaPath(filename);
 
 
 
@@ -223,9 +222,9 @@ void doTest9()
 	        freq[4][19] = 1 ;
 
 
-	        f->fillFreq();
+	        o->fillFreq();
 
-	        if (f->getNLine()!=5 || f->getNCol()!=20)
+	        if (o->getNLine()!=5 || o->getNCol()!=20)
 	        {
 	        	cerr << "Test sur nLigne non ok\n";
 	        }
@@ -236,7 +235,7 @@ void doTest9()
 	        {
 	                for(int j=0;j<col;j++)
 	                {
-	                        if(f->getFreq()[i][j]!=freq[i][j])
+	                        if(o->getFreq()[i][j]!=freq[i][j])
 	                        {
 	                                res=false;
 	                                break;
@@ -244,7 +243,13 @@ void doTest9()
 	                }
 	        }
 	        printResult(res,9);
-	        delete f;
+
+	        for(int i=0 ; i<ligne ; i++)
+	        	   {
+	        			   delete freq[i];
+	        	   }
+	                delete[] freq;
+	        delete o;
 }
 
 void doTest8()
@@ -326,7 +331,13 @@ void doTest8()
 					break;
         }
         printResult(res,8);
-//        delete f;
+
+        for(int i=0 ; i<ligne ; i++)
+    	        	   {
+    	        			   delete freq[i];
+    	        	   }
+    	                delete[] freq;
+        delete f;
 }
 
 void doTest7()
@@ -498,6 +509,12 @@ void doTest3()
         {
                 cerr << "Test3 fail...\n";
         }
+
+        for(int i=0 ; i<ligne ; i++)
+    	        	   {
+    	        			   delete freq[i];
+    	        	   }
+    	                delete[] freq;
         delete f;
 }
 
@@ -560,6 +577,11 @@ void doTest2()
         {
                 cerr << "Test2 fail...\n";
         }
+        for(int i=0 ; i<ligne ; i++)
+	   {
+			   delete freq[i];
+	   }
+		delete[] freq;
         delete g;
 }
 
@@ -579,7 +601,7 @@ void doTest1()
         {
                 cerr << "Test1 OK !\n";
         }
-
+        f->initFreq();
         delete f;
 }
 

@@ -199,18 +199,12 @@ int main(int argc, char **argv) {
 	if (opt.doTest)
 	{
         executeTests(NB_TEST);
-//		FreqKmer *f = new FreqKmer(5,2);
-//		string filename = "test.fasta";
-//		f->initPatterns("pattern.txt");
-//		f->initFromFasta(filename);
-//
-//		f->fillFreq();
-//		f->imprimeCSV("tata.csv");
-//		doTest10();
+
 
 		exit(0);
 	}
-
+	else
+	{
 	if (opt.listFastaPath=="null" && opt.fastaPath=="null")
 	{
           cerr << "Need a fasta file (-f file.fasta) or a list of fasta path (-F listFasta_file) \n";
@@ -261,6 +255,7 @@ int main(int argc, char **argv) {
 	f->imprimeCSV(opt.output);
 
 	delete f;
+	}
 	return 0;
 }
 

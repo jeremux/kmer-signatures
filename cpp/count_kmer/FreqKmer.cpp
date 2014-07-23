@@ -87,6 +87,7 @@ FreqKmer::~FreqKmer() {
 	}
 	delete[] data;
 	delete[] indexLineDataSeq;
+	delete[] indexLineData;
 
 	if(dataVerbose){
 		cerr << "Debut delete freq\n ";
@@ -500,6 +501,7 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern)
 		j = j + 1;
 		index++;
 	}
+
 }
 
 
@@ -511,7 +513,7 @@ void FreqKmer::fillFreq()
 	}
 
 	/* init les cases à 0 */
-	initFreq();
+	this->initFreq();
 
 	/* Pour chaque kmer */
 	for(int k=0;k<nPattern;k++)
