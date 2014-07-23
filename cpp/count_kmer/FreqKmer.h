@@ -298,6 +298,8 @@ public:
 
 	void		obtainDataSeqFromLine(int line,int &idData,int &idSeq);
 
+	void 		obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idWin);
+
 };
 
 #endif /* FREQKMER_H_ */

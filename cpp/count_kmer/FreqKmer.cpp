@@ -715,3 +715,25 @@ void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
 	}
 }
 
+void FreqKmer::obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idWin)
+{
+	bool res = false;
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		for(int j=0;j<data[i]->getNtaxa();j++)
+		{
+			if(line >= obtainStartLineDataSeq(i,j) && line <= obtainEndLineDataSeq(i,j))
+			{
+				idData = i;
+				idSeq = j;
+				idWin = line-obtainStartLineDataSeq(i,j)+1;
+				res = true;
+			}
+			if (res)
+				break;
+		}
+		if(res)
+			break;
+	}
+}
+
