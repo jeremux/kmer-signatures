@@ -26,7 +26,7 @@ FreqKmer::FreqKmer() {
 	nSeq=0;
 	nLine=0;
 	nPattern=0;
-	nbFichierFasta=0;
+	nbFastaFile=0;
 	/* Taille par défaut */
 	winSize=WINDOW_SIZE;
 	index=0;
@@ -43,7 +43,7 @@ FreqKmer::FreqKmer(int win_size, int s) {
 	nSeq=0;
 	nLine=0;
 	nPattern=0;
-	nbFichierFasta=0;
+	nbFastaFile=0;
 	winSize=win_size;
 	index=0;
 	indexLineDataSeq=NULL;
@@ -60,7 +60,7 @@ FreqKmer::FreqKmer(int win_size) {
 	nSeq=0;
 	nLine=0;
 	nPattern=0;
-	nbFichierFasta=0;
+	nbFastaFile=0;
 	winSize=win_size;
 	index=0;
 	shift=1;
@@ -80,7 +80,7 @@ FreqKmer::~FreqKmer() {
 		delete patterns[var];
 	}
 	delete[] patterns;
-	for (int var=0; var < nbFichierFasta ; var++)
+	for (int var=0; var < nbFastaFile ; var++)
 	{
 		delete data[var];
 		delete indexLineDataSeq[var];
@@ -187,54 +187,73 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 	getline(file,ligne);
 	int nbFichier = 0;
 	int tailleLigne = ligne.length();
+	/* On lit la liste */
 	while (file)
 	{
+		/* Si ce n'est pas une ligne blanche, vide */
 		if(tailleLigne!=0)
 		{
 			nbFichier++;
 		}
+		/* on lit la ligne suivante */
 		getline(file,ligne);
 	}
 
-	nbFichierFasta=nbFichier;
+	/* on a notre nombre de fichier, calculé précédemment */
+	nbFastaFile=nbFichier;
+
+	/* On peut alors initialiser la premiere dimension de Data et indexLineData */
 	data=new Data*[nbFichier];
 	indexLineData = new int[nbFichier];
+
+	/* seconde lecture on va initialiser les donnes */
 	ifstream file2(fichier.c_str());
 	getline(file2,ligne);
+
 	/* J'init à partir de chaque ligne du fichier */
-	indexLineDataSeq = new int*[nbFichierFasta];
+	indexLineDataSeq = new int*[nbFastaFile];
 	while (file2)
 	{
 		if(tailleLigne!=0)
 		{
+			/* Yes: je sauvegarde les accessions pour plus tard, ça pourrait être utile */
+			/* au premier tour cpt=0, ensuite 1...*/
 			data[cpt] = new Data(Yes);
 			//			cerr << "lecture de " << ligne << "\n";
+			/* J'initilise ma donnée */
 			data[cpt]->initFrom(ligne,Fasta);
-			/* Ajouter des attributs ??*/
+
 			indexLineDataSeq[cpt] = new int[data[cpt]->getNtaxa()];
+
+			/* On incrémente le nombre de sequence total pour le comptage */
 			nSeq += data[cpt]->getNtaxa();
+
+			/* traitement pour determiner le nombre de ligne nLine de la table freq */
 			if (winSize>0)
 			{
+				/* Pour chaque sequence du fichier fasta courant */
 				for (int var = 0; var < data[cpt]->getNtaxa(); var++)
 				{
-
+					/* Je recupere sa taille */
 					tailleSeq = data[cpt]->getPrimarySequence(var).length();
 
-					/* Fenetre plus grande que la sequence */
+					/* Si la fenetre est plus grande que la sequence, alors on a un seul comptage à faire */
 					if (tailleSeq<winSize)
 					{
 						nLine += 1;
 					}
 					else
 					{
-						//nLine += tailleSeq-winSize+1;
 						nLine += obtainNbLineWindow(0,tailleSeq-1,winSize,shift);
 					}
 
-					//					cerr << "indexLineDataSeq[cpt][var] <-- " << nLine << "\n";
+					/* Je peux à cette étape savoir l'indice de fin de ligne pour
+					 * la var-ème sequence du cpt-ème jeu de données
+					 */
 					indexLineDataSeq[cpt][var]=nLine-1;
 				}
 			}
+			/* Si winSize <= 0 alors la taille de la fenetre est celle de la sequence */
 			else
 			{
 				nLine +=  data[cpt]->getNtaxa();
@@ -254,7 +273,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 
 void FreqKmer::initFromFasta(string fichier)
 {
-	nbFichierFasta=1;
+	nbFastaFile=1;
 	data=new Data*[1];
 	indexLineData = new int[1];
 	int cpt2=-1;
@@ -298,9 +317,6 @@ void FreqKmer::initFromFasta(string fichier)
 
 int FreqKmer::obtainColIndex(int indexPattern,int *seq,int pos)
 {
-	//	int tmp = patterns[indexPattern]->getKmer(seq,pos);
-	//	int s=obtainStartColKmer(indexPattern);
-	//	return s+tmp;
 
 	return obtainStartColKmer(indexPattern)+patterns[indexPattern]->getKmer(seq,pos);
 }
@@ -337,30 +353,45 @@ void FreqKmer::initFreq()
 void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *previous)
 {
 	int col;
-	int cpt=0;
 	/* on s'arrête à la dernière fenetre possible */
-	int fin = pos+win_length-patterns[indexPattern]->getTaillePattern();
+	int fin = pos+win_length-patterns[indexPattern]->getSizePattern();
+
 	for(int i = pos; i <= fin ; i++)
 	{
 		/* indice du kmer à la position i */
 		col = obtainColIndex(indexPattern,seq,i);
 		freq[index][col]+=1;
-		previous[cpt]=col;
-		//		cerr << "previous[" << i << "] reçoit " << col <<"\n";
-		cpt++;
+		/* Je sauvegarde le premier comptage dans un buffer */
+		/* Au premier tour i-pos=0, ensuite 1... */
+		previous[i-pos]=col;
+
 	}
 
 
 }
 
-void FreqKmer::swapBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos)
+void FreqKmer::copyBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos)
 {
+	/* On commence au décalage et on s'arrête à la fin
+	 * du buffer previous
+	 */
 	for(int i=shift;i<buf_size;i++)
 	{
+		/* Au depart i-shift = 0, ensuite 1...*/
 		current[i-shift]=previous[i];
 	}
+	/* On reprend là où
+	 * on s'est arrêté dans la boucle précédente
+	 * c'est à dire i=buf_size, et on rempli les
+	 * shift case restante.
+	 */
 	for(int i=buf_size;i<buf_size+shift;i++)
 	{
+		/* on demande l'indice de la colonne pour la position pos+i-shift
+		 * pos: là ou on se trouve dans la sequence
+		 * +i-shift le (i-shift)-ème kmer après pos
+		 */
+		/* au dernier appel: obtainColIndex(indexPattern,seq,pos+buf_size-1) */
 		current[i-shift] = obtainColIndex(indexPattern,seq,pos+i-shift);
 	}
 }
@@ -406,7 +437,7 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern)
 	int j=0;
 
 	/*taille de la sous sequence où travailler */
-	int taille_sous_sequence = 0;
+	int win_length = 0;
 	int z;
 
 	/* Initialisation
@@ -417,35 +448,40 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern)
 
 	if (winSize==-1 || winSize>seq_length)
 	{
-		taille_sous_sequence = seq_length;
+		win_length = seq_length;
 	}
 	else
 	{
-		taille_sous_sequence = winSize;
+		win_length = winSize;
 	}
 
-	int buf_size = taille_sous_sequence-patterns[indexPattern]->getTaillePattern()+1;
+	int buf_size = win_length-patterns[indexPattern]->getSizePattern()+1;
 	int *previous = new int[buf_size];
 	int *current = new int[buf_size];
 
 	/* on recupère le nombre de ligne pour la sequence
 	 * afin d'iterer le bon nombre de fois
 	 */
-	z=obtainNbLineWindow(0,seq_length-1,taille_sous_sequence,shift);
+	z=obtainNbLineWindow(0,seq_length-1,win_length,shift);
 
 	while(j < z)
 	{
 
-		/* winCount(seq,winSize,indiceDepart,indice pattern */
+		/* Si j > 0 alors on a déjà effectué le comtpage pour la première fenetre
+		 * on utilise l'astuce de decalage
+		 */
 		if (j>0)
 		{
 
+			/* On copie la bonne partie du buffer et on compte les nouveaux kmers */
+			copyBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
 
-			swapBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
+			/* on increment les kmers trouvés */
 			for(int i=0;i<buf_size;i++)
 			{
 				freq[index][current[i]]+=1;
 			}
+			/* le courant devient le precedent */
 			swap(current,previous,buf_size);
 
 
@@ -453,22 +489,17 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern)
 		}
 		else
 		{
-			winCount(seq,taille_sous_sequence,i,indexPattern,previous);
+			winCount(seq,win_length,i,indexPattern,previous);
 
 		}
 
 
 
-		/* On decale de shift nucle */
-
+		/* On decale de shift nucleotides */
 		i = i + shift;
 		j = j + 1;
 		index++;
 	}
-	//
-	//	cerr << "      i = " << i << "\n";
-	//	cerr << " nLine = " << nLine << "\n";
-	//	cerr << " index  = " << index << "\n";
 }
 
 
@@ -493,7 +524,7 @@ void FreqKmer::fillFreq()
 		index=0;
 
 		/* Pour chaque fichier fasta */
-		for(int i=0;i<nbFichierFasta;i++)
+		for(int i=0;i<nbFastaFile;i++)
 		{
 			if(dataVerbose)
 			{
@@ -585,16 +616,6 @@ void FreqKmer::imprimeCSV(string ouput)
  */
 int FreqKmer::obtainNbLineWindow(int i,int j,int l,int pas)
 {
-	//	int res = 0;
-	//
-	//	do
-	//	{
-	//		res += 1;
-	//		i += pas;
-	//
-	//	} while (i<=(j-l+1));
-	//
-	//	return res;
 	return ((j-i+1-l)/pas)+1;
 }
 

@@ -13,6 +13,12 @@
 
 class FreqKmer {
 
+/*************************************************************************************************************************
+ * *************************************************************************************************************************
+ * *****************************************       PRIVATE      ************************************************************
+ * *************************************************************************************************************************
+ * *************************************************************************************************************************
+ */
 private:
 
 
@@ -29,7 +35,7 @@ private:
 	nPattern, /* Nombre de pattern définissant les kmers */
 	winSize, /* Taille de fenetre dans laquelle il faut effectuer le comptage de kmer */
 	nSeq, /* Nombre total de sequence à traiter */
-	nbFichierFasta, /* Nombre de fichier fasta entrée */
+	nbFastaFile, /* Nombre de fichier fasta entrée */
 	index, /* marqueur de ligne lors du comptage */
 	shift; /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
 
@@ -39,6 +45,7 @@ private:
 	 * @param	win_length: taille de la sous sequence (fenetre)
 	 * @param	pos: là où commencer le comptage
 	 * @param 	indexPattern: indice du pattern courant
+	 * @param	current: buffer qui va garder les frequences trouvés pour la fenetre courante
 	 */
 	void 	winCount(int *seq,int win_length,int pos,int indexPattern,int *current);
 
@@ -46,15 +53,46 @@ private:
 	/**
 	 * Effectue le comptage de kmer
 	 * @param	seq: la sequence où effectuer le comptage
-	 * @param	seq_length: taille de la sous sequence
+	 * @param	seq_length: taille de la sequence
 	 * @param 	indexPattern: indice du pattern courant
 	 */
 	void	count(int *seq,int seq_length,int indexPattern);
 
-	void swapBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos);
+	/**
+	 * Recupère la partie commune de previous pour le comptage
+	 * et compte les nouveaux kmers rencontrés lors du décalage de la fenetre
+	 * @param 	current: la ligne de comptage actuelle
+	 * @param	previous: la ligne de comptage effectué avant le decalage (null si premier comptage)
+	 * @param 	buf_size: la taille des buffers current et previous
+	 * @param	pos: position où on se trouve dans la sequence
+	 * @param	seq: la sequence où effectuer le comptage
+	 * @param 	indexPattern: indice du pattern courant
+	 */
+	void copyBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos);
+
+	/**
+	 * Permet d'intervertir deux buffers
+	 * @param	current
+	 * @param	previous
+	 * @param	buf_size : taille des buffers
+	 */
 	void swap(int *current,int *previous,int buf_size);
+
+	/**
+	 * Permet d'imprimer un buffer sur stdout : [x][y]...
+	 * Utilisé essentiellement pour vérifier le bon fonctionnement
+	 * @param	buf: buffer à afficher
+	 * @param	buf_size: taille du buffer
+	 */
 	void printBuf(int *buf,int buf_size);
 
+
+/*************************************************************************************************************************
+ * *************************************************************************************************************************
+ * *****************************************       PUBLIC      ************************************************************
+ * *************************************************************************************************************************
+ * *************************************************************************************************************************
+ */
 public:
 
 	/**********************************************************************************/
@@ -72,6 +110,7 @@ public:
 	FreqKmer(int win_size);
 
 	FreqKmer();
+
 	virtual ~FreqKmer();
 
 	/**********************************************************************************/
@@ -89,14 +128,18 @@ public:
 	void 	initFreq();
 
 	/**
-	 * Initialise la table Data
+	 * Initialise la table Data. Lit les fastas définit
+	 * par leur chemin dans listFasta. Met à jour le nombre de ligne nLigne
+	 * et le nombre de sequence nSeq et le nombre de fichier fasta nbFichierFasta
 	 * @param 	listFasta fichier contenant les chemins des fichiers fasta à init
 	 */
 	void 	initDataFromListFastaPath(string listFasta);
 
 	/**
-	 * Initialise la table Data
-	 * @param 	fasta fichier contenant les sequences
+	 * Initialise la table Data. Lit les fastas définit
+	 * par leur chemin dans listFasta. Met à jour le nombre de ligne nLigne,
+	 * le nombre de sequence nSeq et le nombre de fichier fasta nbFichierFasta (= 1)
+	 * @param 	fasta fichier fasta contenant les données
 	 */
 	void 	initFromFasta(string fasta);
 
@@ -110,6 +153,20 @@ public:
 	 * Methode principale qui permet
 	 * de remplir le tableau
 	 * après avoir chargé les données
+	 * Pour la première fenetre de la
+	 * première sequence du premier jeu de donnée
+	 * Va ecrire à la premiere ligne
+	 * 		à la premiere colonne: le nombre du premier kmer trouvé dans la fenetre
+	 * 		à la seconde  colonne: le nombre du premier kmer trouvé dans la fenetre
+	 * 		...
+	 *
+	 * ....
+	 * Pour la derniere fenetre de la
+	 * derniere sequence du dernier jeu de donnée
+	 * Va ecrire à la derniere ligne
+	 * 		à la premiere colonne: le nombre du premier kmer trouvé dans la fenetre
+	 * 		à la seconde  colonne: le nombre du premier kmer trouvé dans la fenetre
+	 * 		...
 	 */
 	void 		fillFreq();
 
@@ -119,7 +176,7 @@ public:
 	 */
 	double** 	getFreq(){return freq;}
 	int 		getNPattern(){return nPattern;}
-	int 		getNbFichierFasta(){return nbFichierFasta;}
+	int 		getNbFichierFasta(){return nbFastaFile;}
 	int 		getNCol(){return nCol;}
 	int 		getNLine(){return nLine;}
 	int 		getWinSize(){return winSize;}
@@ -129,6 +186,8 @@ public:
 
 	/*******************************DEPLACEMENT HORIZONTAL*****************************************/
 	/**
+	 * Permet de récupérer le numéro de colonne
+	 * où commence un kmer dans la table freq
 	 * @param i: indice du kmer
 	 * @return l'indice de début de colonne
 	 * du kmer i
@@ -136,6 +195,8 @@ public:
 	int 		obtainStartColKmer(int i);
 
 	/**
+	 * Permet de récupérer le numéro de colonne
+	 * où termine un kmer dans la table freq
 	 * @param i: indice du kmer
 	 * @return l'indice de fin de colonne
 	 * du kmer i
@@ -143,23 +204,30 @@ public:
 	int 		obtainEndColKmer(int i);
 
 	/**
-	 * @param indicePatter: indice du kmer
+	 * Permet de savoir quel kmer incrémenter
+	 * @param indexPattern: indice du kmer
 	 * @param seq: la sequence courante
 	 * @param pos: index dans la sequence ou recuperer le kmer
-	 * @return l'indice de fin de colonne
-	 * du kmer i
+	 * @return la position du kmer dans la table freq
 	 */
 	int			obtainColIndex(int indexPattern,int *seq,int pos);
+
+
 
 	/*******************************DEPLACEMENT VERTICAL*****************************************/
 	/******** Pour un Data ********/
 	/**
+	 * Permet de savoir le nombre de ligne
+	 * utilisé par un jeu de données
 	 * @param i: indice de l'objet Data
 	 * @return le nombre de ligne qu'occupe Data[i]
 	 */
 	int			obtainNbLineData(int i);
 
 	/**
+	 * Peremet de savoir où commence
+	 * les fréquences d'un jeu de données dans
+	 * la table freq
 	 * @param i: indice de l'objet Data
 	 * @return l'indice de la ligne où commence
 	 * les fréquences pour Data[i]
@@ -167,6 +235,9 @@ public:
 	int 		obtainStartLineData(int i);
 
 	/**
+	 * Peremet de savoir où termine
+	 * les fréquences d'un jeu de données dans
+	 * la table freq
 	 * @param i: indice de l'objet Data
 	 * @return l'indice de la ligne où termine
 	 * les fréquences pour Data[i]
@@ -176,6 +247,9 @@ public:
 	/******** Pour une sequence d'un data ********/
 
 	/**
+	 * Peremet de savoir où commence
+	 * les fréquences d'une sequence d'un jeu de données
+	 * précis dans la table freq
 	 * @param i: indice de l'objet Data
 	 * @param j: indice de la sequence dans Data[j]
 	 * @return l'indice de la ligne où commence
@@ -184,7 +258,11 @@ public:
 	 */
 	int 		obtainStartLineDataSeq(int i,int j);
 
+
 	/**
+	 * Peremet de savoir où termine
+	 * les fréquences d'une sequence d'un jeu de données
+	 * précis dans la table freq
 	 * @param i: indice de l'objet Data
 	 * @param j: indice de la sequence dans Data[j]
 	 * @return l'indice de la ligne où termine
@@ -193,7 +271,12 @@ public:
 	 */
 	int 		obtainEndLineDataSeq(int i,int j);
 
+
+
 	/**
+	 * Peremet de savoir le nombre de ligne
+	 * des fréquences d'une sequence d'un jeu de données
+	 * précis dans la table freq
 	 * @param i: indice de l'objet Data
 	 * @param j: indice de la sequence dans Data[j]
 	 * @return le nombre de ligne qu'occupe la j-ème

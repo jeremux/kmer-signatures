@@ -18,41 +18,25 @@
 
 using namespace std;
 
-Pattern::Pattern() {
-	// TODO Auto-generated constructor stub
-	this->pattern = "";
-}
 
 Pattern::Pattern(string p)
 {
 	this->pattern = p;
+	this->kmerSize = count(this->pattern.begin(),pattern.end(),'#');
+	this->patternSize = this->pattern.size();
 }
 
-int Pattern::getTaillePattern()
-{
-	int res;
-	res = this->pattern.size();
-	return res;
-}
-
-
-int Pattern::getTailleKmer()
-{
-	int res;
-	res = count(this->pattern.begin(),pattern.end(),'#');
-	return res;
-}
 
 int Pattern::getAllCombi()
 {
 	int res;
-	res = pow(4,getTailleKmer());
+	res = pow(4,getSizeKmer());
 	return res;
 }
 
 bool Pattern::isContinue()
 {
-	return (getTailleKmer()==getTaillePattern());
+	return (getSizeKmer()==getSizePattern());
 }
 
 bool Pattern::extraire(int i)
@@ -64,11 +48,11 @@ int Pattern::getKmer(int* seq,int coord)
 {
 	int res = 0;
 	int cpt = 0;
-	for (int var = 0; var < getTaillePattern() ; var++)
+	for (int var = 0; var < getSizePattern() ; var++)
 	{
 		if(extraire(var))
 		{
-			res += seq[coord+var]*pow(4,getTailleKmer()-1-cpt);
+			res += seq[coord+var]*pow(4,getSizeKmer()-1-cpt);
 			cpt++;
 		}
 
@@ -87,7 +71,7 @@ vector<string> Pattern::getCombi()
 	words = bases;
 
 	vector<string> newords;
-	for(int i=0;i<getTailleKmer()-1;i++)
+	for(int i=0;i<getSizeKmer()-1;i++)
 	{
 		newords.clear();
 		for(size_t j=0;j<words.size();j++)

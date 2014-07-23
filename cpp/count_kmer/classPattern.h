@@ -20,9 +20,11 @@ class Pattern {
 
 private:
 	string pattern; /*!< Le pattern */
+	int patternSize;
+	int kmerSize;
 
 public:
-	Pattern();
+
 	/*!
 	 *  \brief Constructeur
 	 *
@@ -48,8 +50,8 @@ public:
 	 *  \return le nombre de kmer du pattern courant
 	 */
 	int getAllCombi();
-	int getTaillePattern();
-	int getTailleKmer();
+	int getSizePattern(){return patternSize;}
+	int getSizeKmer(){return kmerSize;}
 	vector<string> getCombi();
 	bool isContinue();
 	int getKmer(int* seq,int coord); /* coord de 0 à taille(seq)-1 */
