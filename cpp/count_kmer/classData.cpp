@@ -563,21 +563,26 @@ Switch Data::readFasta(string filename)
 
       Ntaxa=nbsp;
       Nsite=maxnbsite;
-      //cout << "data " << Ntaxa << " " << Nsite  <<"(" << nbsite << " " << tmpnsite << ")\n";
-      //cout.flush();
+//      cout << "Ntaxa " << Ntaxa << " " << Nsite  <<"(" << nbsite << " " << tmpnsite << ")\n";
+//      cout.flush();
 
+      cout << "début alloc data et SPname \n ";
       data=new int*[Ntaxa];
       SPname=new string[Ntaxa];
+      cout << "fin alloc data et SPname \n ";
 
       if(takeAcc==Yes)
     	  listAcc=new string[Ntaxa];
 
+      cout << "début alloc data\n ";
       for(int i=0;i<Ntaxa;i++)
       {
+    	  cout << "alloc data[" << i << "] = new int[" << Nsite << "]\n";
     	  data[i]=new int[Nsite];
     	  for(int j=0;j<Nsite;j++)
     		  data[i][j]=Nstate;
       }
+      cout << "fin alloc data\n ";
       map_is.close();
       fstream map_is2(filename.c_str(),ios::in);
       int length;

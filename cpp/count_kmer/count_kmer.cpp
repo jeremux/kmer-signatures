@@ -198,7 +198,23 @@ int main(int argc, char **argv) {
 	}
 	if (opt.doTest)
 	{
-        executeTests(NB_TEST);
+//        executeTests(NB_TEST);
+		FreqKmer *f = new FreqKmer(-1);
+		f->initFromFasta("/home/jeremy/Bureau/euka_trunc_200000.fasta");
+		for(int i=0;i<f->getNbFichierFasta();i++)
+		{
+			for(int j=0;j<f->getData()[i]->getNtaxa();j++)
+			{
+				cerr << f->getData()[i]->getLengthSeq(j) << "\n";
+			}
+		}
+
+		f->initPatterns("pattern.txt");
+
+//		f->fillFreq();
+
+//		f->imprimeCSV("alveolata_fenetre_moins_un.csv");
+
 
 
 		exit(0);
