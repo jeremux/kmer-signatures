@@ -36,6 +36,7 @@ typedef struct {
   Switch version;
   Switch doPrintHelp;
   Switch doTest;
+  bool noData;
 } options;
 
 options opt;
@@ -51,6 +52,7 @@ void init_opt()
   opt.version = No;
   opt.doPrintHelp =No;
   opt.doTest = No;
+  opt.noData = false;
 }
 
 int getParam(int argcc, char **argvv,options *opt)
@@ -69,6 +71,7 @@ int getParam(int argcc, char **argvv,options *opt)
 				{"output", required_argument, 0, 'o'},          //-o
 				{"version", no_argument, 0, 'v'},               //-v
 				{"test",no_argument, 0, 't'},        			//-t
+				{"noData",no_argument,0,'d'},					//-d
 				{0, 0, 0, 0}
 		};
 		c = getopt_long (argcc, argvv, "hF:f:l:k:o:vt",long_options, &option_index);
@@ -79,6 +82,10 @@ int getParam(int argcc, char **argvv,options *opt)
 			if(!(strcmp(long_options[option_index].name,"help")))
 			{
 				opt->doPrintHelp=Yes;
+			}
+			if(!(strcmp(long_options[option_index].name,"noData")))
+			{
+				opt->noData = true;
 			}
 			if(!(strcmp(long_options[option_index].name,"test")))
 			{
@@ -149,6 +156,9 @@ int getParam(int argcc, char **argvv,options *opt)
 			if(optarg)
 				opt->windowSize=atoi(optarg);
 			break;
+		case 'd':
+			if(optarg)
+				opt->noData=true;
 		default:
 			cerr << "?? getopt returned character code " <<  c << "\n";;
 		}
@@ -198,18 +208,18 @@ int main(int argc, char **argv) {
 	}
 	if (opt.doTest)
 	{
-//        executeTests(NB_TEST);
-		FreqKmer *f = new FreqKmer(-1);
-		f->initFromFasta("/home/jeremy/Bureau/euka_trunc_200000.fasta");
-		for(int i=0;i<f->getNbFichierFasta();i++)
-		{
-			for(int j=0;j<f->getData()[i]->getNtaxa();j++)
-			{
-				cerr << f->getData()[i]->getLengthSeq(j) << "\n";
-			}
-		}
+        executeTests(NB_TEST);
+//		FreqKmer *f = new FreqKmer(-1);
+//		f->initFromFasta("../../../filter/trunc_200000/euka_trunc_200000.fasta");
+//		for(int i=0;i<f->getNbFichierFasta();i++)
+//		{
+//			for(int j=0;j<f->getData()[i]->getNtaxa();j++)
+//			{
+//				cerr << f->getData()[i]->getLengthSeq(j) << "\n";
+//			}
+//		}
 
-		f->initPatterns("pattern.txt");
+//		f->initPatterns("pattern.txt");
 
 //		f->fillFreq();
 
@@ -246,20 +256,20 @@ int main(int argc, char **argv) {
 
 	if (error)
 		exit(1);
-	FreqKmer *f = new FreqKmer(opt.windowSize);
+
+	FreqKmer *f = NULL;
 
 	if(initFromList)
 	{
-		f->initDataFromListFastaPath(opt.listFastaPath);
+		f = new FreqKmer(opt.windowSize,initFromList,opt.listFastaPath,opt.kmerPath,opt.noData);
 	}
 	else
 	{
 		cerr << "Debut init fasta \n";
-		f->initFromFasta(opt.fastaPath);
+		f = new FreqKmer(opt.windowSize,initFromList,opt.fastaPath,opt.kmerPath,opt.noData);
 		cerr << "Fin init fasta\n";
 	}
 	cerr << "Debut init patterns\n";
-	f->initPatterns(opt.kmerPath);
 	cerr << "Fin init patterns\n";
 
 	cerr << "Debut fill \n";

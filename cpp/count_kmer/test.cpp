@@ -26,11 +26,11 @@ void doTest12()
 {
         cerr << "\n**test map get DataSeq from line**\n";
 
-    	FreqKmer *f = new FreqKmer(4);
+
     	bool res = true;
     	string filename = "tests/test4/liste.txt";
-    	f->initPatterns("tests/test4/pattern.txt");
-    	f->initDataFromListFastaPath(filename);
+    	FreqKmer *f = new FreqKmer(4,true,filename,"tests/test4/pattern.txt",false);
+
 
         int idData0,idData1,idData2,idData3,idData4,idData5,idData6,
         	idSeq0,idSeq1,idSeq2,idSeq3,idSeq4,idSeq5,idSeq6;
@@ -78,10 +78,10 @@ void doTest11()
 {
         cerr << "\n**Données réelles validées par perl/C**\n";
 
-        FreqKmer *f = new FreqKmer(-1,1);
+
         string filename = "tests/haemo/haemo.fasta";
-        f->initPatterns("tests/haemo/pattern5.txt");
-        f->initFromFasta(filename);
+        string pattern = "tests/haemo/pattern5.txt";
+        FreqKmer *f = new FreqKmer(-1,1,false,filename,pattern,false);
 
         int val[] = {11,10,7,18,12,5,5,7,10,3,7,6,29,4,14,17,8,7,9,14,7,2,3,6,4,2,3,5,4,6,8,13,14,4,9,7,2,3,1,5,5,1,
         		0,9,7,1,3,9,25,14,8,31,4,8,1,4,10,8,6,19,24,8,13,21,8,5,7,10,9,3,1,4,7,5,7,4,16,5,7,19,9,4,4,11,
@@ -156,10 +156,12 @@ void doTest10()
 {
         cerr << "\n**test decalage bis**\n";
 
-        FreqKmer *f = new FreqKmer(3,2);
+
         string filename = "tests/test1/liste2.txt";
-        f->initPatterns("tests/test1/pattern2.txt");
-        f->initDataFromListFastaPath(filename);
+        string pattern = "tests/test1/pattern2.txt";
+
+        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
+
 
 
 
@@ -220,10 +222,9 @@ void doTest9()
 {
 	cerr << "\n**test decalage 2**\n";
 
-	        FreqKmer *o = new FreqKmer(5,2);
 	        string filename = "tests/test5/liste.txt";
-	        o->initPatterns("tests/test5/pattern.txt");
-	        o->initDataFromListFastaPath(filename);
+	        string pattern ="tests/test5/pattern.txt";
+	        FreqKmer *o = new FreqKmer(5,2,true,filename,pattern,false);
 
 
 
@@ -308,10 +309,9 @@ void doTest8()
 {
         cerr << "\n**test decalage**\n";
 
-        FreqKmer *f = new FreqKmer(3,2);
         string filename = "tests/test1/liste.txt";
-        f->initPatterns("tests/test1/pattern.txt");
-        f->initDataFromListFastaPath(filename);
+        string pattern ="tests/test1/pattern.txt";
+        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
 
 
 
@@ -395,11 +395,11 @@ void doTest8()
 void doTest7()
 {
 	cerr << "\n**Test de la map deux**\n";
-	FreqKmer *f = new FreqKmer(4);
+
 	bool res = true;
 	string filename = "tests/test4/liste.txt";
-	f->initPatterns("tests/test4/pattern.txt");
-	f->initDataFromListFastaPath(filename);
+	string pattern = "tests/test4/pattern.txt";
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
 	res = (
 		   f->obtainStartLineDataSeq(0,0)==0
@@ -433,11 +433,11 @@ void doTest7()
 void doTest6()
 {
 	cerr << "\n**Test de la map une**\n";
-	FreqKmer *f = new FreqKmer(4);
+
 	bool res = true;
 	string filename = "tests/test1/liste.txt";
-	f->initPatterns("tests/test1/pattern.txt");
-	f->initDataFromListFastaPath(filename);
+	string pattern = "tests/test1/pattern.txt";
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
 	res = !(f->obtainNbLineData(0)!=3 || f->obtainNbLineData(1)!=4 || f->obtainStartLineData(0)!=0 || f->obtainEndLineData(0)!=2 || f->obtainStartLineData(1)!=3 || f->obtainEndLineData(1)!=6);
 
@@ -448,11 +448,12 @@ void doTest6()
 void doTest5()
 {
 	cerr << "\n**Test espace des kmers**\n";
-	FreqKmer *f = new FreqKmer(4);
 	bool res = true;
 	string filename = "tests/test1/liste.txt";
-	f->initPatterns("tests/test1/pattern.txt");
-	f->initDataFromListFastaPath(filename);
+	string pattern = "tests/test1/pattern.txt";
+
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
+
 
 	if (f->obtainStartColKmer(0)!=0 || f->obtainStartColKmer(1)!=16 || f->obtainEndColKmer(0)!=15 || f->obtainEndColKmer(1)!=19)
 	{
@@ -466,11 +467,11 @@ void doTest5()
 void doTest4()
 {
 	cerr << "\n**Test taille des sequences**\n";
-	FreqKmer *f = new FreqKmer(4);
+
 	bool res = true;
 	string filename = "tests/test1/liste.txt";
-	f->initPatterns("tests/test1/pattern.txt");
-	f->initDataFromListFastaPath(filename);
+	string pattern = "tests/test1/pattern.txt";
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
 	if (f->getData()[0]->getLengthSeq(0)!=6 || f->getData()[1]->getLengthSeq(0)!=7)
 	{
@@ -485,10 +486,11 @@ void doTest3()
 {
         cerr << "\n**test multi-pattern**\n";
 
-        FreqKmer *f = new FreqKmer(4);
+
         string filename = "tests/test1/liste.txt";
-        f->initPatterns("tests/test1/pattern.txt");
-        f->initDataFromListFastaPath(filename);
+        string pattern = "tests/test1/pattern.txt";
+
+        FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
         int ligne = 7;
         int col = 20;
@@ -574,10 +576,12 @@ void doTest3()
 void doTest2()
 {
         cerr << "\n**test pattern simple**\n";
-        FreqKmer *g = new FreqKmer(4);
+
         string filename = "tests/test1/liste.txt";
-        g->initPatterns("tests/test2/pattern2.txt");
-        g->initDataFromListFastaPath(filename);
+        string pattern = "tests/test2/pattern2.txt";
+
+        FreqKmer *g = new FreqKmer(4,true,filename,pattern,false);
+
 
         int ligne = 7;
         int col = 16;
@@ -605,10 +609,9 @@ void doTest2()
         freq[6][6] = 1;
         freq[6][1] = 1;
 
-
         g->fillFreq();
 
-//      cout << "Fin fillFreq\n";
+
 //      cout << "Debut Impression\n";
         bool res=true;
         for(int i=0;i<ligne;i++)
@@ -641,11 +644,14 @@ void doTest2()
 void doTest1()
 {
         cerr << "\n**test dimension tableau**\n";
-        FreqKmer *f = new FreqKmer(6);
+
         string filename = "tests/test3/test.fasta";
 
-        f->initPatterns("tests/test3/3patterns.txt");
-        f->initFromFasta(filename);
+        string pattern = "tests/test3/3patterns.txt";
+
+        FreqKmer *f = new FreqKmer(6,false,filename,pattern,false);
+
+
         if(f->getNCol()!=84 || f->getNLine()!=107)
         {
                 cerr << "Test1 fail...\n";

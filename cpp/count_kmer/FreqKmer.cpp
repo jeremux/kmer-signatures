@@ -11,29 +11,10 @@
 #include <string>
 #include <iostream>
 
-
 using namespace std;
 
-FreqKmer::FreqKmer() {
-	/* On veut les accessions donc Yes */
-	data=NULL;
-	freq=NULL;
-	patterns=NULL;
-	kmerSpace=NULL;
-	indexLineDataSeq=NULL;
-	indexLineData=NULL;
-	nCol=0;
-	nSeq=0;
-	nLine=0;
-	nPattern=0;
-	nbFastaFile=0;
-	/* Taille par défaut */
-	winSize=WINDOW_SIZE;
-	index=0;
-	shift=1;
-}
-
-FreqKmer::FreqKmer(int win_size, int s) {
+FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b)
+{
 	data=NULL;
 	freq=NULL;
 	patterns=NULL;
@@ -48,10 +29,22 @@ FreqKmer::FreqKmer(int win_size, int s) {
 	index=0;
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
-
+	initPatterns(patternFile);
+	if (list)
+	{
+		initDataFromListFastaPath(file);
+	}
+	else
+	{
+		initFromFasta(file);
+	}
+	noData=b;
 }
 
-FreqKmer::FreqKmer(int win_size) {
+
+
+FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool b)
+{
 	data=NULL;
 	freq=NULL;
 	patterns=NULL;
@@ -63,13 +56,34 @@ FreqKmer::FreqKmer(int win_size) {
 	nbFastaFile=0;
 	winSize=win_size;
 	index=0;
-	shift=1;
+	if(win_size>0)
+	{
+
+		shift=(win_size*20)/100;
+		if (shift==0)
+			shift=1;
+
+	}
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
+	initPatterns(patternFile);
+
+	if (list)
+	{
+
+		initDataFromListFastaPath(file);
+
+	}
+	else
+	{
+		initFromFasta(file);
+	}
+	noData=b;
 
 }
 
-FreqKmer::~FreqKmer() {
+FreqKmer::~FreqKmer() 
+{
 
 	if(dataVerbose){
 		cerr << "Debut FreqKmer::~FreqKmer()\n ";
@@ -230,8 +244,10 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 			nSeq += data[cpt]->getNtaxa();
 
 			/* traitement pour determiner le nombre de ligne nLine de la table freq */
+
 			if (winSize>0)
 			{
+
 				/* Pour chaque sequence du fichier fasta courant */
 				for (int var = 0; var < data[cpt]->getNtaxa(); var++)
 				{
@@ -245,7 +261,9 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 					}
 					else
 					{
+
 						nLine += obtainNbLineWindow(0,tailleSeq-1,winSize,shift);
+
 					}
 
 					/* Je peux à cette étape savoir l'indice de fin de ligne pour
@@ -253,6 +271,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 					 */
 					indexLineDataSeq[cpt][var]=nLine-1;
 				}
+
 			}
 			/* Si winSize <= 0 alors la taille de la fenetre est celle de la sequence */
 			else

@@ -39,6 +39,8 @@ private:
 	index, /* marqueur de ligne lors du comptage */
 	shift; /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
 
+	bool noData; /* boolean pour savoir si on instancie les objets data d'une traite */
+
 	/**
 	 * Effectue le comptage dans une fenetre
 	 * @param	seq: la sequence où effectuer le comptage
@@ -96,18 +98,30 @@ private:
 public:
 
 	/**********************************************************************************/
-	/**
-	 * Contruit l'object FreqKmer
-	 * @param	win_size: taille de la fenetre
-	 * @param	shift: taille du decalage en nucletoide
-	 */
-	FreqKmer(int win_size, int shift);
 
 	/**
-	 * Contruit l'object FreqKmer
+	 * Contruit l'object FreqKmer à partir d'un fichier, contenant
+	 * la liste des chemins des fichiers fasta à analyser si bool = true
+	 * ou à aprtir d'un fichier fasta sinon.
 	 * @param	win_size: taille de la fenetre
+	 * @param	list: true si le fichier en parametre est une liste de path fasta
+	 * @param	file: fichier fasta ou fichier contenant la liste de fichier fasta
+	 * @param 	patternFile: fichier contenant les patterns de kmer
+	 * @param	noData	: true si on ne charge pas toutes les données d'un coup
 	 */
-	FreqKmer(int win_size);
+	FreqKmer(int win_size,bool list, string file,string patternFile, bool noData);
+
+	/**
+	 * Contruit l'object FreqKmer à partir d'un fichier, contenant
+	 * la liste des chemins des fichiers fasta à analyser
+	 * @param	win_size: taille de la fenetre
+	 * @param	shift: taille du decalage en nucletoide
+	 * @param	fastaFile: fichier fasta
+	 * @param 	patternFile: fichier contenant les patterns de kmer
+	 * @param	noData	: true si on ne charge pas toutes les données d'un coup
+	 */
+	FreqKmer(int win_size,int shift,bool list, string file,string patternFile, bool noData);
+
 
 	FreqKmer();
 

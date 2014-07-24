@@ -3,6 +3,13 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+../FreqKmer.o \
+../classData.o \
+../classPattern.o \
+../count_kmer.o \
+../test.o 
+
 CPP_SRCS += \
 ../FreqKmer.cpp \
 ../classData.cpp \
