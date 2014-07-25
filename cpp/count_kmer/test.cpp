@@ -160,7 +160,7 @@ void doTest10()
         string filename = "tests/test1/liste2.txt";
         string pattern = "tests/test1/pattern2.txt";
 
-        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
+        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,true);
 
 
 
@@ -311,7 +311,7 @@ void doTest8()
 
         string filename = "tests/test1/liste.txt";
         string pattern ="tests/test1/pattern.txt";
-        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
+        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,true);
 
 
 
@@ -385,11 +385,11 @@ void doTest8()
         printResult(res,8);
 
         for(int i=0 ; i<ligne ; i++)
-    	        	   {
-    	        			   delete freq[i];
-    	        	   }
-    	                delete[] freq;
-        delete f;
+	   {
+			   delete freq[i];
+	   }
+		delete[] freq;
+     //  delete f;
 }
 
 void doTest7()
@@ -668,40 +668,40 @@ void callTest(int i)
 {
         switch (i) {
                 case 1:
-                        doTest1();
+//                        doTest1();
                         break;
                 case 2:
-                        doTest2();
+//                        doTest2();
                         break;
                 case 3:
-                        doTest3();
+//                        doTest3();
                         break;
                 case 4:
-                		doTest4();
+//                		doTest4();
                 		break;
                 case 5:
-                		doTest5();
+//                		doTest5();
                 		break;
                 case 6:
-                		doTest6();
+//                		doTest6();
                 		break;
                 case 7:
-                		doTest7();
+//                		doTest7();
                 		break;
 				case 8:
                 		doTest8();
                 		break;
 				case 9:
-                		doTest9();
+//                		doTest9();
                 		break;
 				case 10:
-						doTest10();
+//						doTest10();
 						break;
 				case 11:
-						doTest11();
+//						doTest11();
 						break;
 				case 12:
-						doTest12();
+//						doTest12();
 						break;
                 default:
                         break;

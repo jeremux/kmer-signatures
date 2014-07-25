@@ -40,6 +40,8 @@ private:
 	shift; /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
 
 	bool noData; /* boolean pour savoir si on instancie les objets data d'une traite */
+	string listData; /* fichier de la list des chemins fasta */
+	string *pathFasta;
 
 	/**
 	 * Effectue le comptage dans une fenetre
@@ -87,6 +89,8 @@ private:
 	 * @param	buf_size: taille du buffer
 	 */
 	void printBuf(int *buf,int buf_size);
+
+	void initPathFasta(string file);
 
 
 /*************************************************************************************************************************

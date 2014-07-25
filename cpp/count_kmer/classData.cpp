@@ -64,7 +64,7 @@ Data::~Data()
       if(takeAcc==Yes)
         delete[] listAcc;
     }
-  takeAcc = No;
+
   if(verbose){
       cout << "end Data::~Data()\n";
       cout.flush();
@@ -471,6 +471,7 @@ Switch Data::readFasta(string filename)
   }
   /**********************/
   Switch ok=Yes;
+  const char * fileChar = filename.c_str();
   Switch seen;
   char line[MAXSITE];
   string str, tmp, field, spname;
@@ -480,8 +481,14 @@ Switch Data::readFasta(string filename)
 
   cout.flush();
   try {
-      fstream map_is0(filename.c_str(),ios::in);
+
+	  cerr << "debut fstream " << fileChar << "\n";
+      fstream map_is0(fileChar,ios::in);
+      cerr << "fin fstream \n";
+
+
       map_is0.getline(line,MAXSITE);
+
       str=line;
 
       cout.flush();
@@ -495,6 +502,8 @@ Switch Data::readFasta(string filename)
       map_is0.close();
       fstream map_is(filename.c_str(),ios::in);
       // compter nomber d especes et de sites
+
+
       while(!map_is.eof())
       {
     	  map_is.getline(line,MAXSITE);
