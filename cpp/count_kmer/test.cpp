@@ -28,8 +28,8 @@ void doTest12()
 
 
     	bool res = true;
-    	string filename = "tests/test4/liste.txt";
-    	FreqKmer *f = new FreqKmer(4,true,filename,"tests/test4/pattern.txt",false);
+    	string filename = "Debug/tests/test4/liste.txt";
+    	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false);
 
 
         int idData0,idData1,idData2,idData3,idData4,idData5,idData6,
@@ -79,8 +79,8 @@ void doTest11()
         cerr << "\n**Données réelles validées par perl/C**\n";
 
 
-        string filename = "tests/haemo/haemo.fasta";
-        string pattern = "tests/haemo/pattern5.txt";
+        string filename = "Debug/tests/haemo/haemo.fasta";
+        string pattern = "Debug/tests/haemo/pattern5.txt";
         FreqKmer *f = new FreqKmer(-1,1,false,filename,pattern,false);
 
         int val[] = {11,10,7,18,12,5,5,7,10,3,7,6,29,4,14,17,8,7,9,14,7,2,3,6,4,2,3,5,4,6,8,13,14,4,9,7,2,3,1,5,5,1,0,9,7,1,3,9,26,14,8,31,4,8,1,4,10,8,6,19,24,8,13,22,8,5,7,10,9,3,1,4,7,5,7,4,16,5,7,19,9,4,4,11,
@@ -154,8 +154,8 @@ void doTest10()
         cerr << "\n**test decalage bis**\n";
 
 
-        string filename = "tests/test1/liste2.txt";
-        string pattern = "tests/test1/pattern2.txt";
+        string filename = "Debug/tests/test1/liste2.txt";
+        string pattern = "Debug/tests/test1/pattern2.txt";
 
         FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
 
@@ -219,8 +219,8 @@ void doTest9()
 {
 	cerr << "\n**test decalage 2**\n";
 
-	        string filename = "tests/test5/liste.txt";
-	        string pattern ="tests/test5/pattern.txt";
+	        string filename = "Debug/tests/test5/liste.txt";
+	        string pattern ="Debug/tests/test5/pattern.txt";
 	        FreqKmer *o = new FreqKmer(5,2,true,filename,pattern,false);
 
 
@@ -306,8 +306,8 @@ void doTest8()
 {
         cerr << "\n**test decalage**\n";
 
-        string filename = "tests/test1/liste.txt";
-        string pattern ="tests/test1/pattern.txt";
+        string filename = "Debug/tests/test1/liste.txt";
+        string pattern ="Debug/tests/test1/pattern.txt";
         FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
 
 
@@ -395,8 +395,8 @@ void doTest7()
 	cerr << "\n**Test de la map deux**\n";
 
 	bool res = true;
-	string filename = "tests/test4/liste.txt";
-	string pattern = "tests/test4/pattern.txt";
+	string filename = "Debug/tests/test4/liste.txt";
+	string pattern = "Debug/tests/test4/pattern.txt";
 	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
 	res = (
@@ -433,8 +433,8 @@ void doTest6()
 	cerr << "\n**Test de la map une**\n";
 
 	bool res = true;
-	string filename = "tests/test1/liste.txt";
-	string pattern = "tests/test1/pattern.txt";
+	string filename = "Debug/tests/test1/liste.txt";
+	string pattern = "Debug/tests/test1/pattern.txt";
 	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
 	res = !(f->obtainNbLineData(0)!=3 || f->obtainNbLineData(1)!=4 || f->obtainStartLineData(0)!=0 || f->obtainEndLineData(0)!=2 || f->obtainStartLineData(1)!=3 || f->obtainEndLineData(1)!=6);
@@ -447,8 +447,8 @@ void doTest5()
 {
 	cerr << "\n**Test espace des kmers**\n";
 	bool res = true;
-	string filename = "tests/test1/liste.txt";
-	string pattern = "tests/test1/pattern.txt";
+	string filename = "Debug/tests/test1/liste.txt";
+	string pattern = "Debug/tests/test1/pattern.txt";
 
 	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
@@ -467,8 +467,8 @@ void doTest4()
 	cerr << "\n**Test taille des sequences**\n";
 
 	bool res = true;
-	string filename = "tests/test1/liste.txt";
-	string pattern = "tests/test1/pattern.txt";
+	string filename = "Debug/tests/test1/liste.txt";
+	string pattern = "Debug/tests/test1/pattern.txt";
 	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
 	if (f->getData()[0]->getLengthSeq(0)!=6 || f->getData()[1]->getLengthSeq(0)!=7)
@@ -485,8 +485,8 @@ void doTest3()
         cerr << "\n**test multi-pattern**\n";
 
 
-        string filename = "tests/test1/liste.txt";
-        string pattern = "tests/test1/pattern.txt";
+        string filename = "Debug/tests/test1/liste.txt";
+        string pattern = "Debug/tests/test1/pattern.txt";
 
         FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
 
@@ -575,8 +575,8 @@ void doTest2()
 {
         cerr << "\n**test pattern simple**\n";
 
-        string filename = "tests/test1/liste.txt";
-        string pattern = "tests/test2/pattern2.txt";
+        string filename = "Debug/tests/test1/liste.txt";
+        string pattern = "Debug/tests/test2/pattern2.txt";
 
         FreqKmer *g = new FreqKmer(4,true,filename,pattern,false);
 
@@ -643,9 +643,9 @@ void doTest1()
 {
         cerr << "\n**test dimension tableau**\n";
 
-        string filename = "tests/test3/test.fasta";
+        string filename = "Debug/tests/test3/test.fasta";
 
-        string pattern = "tests/test3/3patterns.txt";
+        string pattern = "Debug/tests/test3/3patterns.txt";
 
         FreqKmer *f = new FreqKmer(6,false,filename,pattern,false);
 
@@ -670,7 +670,7 @@ void doTest0()
    Data *d1 = new Data();
 
 
-   s = d1->initFrom("tests/test1/file3.fasta",Fasta);
+   s = d1->initFrom("Debug/tests/test1/file3.fasta",Fasta);
    if(s==Yes)
 	   res=true;
 
@@ -681,6 +681,7 @@ void doTest0()
 }
 void callTest(int i)
 {
+        printSwitch(getSwitch(0));
         switch (i) {
         		case 0:
         			doTest0();

@@ -3,26 +3,34 @@
 ################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
+O_SRCS += \
+FreqKmer.o \
+classData.o \
+classPattern.o \
+count_kmer.o \
+test.o 
+
 CPP_SRCS += \
-../FreqKmer.cpp \
-../classData.cpp \
-../classPattern.cpp \
-../count_kmer.cpp \
-../test.cpp
+FreqKmer.cpp \
+classData.cpp \
+classPattern.cpp \
+count_kmer.cpp \
+test.cpp 
 
 OBJS += \
-./FreqKmer.o \
-./classData.o \
-./classPattern.o \
-./count_kmer.o \
-./test.o
+FreqKmer.o \
+classData.o \
+classPattern.o \
+count_kmer.o \
+test.o 
 
 CPP_DEPS += \
-./FreqKmer.d \
-./classData.d \
-./classPattern.d \
-./count_kmer.d \
-./test.d
+FreqKmer.d \
+classData.d \
+classPattern.d \
+count_kmer.d \
+test.d 
+
 
 # Each subdirectory must supply rules for building sources it contributes
 %.o: ../%.cpp

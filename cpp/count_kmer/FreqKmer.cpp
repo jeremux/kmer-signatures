@@ -13,6 +13,8 @@
 
 using namespace std;
 
+
+
 FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b)
 {
     data=NULL;
@@ -54,6 +56,9 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 
 FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool b)
 {
+    printSwitch(getSwitch(0));
+    
+    
     data=NULL;
     freq=NULL;
     patterns=NULL;
@@ -497,16 +502,11 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 
 void FreqKmer::copyBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos)
 {
-//	cout << "start copyBuffAndCount int buf_size=" << buf_size << " int indexPattern=" << indexPattern << " int pos=" << pos << " \n";
-//	cout << "previous : ";
-//	cout.flush();
     for(int i=0;i<buf_size;i++)
     {
 	current[i]=-1;
-//	obtainColIndex(indexPattern,seq,i);
     }
-//	cout << "\n";
-//	cout.flush();
+
     int cpt=0;
     /* On commence au décalage et on s'arrête à la fin
      * du buffer previous
@@ -524,6 +524,8 @@ void FreqKmer::copyBuffAndCount(int *current,int *previous,int buf_size, int ind
      * shift case restante.
      */
 
+    // si le buffer est plus petit que le
+    // 	decalage on doit tout recompter
     if (buf_size < shift)
     {
 	for(int i=0;i<buf_size;i++)
@@ -536,19 +538,10 @@ void FreqKmer::copyBuffAndCount(int *current,int *previous,int buf_size, int ind
 	for(int i=pos+buf_size-shift;i<=pos+winSize-patterns[indexPattern]->getSizePattern();i++)
 
 	{
-//			cerr << "currant[" << i-shift << "] = " << obtainColIndex(indexPattern,seq,i) <<"\n";
 	    current[cpt++] = obtainColIndex(indexPattern,seq,i);
 	}
     }
-//	cout << "current :";
-//	for(int i=0;i<buf_size;i++)
-//	{
-//	cout << current[i] << "\t";
-//	}
-//	cout << "\n";
-//	cout.flush();
-//	cout << "fin copyBuffAndCount\n";
-//	cout.flush();
+
 }
 
 void FreqKmer::swap(int *current,int *previous,int buf_size)
@@ -635,8 +628,6 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern)
 	 */
 	if (j>0)
 	{
-//			cout << "window "<< j <<"\n";
-//			cout.flush();
 	    /* On copie la bonne partie du buffer et on compte les nouveaux kmers */
 	    copyBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
 

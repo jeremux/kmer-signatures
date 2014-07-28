@@ -1,10 +1,9 @@
 ################################################################################
-# Automatically-generated file. Do not edit!
-################################################################################
+#################################################################################
 
 -include ../makefile.init
 
-RM := rm -rf
+RM := rm -f
 
 # All of the sources participating in the build are defined here
 -include sources.mk
@@ -48,11 +47,18 @@ count_kmer: $(OBJS) $(USER_OBJS)
 	@echo ' '
 
 # Other Targets
-clean:
+realclean:
 	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) count_kmer
-	-@echo ' '
+	-@echo 'realclean done'
+clean:
+	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS)
+	-@echo 'clean done'
 
-.PHONY: all clean dependents
+test: realclean all
+	./count_kmer -t
+	@make clean
+
+.PHONY: all clean realclean dependents
 .SECONDARY:
 
--include ../makefile.targets
+-include makefile.targets

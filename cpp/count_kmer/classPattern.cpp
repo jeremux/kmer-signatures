@@ -101,4 +101,3 @@ Pattern::~Pattern() {
 	patternSize=0;
 
 }
-
