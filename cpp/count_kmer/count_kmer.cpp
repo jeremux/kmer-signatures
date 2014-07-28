@@ -199,6 +199,9 @@ void printVersion()
 
 int main(int argc, char **argv) {
 
+	printSwitch(getSwitch(0));
+
+
 	getParam(argc,argv,&opt);
 	bool error = false;
 	if (opt.doPrintHelp==Yes)
@@ -209,21 +212,8 @@ int main(int argc, char **argv) {
 	if (opt.doTest)
 	{
         executeTests(NB_TEST);
-//		FreqKmer *f = new FreqKmer(-1);
-//		f->initFromFasta("../../../filter/trunc_200000/euka_trunc_200000.fasta");
-//		for(int i=0;i<f->getNbFichierFasta();i++)
-//		{
-//			for(int j=0;j<f->getData()[i]->getNtaxa();j++)
-//			{
-//				cerr << f->getData()[i]->getLengthSeq(j) << "\n";
-//			}
-//		}
+//		doTest0();
 
-//		f->initPatterns("pattern.txt");
-
-//		f->fillFreq();
-
-//		f->imprimeCSV("alveolata_fenetre_moins_un.csv");
 
 
 
