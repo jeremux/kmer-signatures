@@ -1,0 +1,105 @@
+\subsection{R\'eduction de la BDD}
+~\\
+
+La base de donnée complète totalise \textbf{30Go}, l'objectif était de réduire la taille de cette BDD et n'ayant les données qu'aux feuilles, pour les autres noeuds de l'arbre les données sont sous forme de lien symbolique. On obtient au final une BDD avec une taille de \textbf{1,1GO}.
+~\\
+
+Pour cela:
+\\
+\begin{itemize}
+ \item Modification du fichier chemin-liste d’accession (voir figure \ref{resultatS})
+  \item Script de remplissage des noeuds internes
+\end{itemize}
+~\\
+
+\begin{figure}[H]
+\begin{center}
+\begin{tabular}{*{2}{c}}
+  tax1/tax2/.../taxonFeuilleX : & accession\_1,...,accession\_N  \\
+  tax1/tax2/.../taxonFeuilleY : & accession\_1,...,accession\_M  \\
+\end{tabular}
+\caption{\label{resultatS} Exemple de fichier "chemin: liste d'accession"}
+\end{center}
+\end{figure}
+~\\
+
+L'idée pour générer les liens symboliques est de faire remonter chaque données feuilles vers la racine de la BDD (figure \ref{linkage}).
+
+\lstset{
+	language=C,
+	morecomment=[l][keywordstyle]{@\#},
+	keywordstyle=\bfseries\ttfamily\color[rgb]{0,0,1},
+	identifierstyle=\ttfamily,
+	commentstyle=\color[rgb]{0.133,0.545,0.133},
+	stringstyle=\ttfamily\color[rgb]{0.627,0.126,0.941},
+	showstringspaces=false,
+	basicstyle=\small,
+	numberstyle=\footnotesize,
+	numbers=left,
+	stepnumber=1,
+	numbersep=8pt,
+	tabsize=2,
+	breaklines=true,
+	prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	breakatwhitespace=false,
+	aboveskip={1.5\baselineskip},
+  columns=fixed,
+  upquote=true,
+  extendedchars=true,
+  frame=single,
+% backgroundcolor=\color{
+}
+
+\begin{figure}[H]
+  
+
+\begin{lstlisting}[numbers=left][caption=test]
+      //
+Pour chaque feuille l de la BBD
+{
+    /* On se deplace au niveau de la feuille */
+    cd l;
+    Pour chaque fichier f du dossier courant;
+    {
+      /* on se deplace dans la parent de cette feuille */  
+      courant = pwd // commande unix
+      tant que courant != racine
+      {
+        ln -s X
+        /* on remonte d'un niveau */
+        cd .. ;
+        courant = pwd
+      }
+      /* on se replace a la feuille pour traiter le nouveau fichier */
+      cd l;
+    }
+}                                            
+\end{lstlisting}
+\caption{\label{linkage} Algo lien symbolique}
+\end{figure}
+~\\
+
+\subsection{Krona}
+  krona est un utilitaire qui permet de visualiser des hiérarchies sous forme de camembert "zoomables". Pour cela cette hiérarchies doit être écrites sous formes de fichier xml. Krona construit ensuite un fichier html local, un navigateur web permet alors de visualiser le camembert. (figure \ref{krona})
+  
+  \begin{figure}[H]
+\begin{lstlisting}[numbers=left][caption=test]
+<node name="Alveolata">
+    <genomes><val>1009</val></genomes>
+    
+    <node name="Apicomplexa">
+        <genomes><val>993</val></genomes>
+        ...
+    </node>      
+</node>                                          
+\end{lstlisting}
+\caption{\label{krona}Exemple simplifié d'un fichier pour krona}
+\end{figure}
+~\\
+
+\subsection{Scripts dmp et krona}
+  En fin de semaine, deux scripts ont été développés pour: 
+  \begin{itemize}
+    \item Récupérer/mettre à jour les fichiers dmp pour la construction de la bdd.
+    \item Récupérer et installer krona
+  \end{itemize}
