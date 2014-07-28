@@ -19,6 +19,7 @@ void doTest5();
 void doTest3();
 void doTest2();
 void doTest1();
+void doTest0();
 void callTest(int i);
 void executeTests(int k);
 
