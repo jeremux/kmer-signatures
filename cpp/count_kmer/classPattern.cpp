@@ -48,15 +48,18 @@ int Pattern::getKmer(int* seq,int coord)
 {
 	int res = 0;
 	int cpt = 0;
+
 	for (int var = 0; var < getSizePattern() ; var++)
 	{
 		if(extraire(var))
 		{
+
 			res += seq[coord+var]*pow(4,getSizeKmer()-1-cpt);
 			cpt++;
 		}
 
 	}
+
 	return res;
 }
 
@@ -93,6 +96,9 @@ vector<string> Pattern::getCombi()
 	return words;
 }
 Pattern::~Pattern() {
+	pattern="";
+	kmerSize=0;
+	patternSize=0;
 
 }
 
