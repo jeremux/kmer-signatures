@@ -60,7 +60,8 @@ Data::~Data()
         delete[] data[i];
       delete[] data;
       delete[] SPname;
-      delete[] seqLength;
+      if(seqLength!=NULL)
+    	  delete[] seqLength;
       if(takeAcc==Yes)
         delete[] listAcc;
     }
@@ -462,8 +463,9 @@ Switch Data::readPhylip(string filename)
 
 
 
-Switch Data::readFasta(string filename)
-{
+
+
+Switch Data::readFasta(string filename) {
   if(verbose)
   {
       cout << "Data::readFasta(" << filename <<")\n";
@@ -471,7 +473,7 @@ Switch Data::readFasta(string filename)
   }
   /**********************/
   Switch ok=Yes;
-  const char * fileChar = filename.c_str();
+//  const char * fileChar = filename.c_str();
   Switch seen;
   char line[MAXSITE];
   string str, tmp, field, spname;
@@ -481,11 +483,12 @@ Switch Data::readFasta(string filename)
 
   cout.flush();
   try {
-
-	  cerr << "debut fstream " << fileChar << "\n";
-      fstream map_is0(fileChar,ios::in);
-      cerr << "fin fstream \n";
-
+	  const string tmpfilename=filename;
+//	  cerr << "debut fstream " << tmpfilename << "\n";
+	  cerr.flush();
+      fstream map_is0(tmpfilename.c_str(),ios::in);
+//      cerr << "fin fstream \n";
+	  cerr.flush();
 
       map_is0.getline(line,MAXSITE);
 
@@ -710,9 +713,17 @@ void Data::initLengthSeq()
   for(int i=0;i<Ntaxa;i++)
   {
       for(int j=0;j<Nsite;j++)
-          if(data[i][j]<4 && data[i][j]>=0)
+          if(data[i][j]!=getNstate())
                   seqLength[i]+=1; /* TODO: changer lol */
   }
+
+//  for(int i=0;i<Ntaxa;i++)
+//  {
+//	  cout << seqLength[i] << "\n";
+//	  cout.flush();
+//  }
+//  cout << "max site" << getNsite() << "\n";
+//  cout.flush();
 }
 
 int Data::getLengthSeq(int i)
@@ -735,7 +746,7 @@ Switch Data::initFrom(string file, datatype type)
       cout <<")\n";
       cout.flush();
   } /**********************/
-  Switch ok;
+  Switch ok=Yes;
   switch(type)
   {
   case 0:
@@ -745,7 +756,7 @@ Switch Data::initFrom(string file, datatype type)
     ok=readPhylip(file);
     break;
   case 2 :
-    ok=readFasta(file);
+    readFasta(file);
     break;
   default:
     ok=No;
