@@ -7,13 +7,15 @@ Dans un premier temps le programme à été revu pour prendre en compte ce déca
 \\
 
 Avec un décalage égale à $n$, on a $n$ kmer qui "sort" et $n$ nouveaux kmer à compter (entrant). Pour se faire on se propose d'utiliser deux tampons: 
+\\
 \begin{itemize}
  \item[.] $courant$: correspondant à la ligne de comptage actuel, pour une fenêtre donnée.
  \item[.] $precedent$: correspondant à la ligne de comptage pour la fenêtre précédente.
 \end{itemize}
 ~\\
 
-Ces tampons ont la même taille que le nombre de kmer présent dans la fenêtre, soit si $f-k+1$ si $f$ est la taille de la fenêtre et $k$ la taille du kmer. Ainsi lors qu'on compte une toute première fois cela permet d'initialiser le tampon courant et de mémoriser tous les kmers rencontrés. Lorsqu'on passe à la fenêtre suivante si on effectue un décalage de $d$ nucléotides, il suffit donc:
+Ces tampons ont la même taille que le nombre de kmer présent dans la fenêtre, soit $f-k+1$ si $f$ est la taille de la fenêtre et $k$ la taille du kmer. Ainsi lors qu'on compte une toute première fois cela permet d'initialiser le tampon courant et de mémoriser tous les kmers rencontrés. Lorsqu'on passe à la fenêtre suivante si on effectue un décalage de $d$ nucléotides, il suffit donc:
+\\
 \begin{itemize}
  \item[.] D'intervertir les deux tampons
  \item[.] De copier les bonnes parties dans le nouveau tampon, courant
@@ -21,7 +23,7 @@ Ces tampons ont la même taille que le nombre de kmer présent dans la fenêtre,
 \end{itemize}
 ~\\
 
-On obtient donc les kmers rencontrés, et on augmente dans le tableau de fréquence par rapport au tampon courant. Voir figure \ref{decalage} pour illustration, avec un kmer=\#\#\# et une fenêtre de taille 7.
+On obtient donc les kmers rencontrés, et on augmente dans le tableau de fréquence par rapport au tampon courant. Voir figure \ref{decalage} pour illustration, avec un kmer=\#\#\#, une fenêtre de taille 7 et un décalage $d=2$.
 
 \begin{figure}[H]
 \begin{center}

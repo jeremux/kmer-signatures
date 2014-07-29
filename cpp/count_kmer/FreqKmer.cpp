@@ -334,6 +334,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 
 	    if(noData)
 	    {
+		// cerr << "Fermeture Data\n";
 		delete data[cpt];
 		data[cpt]=NULL;
 	    }
@@ -634,7 +635,12 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern)
 	    /* on increment les kmers trouvés */
 	    for(int i=0;i<buf_size;i++)
 	    {
-		freq[index][current[i]]+=1;
+		/* On ne compte que les acgt */
+		if(current[i]<getNCol() && current[i]>0)
+		{
+		    freq[index][current[i]]+=1;
+		}
+		
 	    }
 	    /* le courant devient le precedent */
 	    swap(current,previous,buf_size);
@@ -792,7 +798,7 @@ void FreqKmer::imprimeCSV(string ouput)
 	for(int j=0;j<nCol;j++)
 	{
 	    myfile << freq[i][j] << ";";
-	    cout << freq[i][j] << ";";
+	    // cout << freq[i][j] << ";";
 	}
 	myfile << endl;
 	//		cout << endl;
