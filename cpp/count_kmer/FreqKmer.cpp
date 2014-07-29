@@ -19,6 +19,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 {
     data=NULL;
     freq=NULL;
+    mask=NULL;
     patterns=NULL;
     kmerSpace=NULL;
     shift=s;
@@ -57,8 +58,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool b)
 {
     printSwitch(getSwitch(0));
-    
-    
+    mask=NULL;
     data=NULL;
     freq=NULL;
     patterns=NULL;
@@ -135,11 +135,13 @@ FreqKmer::~FreqKmer()
 
     for(int i=0;i<nbFastaFile;i++)
     {
-	if(indexLineDataSeq[i]!=NULL)
+	if(indexLineDataSeq[i]!=NULL && mask[i]!=NULL)
 	{
 	    delete[] indexLineDataSeq[i];
+	    delete[] mask[i];
 	}
     }
+    delete[] mask;
     delete[] indexLineDataSeq;
     delete[] indexLineData;
 
@@ -271,6 +273,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
     tailleLigne = ligne.length();
     /* J'init à partir de chaque ligne du fichier */
     indexLineDataSeq = new int*[nbFastaFile];
+    mask  = new bool*[nbFastaFile];
     while (file2)
     {
 	if(tailleLigne!=0)
@@ -285,7 +288,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 	    data[cpt]->initFrom(tmpligne,Fasta);
 
 	    indexLineDataSeq[cpt] = new int[data[cpt]->getNtaxa()];
-
+	    mask[cpt] = new bool[data[cpt]->getNtaxa()];
 	    /* On incrémente le nombre de sequence total pour le comptage */
 	    nSeq += data[cpt]->getNtaxa();
 
@@ -316,6 +319,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 		     * la var-ème sequence du cpt-ème jeu de données
 		     */
 		    indexLineDataSeq[cpt][var]=nLine-1;
+		    mask[cpt][var]=true;
 		}
 
 	    }
@@ -326,6 +330,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 		for(int i=0;i<data[cpt]->getNtaxa();i++)
 		{
 		    indexLineDataSeq[cpt][i] = cpt2++;
+		    mask[cpt][i]=true;
 		}
 
 	    }
@@ -390,9 +395,12 @@ void FreqKmer::initFromFasta(string fichier)
 
     nSeq = data[0]->getNtaxa();
     indexLineDataSeq = new int *[1];
-
+   
     indexLineDataSeq[0] = new int[nSeq];
-
+    mask  = new bool *[1];
+   
+    mask[0] = new bool[nSeq];
+    
     int taille=0;
     if (winSize>0)
     {
@@ -409,6 +417,7 @@ void FreqKmer::initFromFasta(string fichier)
 		nLine += obtainNbLineWindow(0,taille-1,winSize,shift);
 	    }
 	    indexLineDataSeq[0][var]=nLine-1;
+	    mask[0][var]=true;
 	}
     }
     else
@@ -416,6 +425,7 @@ void FreqKmer::initFromFasta(string fichier)
 	for (int var = 0; var < nSeq; var++)
 	{
 	    indexLineDataSeq[0][var]=cpt2++;
+	    mask[0][var]=true;
 	}
 	nLine = nSeq;
     }
@@ -990,3 +1000,7 @@ void FreqKmer::obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idW
     }
 }
 
+bool FreqKmer::takeDataSeq(int i,int j)
+{
+	return mask[i][j];
+}

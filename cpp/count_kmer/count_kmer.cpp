@@ -25,7 +25,7 @@
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 12
+#define NB_TEST 13
 
 typedef struct {
     string listFastaPath;

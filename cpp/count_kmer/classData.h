@@ -58,7 +58,7 @@ class Data{
   void           removeSite(int index);
   void           concatenate(Data *ali);
   int**			 getDataObject(){return data;}
-  void                  initLengthSeq();
+  void           initLengthSeq();
   int          getLengthSeq(int i);
 
   int operator() (int taxa, int site) const

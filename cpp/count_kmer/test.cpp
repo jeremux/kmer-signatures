@@ -22,6 +22,28 @@ void printResult(bool res,int i)
 	}
 }
 
+void doTest13()
+{
+	   cerr << "\n**test table mask**\n";
+
+
+	    	bool res = true;
+	    	string filename = "Debug/tests/test4/liste.txt";
+	    	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false);
+
+	    	for(int i=0 ; i < f->getNbFichierFasta(); i++)
+	    	{
+	    		for (int j = 0; j < f->getData()[i]->getNtaxa(); j++)
+				{
+					res = res && f->takeDataSeq(i,j);
+				}
+	    	}
+
+	        //f->fillFreq();
+
+	        printResult(res,13);
+    
+}
 void doTest12()
 {
         cerr << "\n**test map get DataSeq from line**\n";
@@ -66,7 +88,7 @@ void doTest12()
 		&& (idSeq5 == 2)
 		&& (idSeq6 == 2);
 
-        f->fillFreq();
+        //f->fillFreq();
 
         printResult(res,12);
 
@@ -722,6 +744,9 @@ void callTest(int i)
 						break;
 				case 12:
 						doTest12();
+						break;
+				case 13:
+						doTest13();
 						break;
                 default:
                         break;

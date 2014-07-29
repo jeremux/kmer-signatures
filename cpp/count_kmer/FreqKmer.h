@@ -28,7 +28,7 @@ private:
 	int *indexLineData; /* indication sur la ligne de fin dans table freq pour une Data donnée */
 	int **indexLineDataSeq; /* indication sur la ligne de fin dans table freq pour une sequence d'une data donnée */
 	int *kmerSpace;	/* Map pour les kmers avec une taille nPattern, permet de se deplacer horizontalement */
-
+	bool **mask; /* mask pour savoir quels séquences de quel jeu de donnée on considère, de taille nData*nSeq */
 
 	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
 	nCol, /* Nombre de colonne définit par les patterns: nombre de kmer possible */
@@ -132,7 +132,7 @@ public:
 	virtual ~FreqKmer();
 
 	/**********************************************************************************/
-
+	bool	takeDataSeq(int indexData,int indexSeq);
 	/**
 	 * Initialise la table patterns
 	 * @param	listPatterns fichier contenant les patterns
