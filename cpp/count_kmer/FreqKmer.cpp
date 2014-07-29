@@ -1007,3 +1007,28 @@ bool FreqKmer::takeDataSeq(int i,int j)
 {
 	return mask[i][j];
 }
+
+int FreqKmer::getDirTaxonFromPath(string dir,vector<string> &files)
+{
+	files.erase(files.begin(),files.end());
+	DIR *dp;
+	string s1 = "";
+	struct dirent *dirp;
+	if((dp  = opendir(dir.c_str())) == NULL)
+	{
+		cout << "Error(" << errno << ") opening " << dir << endl;
+		return errno;
+	}
+	while ((dirp = readdir(dp)) != NULL)
+	{
+		s1 = string(dirp->d_name);
+		if (s1.find("__") != std::string::npos || s1=="others")
+		{
+			files.push_back(s1);
+		}
+
+	}
+	closedir(dp);
+	return 0;
+}
+

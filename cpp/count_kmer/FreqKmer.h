@@ -189,6 +189,8 @@ public:
 	 */
 	void 		fillFreq();
 
+	int 		getDirTaxonFromPath(string path,vector<string> &files);
+
 	/*******************************ACCESSEUR*****************************************/
 	/**
 	 * inline accesor

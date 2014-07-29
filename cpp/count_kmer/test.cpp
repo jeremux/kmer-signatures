@@ -21,6 +21,49 @@ void printResult(bool res,int i)
 			cerr << "Test"<<i <<" fail...\n";
 	}
 }
+bool doTest18()
+{
+	bool res = true;
+
+	return res;
+}
+bool doTest17()
+{
+	bool res = true;
+
+	return res;
+}
+bool doTest16()
+{
+	bool res = true;
+
+	return res;
+}
+bool doTest15()
+{
+	bool res = true;
+
+	return res;
+}
+
+bool doTest14()
+{
+	cerr << "\n**test list sous taxon**\n";
+	string filename = "Debug/tests/test4/liste.txt";
+	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"");
+	bool res = true;
+	string path = "Debug/tests/taxon__alpha";
+	vector<string> taxon_fils;
+	f->getDirTaxonFromPath(path,taxon_fils);
+
+
+	res = (taxon_fils[0]=="taxon__B" && taxon_fils[1]=="taxon__A" && taxon_fils[2]=="others" && taxon_fils[3]=="taxon__C");
+	printResult(res,14);
+
+	return res;
+
+
+}
 
 bool doTest13()
 {
@@ -780,6 +823,21 @@ bool callTest(int i)
 						break;
 				case 13:
 						res = doTest13();
+						break;
+				case 14:
+						res = doTest14();
+						break;
+				case 15:
+						res = doTest15();
+						break;
+				case 16:
+						res = doTest16();
+						break;
+				case 17:
+						res = doTest17();
+						break;
+				case 18:
+						res = doTest18();
 						break;
                 default:
                         break;
