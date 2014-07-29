@@ -8,19 +8,19 @@
 #ifndef TEST_H_
 #define TEST_H_
 
-void doTest12();
-void doTest11();
-void doTest10();
-void doTest9();
-void doTest8();
-void doTest7();
-void doTest6();
-void doTest5();
-void doTest3();
-void doTest2();
-void doTest1();
-void doTest0();
-void callTest(int i);
-void executeTests(int k);
+bool doTest12();
+bool doTest11();
+bool doTest10();
+bool doTest9();
+bool doTest8();
+bool doTest7();
+bool doTest6();
+bool doTest5();
+bool doTest3();
+bool doTest2();
+bool doTest1();
+bool doTest0();
+bool callTest(int i);
+bool executeTests(int k);
 
 #endif /* TEST_H_ */

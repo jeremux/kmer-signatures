@@ -42,6 +42,7 @@ private:
 	bool noData; /* boolean pour savoir si on instancie les objets data d'une traite */
 	string listData; /* fichier de la list des chemins fasta */
 	string *pathFasta;
+	string pathRoot; /* dossier ou on devra prendre une décision */
 
 	/**
 	 * Effectue le comptage dans une fenetre
@@ -113,7 +114,7 @@ public:
 	 * @param 	patternFile: fichier contenant les patterns de kmer
 	 * @param	noData	: true si on ne charge pas toutes les données d'un coup
 	 */
-	FreqKmer(int win_size,bool list, string file,string patternFile, bool noData);
+	FreqKmer(int win_size,bool list, string file,string patternFile, bool noData,string pathRoot);
 
 	/**
 	 * Contruit l'object FreqKmer à partir d'un fichier, contenant
@@ -124,7 +125,7 @@ public:
 	 * @param 	patternFile: fichier contenant les patterns de kmer
 	 * @param	noData	: true si on ne charge pas toutes les données d'un coup
 	 */
-	FreqKmer(int win_size,int shift,bool list, string file,string patternFile, bool noData);
+	FreqKmer(int win_size,int shift,bool list, string file,string patternFile, bool noData,string pathRoot);
 
 
 	FreqKmer();

@@ -22,14 +22,14 @@ void printResult(bool res,int i)
 	}
 }
 
-void doTest13()
+bool doTest13()
 {
 	   cerr << "\n**test table mask**\n";
 
 
 	    	bool res = true;
 	    	string filename = "Debug/tests/test4/liste.txt";
-	    	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false);
+	    	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"");
 
 	    	for(int i=0 ; i < f->getNbFichierFasta(); i++)
 	    	{
@@ -42,16 +42,17 @@ void doTest13()
 	        //f->fillFreq();
 
 	        printResult(res,13);
+	        return res;
     
 }
-void doTest12()
+bool doTest12()
 {
         cerr << "\n**test map get DataSeq from line**\n";
 
 
     	bool res = true;
     	string filename = "Debug/tests/test4/liste.txt";
-    	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false);
+    	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"");
 
 
         int idData0,idData1,idData2,idData3,idData4,idData5,idData6,
@@ -90,20 +91,22 @@ void doTest12()
 
         //f->fillFreq();
 
+
         printResult(res,12);
 
 
         delete f;
+        return res;
 }
 
-void doTest11()
+bool doTest11()
 {
         cerr << "\n**Données réelles validées par perl/C**\n";
 
 
         string filename = "Debug/tests/haemo/haemo.fasta";
         string pattern = "Debug/tests/haemo/pattern5.txt";
-        FreqKmer *f = new FreqKmer(-1,1,false,filename,pattern,false);
+        FreqKmer *f = new FreqKmer(-1,1,false,filename,pattern,false,"");
 
         int val[] = {11,10,7,18,12,5,5,7,10,3,7,6,29,4,14,17,8,7,9,14,7,2,3,6,4,2,3,5,4,6,8,13,14,4,9,7,2,3,1,5,5,1,0,9,7,1,3,9,26,14,8,31,4,8,1,4,10,8,6,19,24,8,13,22,8,5,7,10,9,3,1,4,7,5,7,4,16,5,7,19,9,4,4,11,
         		4,2,1,1,1,3,1,9,7,4,3,10,5,1,4,3,1,2,0,4,0,0,0,3,6,1,1,4,10,7,4,12,8,1,2,6,1,3,6,6,3,8,5,13,9,7,7,11,2,2,4,2,6,1,2,3,13,4,10,6,5,3,6,6,7,1,3,6,1,0,1,2,7,5,4,4,8,4,5,10,2,1,2,1,2,1,0,2,5,1,2,8,5,2,7,19,2,1,2,1,3,2,4,4,11,7,5,9,28,8,3,35,16,11,3,
@@ -162,6 +165,8 @@ void doTest11()
         }
         printResult(res,11);
 
+
+
         for(int i=0 ; i<ligne ; i++)
 	   {
 			   delete[] freq[i];
@@ -169,9 +174,10 @@ void doTest11()
         delete[] freq;
 
         delete f;
+        return res;
 }
 
-void doTest10()
+bool doTest10()
 {
         cerr << "\n**test decalage bis**\n";
 
@@ -179,7 +185,7 @@ void doTest10()
         string filename = "Debug/tests/test1/liste2.txt";
         string pattern = "Debug/tests/test1/pattern2.txt";
 
-        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
+        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false,"");
 
 
 
@@ -228,6 +234,8 @@ void doTest10()
         }
         printResult(res,10);
 
+
+
         for(int i=0 ; i<ligne ; i++)
 	   {
 			   delete[] freq[i];
@@ -235,15 +243,16 @@ void doTest10()
         delete[] freq;
 
         delete f;
+        return res;
 }
 
-void doTest9()
+bool doTest9()
 {
 	cerr << "\n**test decalage 2**\n";
 
 	        string filename = "Debug/tests/test5/liste.txt";
 	        string pattern ="Debug/tests/test5/pattern.txt";
-	        FreqKmer *o = new FreqKmer(5,2,true,filename,pattern,false);
+	        FreqKmer *o = new FreqKmer(5,2,true,filename,pattern,false,"");
 
 
 
@@ -316,21 +325,23 @@ void doTest9()
 	        }
 	        printResult(res,9);
 
+
 	        for(int i=0 ; i<ligne ; i++)
 	        	   {
 	        			   delete[] freq[i];
 	        	   }
 	                delete[] freq;
 	        delete o;
+	        return res;
 }
 
-void doTest8()
+bool doTest8()
 {
         cerr << "\n**test decalage**\n";
 
         string filename = "Debug/tests/test1/liste.txt";
         string pattern ="Debug/tests/test1/pattern.txt";
-        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false);
+        FreqKmer *f = new FreqKmer(3,2,true,filename,pattern,false,"");
 
 
 
@@ -408,18 +419,21 @@ void doTest8()
 	   {
 			   delete[] freq[i];
 	   }
+
+
 		delete[] freq;
        delete f;
+       return res;
 }
 
-void doTest7()
+bool doTest7()
 {
 	cerr << "\n**Test de la map deux**\n";
 
 	bool res = true;
 	string filename = "Debug/tests/test4/liste.txt";
 	string pattern = "Debug/tests/test4/pattern.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
 
 	res = (
 		   f->obtainStartLineDataSeq(0,0)==0
@@ -447,32 +461,36 @@ void doTest7()
 
 	printResult(res,7);
 
+
 	delete f;
+	return res;
 }
 
-void doTest6()
+bool doTest6()
 {
 	cerr << "\n**Test de la map une**\n";
 
 	bool res = true;
 	string filename = "Debug/tests/test1/liste.txt";
 	string pattern = "Debug/tests/test1/pattern.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
 
 	res = !(f->obtainNbLineData(0)!=3 || f->obtainNbLineData(1)!=4 || f->obtainStartLineData(0)!=0 || f->obtainEndLineData(0)!=2 || f->obtainStartLineData(1)!=3 || f->obtainEndLineData(1)!=6);
 
 	printResult(res,6);
 
+
 	delete f;
+	return res;
 }
-void doTest5()
+bool doTest5()
 {
 	cerr << "\n**Test espace des kmers**\n";
 	bool res = true;
 	string filename = "Debug/tests/test1/liste.txt";
 	string pattern = "Debug/tests/test1/pattern.txt";
 
-	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
 
 
 	if (f->obtainStartColKmer(0)!=0 || f->obtainStartColKmer(1)!=16 || f->obtainEndColKmer(0)!=15 || f->obtainEndColKmer(1)!=19)
@@ -482,16 +500,18 @@ void doTest5()
 
 	printResult(res,5);
 
+
 	delete f;
+	return res;
 }
-void doTest4()
+bool doTest4()
 {
 	cerr << "\n**Test taille des sequences**\n";
 
 	bool res = true;
 	string filename = "Debug/tests/test1/liste.txt";
 	string pattern = "Debug/tests/test1/pattern.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
 
 	if (f->getData()[0]->getLengthSeq(0)!=6 || f->getData()[1]->getLengthSeq(0)!=7)
 	{
@@ -500,9 +520,11 @@ void doTest4()
 
 	printResult(res,4);
 
+
 	delete f;
+	return res;
 }
-void doTest3()
+bool doTest3()
 {
         cerr << "\n**test multi-pattern**\n";
 
@@ -510,7 +532,7 @@ void doTest3()
         string filename = "Debug/tests/test1/liste.txt";
         string pattern = "Debug/tests/test1/pattern.txt";
 
-        FreqKmer *f = new FreqKmer(4,true,filename,pattern,false);
+        FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
 
         int ligne = 7;
         int col = 20;
@@ -588,19 +610,22 @@ void doTest3()
 	   {
 			   delete[] freq[i];
 	   }
+
+
 		delete[] freq;
 
         delete f;
+        return res;
 }
 
-void doTest2()
+bool doTest2()
 {
         cerr << "\n**test pattern simple**\n";
 
         string filename = "Debug/tests/test1/liste.txt";
         string pattern = "Debug/tests/test2/pattern2.txt";
 
-        FreqKmer *g = new FreqKmer(4,true,filename,pattern,false);
+        FreqKmer *g = new FreqKmer(4,true,filename,pattern,false,"");
 
 
         int ligne = 7;
@@ -657,11 +682,13 @@ void doTest2()
 	   {
 			   delete[] freq[i];
 	   }
+
 		delete[] freq;
         delete g;
+        return res;
 }
 
-void doTest1()
+bool doTest1()
 {
         cerr << "\n**test dimension tableau**\n";
 
@@ -669,22 +696,25 @@ void doTest1()
 
         string pattern = "Debug/tests/test3/3patterns.txt";
 
-        FreqKmer *f = new FreqKmer(6,false,filename,pattern,false);
-
+        FreqKmer *f = new FreqKmer(6,false,filename,pattern,false,"");
+        bool res = true;
 
         if(f->getNCol()!=84 || f->getNLine()!=107)
         {
                 cerr << "Test1 fail...\n";
+                res = false;
         }
         else
         {
                 cerr << "Test1 OK !\n";
         }
         f->initFreq();
+
         delete f;
+        return res;
 }
 
-void doTest0()
+bool doTest0()
 {
 	cerr << "\n**test new Data**\n";
 	Switch s;
@@ -697,71 +727,77 @@ void doTest0()
 	   res=true;
 
    printResult(res,0);
+
    delete d1;
+   return res;
 
 
 }
-void callTest(int i)
+bool callTest(int i)
 {
-        printSwitch(getSwitch(0));
-        switch (i) {
-        		case 0:
-        			doTest0();
-        			break;
+	bool res = false;
+	printSwitch(getSwitch(0));
+	switch (i) {
+			case 0:
+				res = doTest0();
+				break;
 
                 case 1:
-                        doTest1();
+                        res = doTest1();
                         break;
                 case 2:
-                        doTest2();
+                        res = doTest2();
                         break;
                 case 3:
-                        doTest3();
+                        res = doTest3();
                         break;
                 case 4:
-                		doTest4();
+                		res = doTest4();
                 		break;
                 case 5:
-                		doTest5();
+                		res = doTest5();
                 		break;
                 case 6:
-                		doTest6();
+                		res = doTest6();
                 		break;
                 case 7:
-                		doTest7();
+                		res = doTest7();
                 		break;
 				case 8:
-                		doTest8();
+                		res = doTest8();
                 		break;
 				case 9:
-                		doTest9();
+                		res = doTest9();
                 		break;
 				case 10:
-						doTest10();
+						res = doTest10();
 						break;
 				case 11:
-						doTest11();
+						res = doTest11();
 						break;
 				case 12:
-						doTest12();
+						res = doTest12();
 						break;
 				case 13:
-						doTest13();
+						res = doTest13();
 						break;
                 default:
                         break;
         }
+	return res;
 }
 
 
 
-void executeTests(int k)
+bool executeTests(int k)
 {
+	bool res = true ;
         cerr << "===Début des tests===\n";
         for(int i=0; i <= k ; i++)
         {
-                callTest(i);
+        	res = res & callTest(i);
         }
+        return res;
         cerr << "\n===Fin des tests===\n";
 }
 

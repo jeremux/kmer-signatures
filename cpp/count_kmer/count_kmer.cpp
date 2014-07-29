@@ -206,6 +206,7 @@ int main(int argc, char **argv) {
 
     getParam(argc,argv,&opt);
     bool error = false;
+    bool testResult = false;
     if (opt.doPrintHelp==Yes)
     {
 	printHelp();
@@ -213,9 +214,16 @@ int main(int argc, char **argv) {
     }
     if (opt.doTest)
     {
-        executeTests(NB_TEST);
+        testResult = executeTests(NB_TEST);
 //		doTest0();
-
+        if(testResult)
+        {
+        	cerr << "Tous les tests sont OK !\n";
+        }
+        else
+        {
+        	cerr << "Va vérifier ton code...\n";
+        }
 
 
 
@@ -258,12 +266,12 @@ int main(int argc, char **argv) {
 	    // 	cerr << "TOTO\n";
 	    // }
 	    
-	    f = new FreqKmer(opt.windowSize,initFromList,opt.listFastaPath,opt.kmerPath,opt.noData);
+	    f = new FreqKmer(opt.windowSize,initFromList,opt.listFastaPath,opt.kmerPath,opt.noData,"");
 	}
 	else
 	{
 	    cerr << "Debut init fasta \n";
-	    f = new FreqKmer(opt.windowSize,initFromList,opt.fastaPath,opt.kmerPath,opt.noData);
+	    f = new FreqKmer(opt.windowSize,initFromList,opt.fastaPath,opt.kmerPath,opt.noData,"");
 	    cerr << "Fin init fasta\n";
 	}
 

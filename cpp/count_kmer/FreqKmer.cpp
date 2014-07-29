@@ -15,8 +15,10 @@ using namespace std;
 
 
 
-FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b)
+FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b,string pathR)
 {
+	printSwitch(getSwitch(0));
+	pathRoot=pathR;
     data=NULL;
     freq=NULL;
     mask=NULL;
@@ -55,9 +57,10 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 
 
 
-FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool b)
+FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool b,string pathR)
 {
     printSwitch(getSwitch(0));
+    pathRoot=pathR;
     mask=NULL;
     data=NULL;
     freq=NULL;
