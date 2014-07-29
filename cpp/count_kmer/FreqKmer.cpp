@@ -52,6 +52,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 
     }
 
+    getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
 
 }
 
@@ -102,6 +103,8 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 	pathFasta[0] = file;
 	listData = "null";
     }
+
+    getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
 }
 
 FreqKmer::~FreqKmer() 
@@ -1008,11 +1011,13 @@ bool FreqKmer::takeDataSeq(int i,int j)
 	return mask[i][j];
 }
 
-int FreqKmer::getDirTaxonFromPath(string dir,vector<string> &files)
+int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &files,vector<string> &taxids)
 {
 	files.erase(files.begin(),files.end());
+	taxids.erase(taxids.begin(),taxids.end());
 	DIR *dp;
 	string s1 = "";
+	int x = -1;
 	struct dirent *dirp;
 	if((dp  = opendir(dir.c_str())) == NULL)
 	{
@@ -1024,11 +1029,31 @@ int FreqKmer::getDirTaxonFromPath(string dir,vector<string> &files)
 		s1 = string(dirp->d_name);
 		if (s1.find("__") != std::string::npos || s1=="others")
 		{
-			files.push_back(s1);
+			files.push_back(dir+"/"+s1);
+
+			if (s1=="others")
+			{
+				taxids.push_back(s1);
+			}
+			else
+			{
+				x = s1.find( "__" ) + 2 ;
+				taxids.push_back(s1.substr(x,s1.length()));
+			}
 		}
 
 	}
+	nbChildTaxa = files.size();
 	closedir(dp);
 	return 0;
 }
 
+string FreqKmer::getIdTaxa(int dir_i)
+{
+	return idTaxa[dir_i];
+}
+
+string FreqKmer::getPathChildTaxa(int dir_i)
+{
+	return pathChildTaxa[dir_i];
+}

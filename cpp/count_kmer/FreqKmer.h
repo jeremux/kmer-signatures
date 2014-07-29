@@ -37,13 +37,15 @@ private:
 	nSeq, /* Nombre total de sequence à traiter */
 	nbFastaFile, /* Nombre de fichier fasta entrée */
 	index, /* marqueur de ligne lors du comptage */
-	shift; /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
+	shift, /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
+	nbChildTaxa; /* nombre de taxon fils */
 
 	bool noData; /* boolean pour savoir si on instancie les objets data d'une traite */
 	string listData; /* fichier de la list des chemins fasta */
 	string *pathFasta;
 	string pathRoot; /* dossier ou on devra prendre une décision */
-
+	vector<string> pathChildTaxa; /* chemin des taxon fils du dossier courant */
+	vector<string> idTaxa; /* id des taxon fils du dossier courant */
 	/**
 	 * Effectue le comptage dans une fenetre
 	 * @param	seq: la sequence où effectuer le comptage
@@ -189,7 +191,7 @@ public:
 	 */
 	void 		fillFreq();
 
-	int 		getDirTaxonFromPath(string path,vector<string> &files);
+	int 		getDirTaxonFromPath(string path,int &nbChild, vector<string> &files,vector<string> &taxids);
 
 	/*******************************ACCESSEUR*****************************************/
 	/**
@@ -202,6 +204,7 @@ public:
 	int 		getNLine(){return nLine;}
 	int 		getWinSize(){return winSize;}
 	int 		getNSeq(){return nSeq;}
+	int			getNbChild(){return nbChildTaxa;}
 	Data** 		getData(){return data;}
 
 
@@ -320,6 +323,10 @@ public:
 	void		obtainDataSeqFromLine(int line,int &idData,int &idSeq);
 
 	void 		obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idWin);
+
+	string 		getPathChildTaxa(int i);
+
+	string 		getIdTaxa(int i);
 
 };
 

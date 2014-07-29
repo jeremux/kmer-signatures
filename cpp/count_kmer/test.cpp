@@ -50,14 +50,19 @@ bool doTest14()
 {
 	cerr << "\n**test list sous taxon**\n";
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"");
+	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
 	bool res = true;
-	string path = "Debug/tests/taxon__alpha";
-	vector<string> taxon_fils;
-	f->getDirTaxonFromPath(path,taxon_fils);
 
-
-	res = (taxon_fils[0]=="taxon__B" && taxon_fils[1]=="taxon__A" && taxon_fils[2]=="others" && taxon_fils[3]=="taxon__C");
+	res = (f->getPathChildTaxa(0)=="Debug/tests/taxon__alpha/taxon__B"
+			&& f->getPathChildTaxa(1)=="Debug/tests/taxon__alpha/taxon__A"
+			&& f->getPathChildTaxa(2)=="Debug/tests/taxon__alpha/others"
+			&& f->getPathChildTaxa(3)=="Debug/tests/taxon__alpha/taxon__C"
+			&& f->getIdTaxa(0)=="B"
+			&& f->getIdTaxa(1)=="A"
+			&& f->getIdTaxa(2)=="others"
+			&& f->getIdTaxa(3)=="C"
+			&& f->getNbChild()==4
+			);
 	printResult(res,14);
 
 	return res;
