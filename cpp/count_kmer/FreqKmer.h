@@ -29,6 +29,8 @@ private:
 	int **indexLineDataSeq; /* indication sur la ligne de fin dans table freq pour une sequence d'une data donnée */
 	int *kmerSpace;	/* Map pour les kmers avec une taille nPattern, permet de se deplacer horizontalement */
 	bool **mask; /* mask pour savoir quels séquences de quel jeu de donnée on considère, de taille nData*nSeq */
+	string **taxaDataSeq;
+	int *indexTaxaInFasta;
 
 	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
 	nCol, /* Nombre de colonne définit par les patterns: nombre de kmer possible */
@@ -36,7 +38,6 @@ private:
 	winSize, /* Taille de fenetre dans laquelle il faut effectuer le comptage de kmer */
 	nSeq, /* Nombre total de sequence à traiter */
 	nbFastaFile, /* Nombre de fichier fasta entrée */
-	index, /* marqueur de ligne lors du comptage */
 	shift, /* taille du decalage lors du passage d'une fenetre à la suivante > 0 */
 	nbChildTaxa; /* nombre de taxon fils */
 
@@ -46,6 +47,7 @@ private:
 	string pathRoot; /* dossier ou on devra prendre une décision */
 	vector<string> pathChildTaxa; /* chemin des taxon fils du dossier courant */
 	vector<string> idTaxa; /* id des taxon fils du dossier courant */
+	vector<string> listPathFasta;
 	/**
 	 * Effectue le comptage dans une fenetre
 	 * @param	seq: la sequence où effectuer le comptage
@@ -53,8 +55,9 @@ private:
 	 * @param	pos: là où commencer le comptage
 	 * @param 	indexPattern: indice du pattern courant
 	 * @param	current: buffer qui va garder les frequences trouvés pour la fenetre courante
+	 * @param	start_line: là ligne où commence l'écriture dans la table freq
 	 */
-	void 	winCount(int *seq,int win_length,int pos,int indexPattern,int *current);
+	void 	winCount(int *seq,int win_length,int pos,int indexPattern,int *current,int start_line);
 
 
 	/**
@@ -62,8 +65,9 @@ private:
 	 * @param	seq: la sequence où effectuer le comptage
 	 * @param	seq_length: taille de la sequence
 	 * @param 	indexPattern: indice du pattern courant
+	 * @param	start_line: là ligne où commence l'écriture dans la table freq
 	 */
-	void	count(int *seq,int seq_length,int indexPattern);
+	void	count(int *seq,int seq_length,int indexPattern,int start_line);
 
 	/**
 	 * Recupère la partie commune de previous pour le comptage
@@ -94,6 +98,8 @@ private:
 	void printBuf(int *buf,int buf_size);
 
 	void initPathFasta(string file);
+
+	void initTabIndexTaxaInFasta(string key_fasta);
 
 
 /*************************************************************************************************************************
@@ -307,6 +313,10 @@ public:
 	 * sequence de Data[i]
 	 */
 	int 		obtainNbLineDataSeq(int i,int j);
+
+	int 		obtainStartLineTaxaInFastaList(int i);
+	int 		obtainEndLineTaxaInFastaList(int i);
+	int 		obtainNbLineTaxaInFastaList(int i);
 
 	/**
 	 * Permet d'avoir le nombre de decalage entre deux position

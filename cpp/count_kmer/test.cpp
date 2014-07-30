@@ -21,6 +21,8 @@ void printResult(bool res,int i)
 			cerr << "Test"<<i <<" fail...\n";
 	}
 }
+
+
 bool doTest18()
 {
 	bool res = true;
@@ -41,9 +43,31 @@ bool doTest16()
 }
 bool doTest15()
 {
-	bool res = true;
+	cerr << "\n**Test index des chemins fasta dans la list**\n";
+		string filename = "Debug/tests/test4/liste.txt";
+		FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+		bool res = true;
 
-	return res;
+		res = (f->obtainStartLineTaxaInFastaList(0) == 0
+			&& f->obtainStartLineTaxaInFastaList(1) == 1
+			&& f->obtainStartLineTaxaInFastaList(2) == 5
+			&& f->obtainStartLineTaxaInFastaList(3) == 6
+
+			&& f->obtainEndLineTaxaInFastaList(0) == 0
+			&& f->obtainEndLineTaxaInFastaList(1) == 4
+			&& f->obtainEndLineTaxaInFastaList(2) == 5
+			&& f->obtainEndLineTaxaInFastaList(3) == 7
+
+			&& f->obtainNbLineTaxaInFastaList(0) == 1
+			&& f->obtainNbLineTaxaInFastaList(1) == 4
+			&& f->obtainNbLineTaxaInFastaList(2) == 1
+			&& f->obtainNbLineTaxaInFastaList(3) == 2
+				);
+		printResult(res,15);
+
+		delete f;
+
+		return res;
 }
 
 bool doTest14()
@@ -65,7 +89,11 @@ bool doTest14()
 			);
 	printResult(res,14);
 
+	delete f;
+
 	return res;
+
+
 
 
 }
@@ -90,6 +118,8 @@ bool doTest13()
 	        //f->fillFreq();
 
 	        printResult(res,13);
+	        delete f;
+
 	        return res;
     
 }

@@ -56,10 +56,7 @@ clean:
 
 test: realclean all
 	./count_kmer -t
-	
-valgrind: realclean all
-	valgrind ./count_kmer -F /home/jeremy/mitomer/trunk/create_db/Alveolata__33630/list_fasta -k pattern.txt -o alveolata_win_50.csv -l 50 -d
-	@make clean
+
 
 .PHONY: clen realclean
 .SECONDARY:

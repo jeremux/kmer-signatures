@@ -19,13 +19,14 @@
 #include "classData.h"
 #include "FreqKmer.h"
 #include "test.h"
+#include "testPart2.h"
 
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 14
+#define NB_TEST 15
 
 typedef struct {
     string listFastaPath;

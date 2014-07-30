@@ -1,6 +1,3 @@
-################################################################################
-# Automatically-generated file. Do not edit!
-################################################################################
 
 # Add inputs and outputs from these tool invocations to the build variables 
 O_SRCS += \
@@ -8,28 +5,32 @@ FreqKmer.o \
 classData.o \
 classPattern.o \
 count_kmer.o \
-test.o 
+test.o \
+testPart2.o
 
 CPP_SRCS += \
 FreqKmer.cpp \
 classData.cpp \
 classPattern.cpp \
 count_kmer.cpp \
-test.cpp 
+test.cpp \
+testPart2.cpp
 
 OBJS += \
 FreqKmer.o \
 classData.o \
 classPattern.o \
 count_kmer.o \
-test.o 
+test.o \
+testPart2.o
 
 CPP_DEPS += \
 FreqKmer.d \
 classData.d \
 classPattern.d \
 count_kmer.d \
-test.d 
+test.d \
+testPart2.d
 
 
 # Each subdirectory must supply rules for building sources it contributes
