@@ -28,5 +28,6 @@ bool doTest1();
 bool doTest0();
 bool callTest(int i);
 bool executeTests(int k);
+void printResult(bool res, int i);
 
 #endif /* TEST_H_ */

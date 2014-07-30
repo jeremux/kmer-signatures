@@ -338,6 +338,8 @@ public:
 
 	string 		getIdTaxa(int i);
 
+	void 		writeListFasta();
+
 };
 
 #endif /* FREQKMER_H_ */

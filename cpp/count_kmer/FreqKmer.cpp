@@ -39,10 +39,24 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 	noData=b;
 	taxaDataSeq=NULL;
 
+
+	if(pathRoot!="")
+	{
+
+		getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
+		nbChildTaxa = pathChildTaxa.size();
+		indexTaxaInFasta = new int[nbChildTaxa];
+		initTabIndexTaxaInFasta("genomes");
+		writeListFasta();
+		list=true;
+		file=pathR+"/list_fasta.txt";
+	}
+
 	initPatterns(patternFile);
 	if (list)
 	{
 		initDataFromListFastaPath(file);
+
 		initPathFasta(file);
 		listData = file;
 	}
@@ -54,13 +68,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 
 	}
 
-	if(pathRoot!="")
-	{
-		getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
-		nbChildTaxa = pathChildTaxa.size();
-		indexTaxaInFasta = new int[nbChildTaxa];
-		initTabIndexTaxaInFasta("genomes");
-	}
+
 
 
 }
@@ -95,14 +103,29 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 			shift=1;
 
 	}
+
+
+	if(pathRoot!="")
+	{
+		getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
+		nbChildTaxa = pathChildTaxa.size();
+		indexTaxaInFasta = new int[nbChildTaxa];
+		initTabIndexTaxaInFasta("genomes");
+		writeListFasta();
+		list=true;
+		file=pathR+"/list_fasta.txt";
+	}
+
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
 	initPatterns(patternFile);
+
 
 	if (list)
 	{
 
 		initDataFromListFastaPath(file);
+
 		initPathFasta(file);
 		listData = file;
 
@@ -115,14 +138,7 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 		listData = "null";
 	}
 
-	if(pathRoot!="")
-	{
-		getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
-		nbChildTaxa = pathChildTaxa.size();
-		indexTaxaInFasta = new int[nbChildTaxa];
 
-		initTabIndexTaxaInFasta("genomes");
-	}
 
 }
 
@@ -267,6 +283,11 @@ int FreqKmer::obtainEndColKmer(int i)
 
 void FreqKmer::initDataFromListFastaPath(string fichier)
 {
+	if(dataVerbose)
+	{
+		cerr << "Debut FreqKmer::initDataFromListFastaPath("<< fichier << ")\n";
+		cerr.flush();
+	}
 	string ligne;
 	int cpt=0;
 	int cpt2=-1;
@@ -377,6 +398,12 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 		}
 		getline(file2,ligne);
 		tailleLigne = ligne.length();
+	}
+
+	if(dataVerbose)
+	{
+		cerr << "Fin FreqKmer::initDataFromListFastaPath("<< fichier << ")\n";
+		cerr.flush();
 	}
 }
 
@@ -829,21 +856,25 @@ void FreqKmer::imprimeCSV(string ouput)
 	}
 	for(int j=0;j<nCol;j++)
 	{
-		myfile << j << ";";
+//		myfile << j << ";";
 		//		cout << j << ";";
 	}
 	myfile << endl;
 	//	cout << endl;
+	myfile << "{\n";
 	for(int i=0;i<nLine;i++)
 	{
+		myfile << ",{\n";
 		for(int j=0;j<nCol;j++)
 		{
-			myfile << freq[i][j] << ";";
+			myfile << freq[i][j] << ",";
 			// cout << freq[i][j] << ";";
 		}
 		myfile << endl;
+		myfile << "}\n";
 		//		cout << endl;
 	}
+	myfile << "};\n";
 	myfile.close();
 	if(dataVerbose){
 		cerr << "Fin FreqKmer::imprimeCSV("<< ouput << ")\n ";
@@ -1152,4 +1183,27 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 		closedir(dp);
 	}
 }
+
+void FreqKmer::writeListFasta()
+{
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeListFasta()\n";
+	}
+	string output = pathRoot+"/"+ "list_fasta.txt";
+	ofstream myfile ;
+	myfile.open(output.c_str());
+	for(unsigned int j=0;j<listPathFasta.size();j++)
+	{
+//		cerr << "Jécris " << listPathFasta[j] << "\n";
+		myfile << listPathFasta[j] << "\n";
+
+	}
+	myfile.close();
+	if (dataVerbose)
+	{
+			cerr << "Fin FreqKmer::writeListFasta()\n";
+	}
+}
+
 

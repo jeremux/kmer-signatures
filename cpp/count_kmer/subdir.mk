@@ -6,7 +6,8 @@ classData.o \
 classPattern.o \
 count_kmer.o \
 test.o \
-testPart2.o
+testPart2.o \
+test_intramacro.o
 
 CPP_SRCS += \
 FreqKmer.cpp \
@@ -14,7 +15,8 @@ classData.cpp \
 classPattern.cpp \
 count_kmer.cpp \
 test.cpp \
-testPart2.cpp
+testPart2.cpp \
+test_intramacro.cpp
 
 OBJS += \
 FreqKmer.o \
@@ -22,7 +24,8 @@ classData.o \
 classPattern.o \
 count_kmer.o \
 test.o \
-testPart2.o
+testPart2.o \
+test_intramacro.o
 
 CPP_DEPS += \
 FreqKmer.d \
@@ -30,7 +33,8 @@ classData.d \
 classPattern.d \
 count_kmer.d \
 test.d \
-testPart2.d
+testPart2.d \
+test_intramacro.d
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -20,13 +20,14 @@
 #include "FreqKmer.h"
 #include "test.h"
 #include "testPart2.h"
+#include "test_intramacro.h"
 
 #define no_argument 0
 #define required_argument 1
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 15
+#define NB_TEST 16
 
 typedef struct {
     string listFastaPath;
@@ -37,6 +38,7 @@ typedef struct {
     Switch version;
     Switch doPrintHelp;
     Switch doTest;
+    Switch doTestIntra;
     bool noData;
 } options;
 
@@ -53,6 +55,7 @@ void init_opt()
     opt.version = No;
     opt.doPrintHelp =No;
     opt.doTest = No;
+    opt.doTestIntra = No;
     opt.noData = false;
 }
 
@@ -72,10 +75,11 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {"output", required_argument, 0, 'o'},          //-o
 	    {"version", no_argument, 0, 'v'},               //-v
 	    {"test",no_argument, 0, 't'},        			//-t
+	    {"intra",no_argument, 0, 'T'},        			//-T
 	    {"noData",no_argument,0,'d'},					//-d
 	    {0, 0, 0, 0}
 	};
-	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtd",long_options, &option_index);
+	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtdT",long_options, &option_index);
 	if (c == -1)
 	    break;
 	switch (c) {
@@ -92,6 +96,10 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {
 		opt->doTest=Yes;
 	    }
+	    if(!(strcmp(long_options[option_index].name,"intra")))
+	    {
+	    	opt->doTestIntra=Yes;
+		}
 	    if(!(strcmp(long_options[option_index].name,"version")))
 	    {
 		opt->version=Yes;
@@ -131,6 +139,9 @@ int getParam(int argcc, char **argvv,options *opt)
 	case 't':
 	    opt->doTest=Yes;
 	    break;
+	case 'T':
+		opt->doTestIntra=Yes;
+		break;
 	case 'v':
 	    opt->version=Yes;
 	    break;
@@ -207,25 +218,43 @@ int main(int argc, char **argv) {
 
     getParam(argc,argv,&opt);
     bool error = false;
-    bool testResult = false;
+    bool testResult = true;
     if (opt.doPrintHelp==Yes)
     {
 	printHelp();
 	exit(0);
     }
-    if (opt.doTest)
+    if (opt.doTest || opt.doTestIntra)
     {
-        testResult = executeTests(NB_TEST);
-//		doTest0();
-        if(testResult)
+    	if (opt.doTest)
         {
-        	cerr << "Tous les tests sont OK !\n";
-        }
-        else
-        {
-        	cerr << "Va vérifier ton code...\n";
-        }
+    		testResult = executeTests(NB_TEST);
 
+
+	//		doTest0();
+			if(testResult)
+			{
+				cerr << "Tous les tests sont OK !\n";
+			}
+			else
+			{
+				cerr << "Va vérifier ton code...\n";
+			}
+        }
+    	if (opt.doTestIntra)
+    	{
+    		testResult =  testResult && testIntra();
+    		testResult = testResult && testIntra2();
+
+    		if(testResult)
+			{
+				cerr << "Tous les tests sont OK !\n";
+			}
+			else
+			{
+				cerr << "Va vérifier ton code...\n";
+			}
+    	}
 
 
 	exit(0);

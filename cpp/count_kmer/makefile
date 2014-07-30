@@ -57,8 +57,10 @@ clean:
 test: realclean all
 	./count_kmer -t
 
+intra: realclean all
+	./count_kmer -T
 
-.PHONY: clen realclean
+.PHONY: clen realclean all
 .SECONDARY:
 
 -include makefile.targets

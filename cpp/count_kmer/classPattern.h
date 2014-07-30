@@ -7,6 +7,8 @@
 
 #ifndef CLASSPATTERN_H_
 #define CLASSPATTERN_H_
+
+
 #include <string>
 #include <vector>
 using namespace std;
