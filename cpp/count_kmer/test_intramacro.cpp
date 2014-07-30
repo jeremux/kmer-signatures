@@ -25,8 +25,6 @@ bool testIntra2()
 		g->fillFreq();
 
 
-
-
 		 for(int i=0;i<f->getNLine();i++)
 		{
 			for(int j=0;j<f->getNCol();j++)
