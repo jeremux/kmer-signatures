@@ -15,7 +15,7 @@
 bool testIntra2()
 {
 		cerr << "\n**test égalité différente méthode**\n";
-		string filename = "Debug/tests/Intramacronucleata__431838/list.txt";
+		string filename = "Debug/tests/Intramacronucleata__431838/list2.txt";
 		FreqKmer *f = new FreqKmer(10000,true,filename,"Debug/tests/Intramacronucleata__431838/pattern.txt",false,"");
 		FreqKmer *g = new FreqKmer(10000,true,filename,"Debug/tests/Intramacronucleata__431838/pattern.txt",false,"Debug/tests");
 		bool res = true;
@@ -68,7 +68,7 @@ bool testIntra()
 
 		f->fillFreq();
 
-		f->imprimeCSV("intra.csv");
+		//	f->imprimeCSV("intra.csv");
 		double val[281][256] =
 
 		{

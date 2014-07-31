@@ -10,6 +10,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -1087,7 +1088,8 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 		if (s1.find("__") != std::string::npos || s1=="others")
 		{
 			files.push_back(dir+"/"+s1);
-
+		
+			
 			if (s1=="others")
 			{
 				taxids.push_back(s1);
@@ -1100,6 +1102,10 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 		}
 
 	}
+	sort(files.begin(),files.end());
+	sort(taxids.begin(),taxids.end());
+	for(unsigned i=0;i< files.size();i++)
+	    	cerr << "on a push " << files[i] << "\n";
 	nbChildTaxa = files.size();
 	closedir(dp);
 	return 0;
@@ -1148,6 +1154,12 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	string path_tmp = "";
 	string file_name = "";
 	string extension = "";
+	string ancien = "";
+	int index=-1;
+	string current="";
+	string previous="";
+	unsigned found;
+	
 	int x = -1;
 //	cerr << "nbChildttaxa = " << nbChildTaxa << "\n";
 
@@ -1172,6 +1184,8 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 				extension = file_name.substr(x,file_name.length());
 				if(!(file_name.compare(0,key_fasta.length(),key_fasta)) && extension=="fasta")
 				{
+				    cerr << "path = " << path_tmp << "\n";
+				    
 
 					listPathFasta.push_back(path_tmp);
 					cpt++;
@@ -1179,9 +1193,34 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 
 			}
 		}
-		indexTaxaInFasta[i]=cpt;
+		//	indexTaxaInFasta[i]=cpt;
 		closedir(dp);
 	}
+	sort(listPathFasta.begin(),listPathFasta.end());
+	ancien=listPathFasta[0];
+	found=ancien.find_last_of("/\\");
+	previous=ancien.substr(0,found);
+	
+	for(unsigned int j=1;j<listPathFasta.size();j++)
+	{
+	    current=listPathFasta[j];
+	    found=current.find_last_of("/\\");
+	    current=current.substr(0,found);
+       
+	    if(current!=previous)
+	    {
+		previous=current;
+		indexTaxaInFasta[++index]=j-1;
+		cerr << "index = " << index << " a reçu " << j-1 << "\n";		
+	    }
+	}
+	indexTaxaInFasta[++index]=listPathFasta.size()-1;
+	cerr << "index = " << index << " a reçu " << listPathFasta.size()-1 << "\n";		
+	
+	
+	
+	
+	
 }
 
 void FreqKmer::writeListFasta()
