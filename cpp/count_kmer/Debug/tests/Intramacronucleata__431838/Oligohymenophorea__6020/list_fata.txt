@@ -1,2 +1,0 @@
-Debug/tests/Intramacronucleata__431838/Oligohymenophorea__6020//Hymenostomatida__31277/genomes_31277.fasta
-Debug/tests/Intramacronucleata__431838/Oligohymenophorea__6020//others/genomes_6020-others.fasta
