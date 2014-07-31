@@ -438,6 +438,8 @@ void FreqKmer::initPathFasta(string fichier)
 		cpt++;
 	}
 }
+
+
 void FreqKmer::initFromFasta(string fichier)
 {
 	nbFastaFile=1;
@@ -629,11 +631,15 @@ void FreqKmer::swap(int *current,int *previous,int buf_size)
 
 void FreqKmer::printBuf(int *buf,int buf_size)
 {
+	cerr << "[indice - val]\n";
 	cerr << "[";
-	for(int i=0;i<buf_size;i++)
+	for(int i=0;i<buf_size-1;i++)
 	{
-		cerr << buf[i] << "][";
+
+		cerr << i <<" - "<< buf[i] << "][";
 	}
+	cerr << buf_size-1 <<" - "<<buf[buf_size-1] << "]\n";
+
 }
 
 /**
@@ -1249,6 +1255,51 @@ void FreqKmer::writeListFasta()
 	{
 			cerr << "Fin FreqKmer::writeListFasta()\n";
 	}
+}
+
+void FreqKmer::randomTab(bool *tab,int tabSize,int sampleSize)
+{
+	int *tmp = new int[tabSize];
+	int r = -1;
+	int sup = tabSize;
+	int val_tmp;
+
+
+	for(int i=0;i<tabSize;i++)
+	{
+		tmp[i]=i;
+	}
+
+
+	for(int j=0;j<sampleSize;j++)
+	{
+
+		r = rand() % sup;
+		val_tmp = tmp[sup-1];
+		tmp[sup-1] = tmp[r];
+		tmp[r] = val_tmp;
+
+		sup--;
+
+	}
+
+
+	/* mettre à jour bool */
+
+	for(int k=0;k<sup;k++)
+	{
+
+		tab[tmp[k]]=false;
+	}
+
+
+	for(int k=sup;k<tabSize;k++)
+	{
+
+		tab[tmp[k]]=true;
+	}
+
+	delete[] tmp;
 }
 
 

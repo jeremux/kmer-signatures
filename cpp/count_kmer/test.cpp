@@ -68,6 +68,10 @@ bool doTest15()
 				);
 		printResult(res,15);
 
+//		bool *tmp = new bool[15];
+//		f->randomTab(tmp,15,12);
+//
+//		delete[] tmp;
 		delete f;
 
 		return res;
