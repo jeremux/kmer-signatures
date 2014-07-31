@@ -1072,9 +1072,11 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 {
 	files.erase(files.begin(),files.end());
 	taxids.erase(taxids.begin(),taxids.end());
+
 	DIR *dp;
 	string s1 = "";
 	int x = -1;
+	unsigned found;
 	struct dirent *dirp;
 	if((dp  = opendir(dir.c_str())) == NULL)
 	{
@@ -1088,24 +1090,36 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 		if (s1.find("__") != std::string::npos || s1=="others")
 		{
 			files.push_back(dir+"/"+s1);
-		
 			
-			if (s1=="others")
-			{
-				taxids.push_back(s1);
-			}
-			else
-			{
-				x = s1.find( "__" ) + 2 ;
-				taxids.push_back(s1.substr(x,s1.length()));
-			}
+
 		}
 
 	}
 	sort(files.begin(),files.end());
-	sort(taxids.begin(),taxids.end());
+
 	for(unsigned i=0;i< files.size();i++)
-	    	cerr << "on a push " << files[i] << "\n";
+	{
+		s1 = files[i] ;
+	    found=s1.find_last_of("/\\");
+	    if(found==s1.size()-1)
+	    {
+	    	// on enlève le slash si en fin de path : ex taxonA/taxonB/taxonC/ "
+	    	// ensuite vaut taxonA/taxonB/taxonC
+	    	s1 = s1.substr(found,1);
+	    	found=s1.find_last_of("/\\");
+	    }
+	    s1=s1.substr(found+1,s1.size());
+	    if (s1=="others")
+		{
+			taxids.push_back(s1);
+		}
+		else
+		{
+			x = s1.find( "__" ) + 2 ;
+			taxids.push_back(s1.substr(x,s1.length()));
+		}
+
+	}
 	nbChildTaxa = files.size();
 	closedir(dp);
 	return 0;
@@ -1184,9 +1198,6 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 				extension = file_name.substr(x,file_name.length());
 				if(!(file_name.compare(0,key_fasta.length(),key_fasta)) && extension=="fasta")
 				{
-				    cerr << "path = " << path_tmp << "\n";
-				    
-
 					listPathFasta.push_back(path_tmp);
 					cpt++;
 				}
@@ -1211,15 +1222,10 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	    {
 		previous=current;
 		indexTaxaInFasta[++index]=j-1;
-		cerr << "index = " << index << " a reçu " << j-1 << "\n";		
+
 	    }
 	}
 	indexTaxaInFasta[++index]=listPathFasta.size()-1;
-	cerr << "index = " << index << " a reçu " << listPathFasta.size()-1 << "\n";		
-	
-	
-	
-	
 	
 }
 

@@ -14,6 +14,7 @@
 
 bool testIntra2()
 {
+	printSwitch(getSwitch(0));
 		cerr << "\n**test égalité différente méthode**\n";
 		string filename = "Debug/tests/Intramacronucleata__431838/list2.txt";
 		FreqKmer *f = new FreqKmer(10000,true,filename,"Debug/tests/Intramacronucleata__431838/pattern.txt",false,"");

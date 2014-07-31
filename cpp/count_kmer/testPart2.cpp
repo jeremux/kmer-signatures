@@ -11,3 +11,10 @@
 #include "FreqKmer.h"
 
 
+bool test2_1()
+{
+	printSwitch(getSwitch(0));
+	bool res = true;
+
+	return res;
+}

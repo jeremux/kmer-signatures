@@ -85,16 +85,13 @@ bool doTest14()
 			&& f->getPathChildTaxa(0)=="Debug/tests/taxon__alpha/others"
 			&& f->getPathChildTaxa(3)=="Debug/tests/taxon__alpha/taxon__C"
 			&& f->getIdTaxa(2)=="B"
-			// && f->getIdTaxa(1)=="A"
-			// && f->getIdTaxa(0)=="others"
-			// && f->getIdTaxa(3)=="C"
-			// && f->getNbChild()==4
+			 && f->getIdTaxa(1)=="A"
+			 && f->getIdTaxa(0)=="others"
+			 && f->getIdTaxa(3)=="C"
+			 && f->getNbChild()==4
 			);
 
-	cerr << "idTaxa(0) = " << f->getIdTaxa(0) << "\n";
-	cerr << "idTaxa(1) = " << f->getIdTaxa(1) << "\n";
-	cerr << "idTaxa(2) = " << f->getIdTaxa(2) << "\n";
-	cerr << "idTaxa(3) = " << f->getIdTaxa(3) << "\n";
+
 	
 
 

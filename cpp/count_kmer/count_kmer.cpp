@@ -235,10 +235,12 @@ int main(int argc, char **argv) {
 			if(testResult)
 			{
 				cerr << "Tous les tests sont OK !\n";
+				exit(0);
 			}
 			else
 			{
 				cerr << "Va vérifier ton code...\n";
+				exit(1);
 			}
         }
     	if (opt.doTestIntra)
@@ -249,15 +251,17 @@ int main(int argc, char **argv) {
     		if(testResult)
 			{
 				cerr << "Tous les tests sont OK !\n";
+				exit(0);
 			}
 			else
 			{
 				cerr << "Va vérifier ton code...\n";
+				exit(1);
 			}
     	}
 
 
-	exit(0);
+
     }
     else
     {
