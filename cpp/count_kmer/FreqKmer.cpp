@@ -39,6 +39,9 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 	listData="null";
 	noData=b;
 	taxaDataSeq=NULL;
+	isList=list;
+	pathFastaFile=file;
+	pathPattern=patternFile;
 
 
 	if(pathRoot!="")
@@ -95,6 +98,9 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 	noData=b;
 	taxaDataSeq=NULL;
 	indexTaxaInFasta=NULL;
+	isList=list;
+	pathFastaFile=file;
+	pathPattern=patternFile;
 
 	if(win_size>0)
 	{
@@ -1074,6 +1080,10 @@ bool FreqKmer::takeDataSeq(int i,int j)
 	return mask[i][j];
 }
 
+void FreqKmer::setFalseMask(int i,int j)
+{
+	mask[i][j] = false;
+}
 int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &files,vector<string> &taxids)
 {
 	files.erase(files.begin(),files.end());
@@ -1259,10 +1269,21 @@ void FreqKmer::writeListFasta()
 
 void FreqKmer::randomTab(bool *tab,int tabSize,int sampleSize)
 {
+	if(dataVerbose)
+	{
+		cerr << "DEBUT FreqKmer::randomTab(tab,"<<tabSize<<","<<sampleSize<<")\n";
+	}
+
+	if(sampleSize>tabSize)
+	{
+		return;
+	}
+
 	int *tmp = new int[tabSize];
 	int r = -1;
 	int sup = tabSize;
 	int val_tmp;
+
 
 
 	for(int i=0;i<tabSize;i++)
@@ -1295,11 +1316,88 @@ void FreqKmer::randomTab(bool *tab,int tabSize,int sampleSize)
 
 	for(int k=sup;k<tabSize;k++)
 	{
-
+		cerr << "tab[" << tmp[k] << "] <= true\n";
 		tab[tmp[k]]=true;
 	}
 
 	delete[] tmp;
+
+	if(dataVerbose)
+	{
+		cerr << "FIN FreqKmer::randomTab(tab,"<<tabSize<<","<<sampleSize<<")\n";
+	}
 }
+
+FreqKmer* FreqKmer::sampleMe(int sampleSize)
+{
+	FreqKmer *res = new FreqKmer(winSize,shift,isList,pathFastaFile,pathPattern,noData,pathRoot);
+
+	int randomDataIndex;
+	int nbDataTaxa_i;
+	int nbSequences;
+	for(int i=0;i<nbChildTaxa;i++)
+	{
+		nbDataTaxa_i = obtainNbLineTaxaInFastaList(i) ;
+		for(int j=0;j<sampleSize;j++)
+		{
+			/* Je choisi un data au pif parmi les data
+			 * du taxon courant
+			 */
+			randomDataIndex = rand() % nbDataTaxa_i;
+			/* Je  recupere l'indice reelle dans l'attribut data*/
+			randomDataIndex = randomDataIndex+obtainStartLineTaxaInFastaList(i);
+
+			/* Je recupere le nb de sequences */
+			nbSequences = data[randomDataIndex]->getNtaxa();
+
+			/* Je tire une sequences */
+			randomTab(res->mask[randomDataIndex],nbSequences,sampleSize);
+		}
+	}
+
+	return res;
+
+}
+
+int FreqKmer::getNSeqInTaxa(int i)
+{
+	int nbData = obtainNbLineTaxaInFastaList(i) ;
+	int res=0;
+	int startLineInFasta = obtainStartLineTaxaInFastaList(i);
+	for(int i=0; i<nbData ; i++)
+	{
+		res+=data[i+startLineInFasta]->getNtaxa();
+	}
+
+	return res;
+}
+
+int FreqKmer::getNbTrue(bool *tab,int tabSize)
+{
+	int res=0;
+
+	for(int i=0;i<tabSize;i++)
+	{
+		if(tab[i])
+		{
+			cerr << "tab[" << i << "] = true \n";
+			res++;
+		}
+	}
+
+	return res;
+}
+
+int FreqKmer::getNbAllTrue()
+{
+	int res = 0;
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		cerr << "Data["<<i<<"]\n";
+		res+=getNbTrue(mask[i],data[i]->getNtaxa());
+	}
+	return res;
+}
+
 
 

@@ -31,6 +31,9 @@ private:
 	bool **mask; /* mask pour savoir quels séquences de quel jeu de donnée on considère, de taille nData*nSeq */
 	string **taxaDataSeq;
 	int *indexTaxaInFasta;
+	bool isList;
+	string pathFastaFile;
+	string pathPattern;
 
 	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
 	nCol, /* Nombre de colonne définit par les patterns: nombre de kmer possible */
@@ -101,6 +104,7 @@ private:
 
 	void initTabIndexTaxaInFasta(string key_fasta);
 
+	void setFalseMask(int i,int j);
 
 
 
@@ -343,6 +347,14 @@ public:
 	void 		writeListFasta();
 
 	void randomTab(bool *tab,int tabSize,int sampleSize);
+
+	FreqKmer* sampleMe(int sampleSize);
+
+	int 	  getNbTrue(bool *tab, int tabSize);
+
+	int 	  getNbAllTrue();
+
+	int		  getNSeqInTaxa(int i);
 
 };
 

@@ -31,16 +31,48 @@ bool doTest18()
 }
 bool doTest17()
 {
-	bool res = true;
+	cerr << "\n**Test sample**\n";
+			string filename = "Debug/tests/test4/liste.txt";
+			FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+			bool res = true;
 
-	return res;
+
+//			FreqKmer *g;
+//			g = f->sampleMe(1);
+//
+//			res = (g->getNbAllTrue()==4
+//
+//			);
+
+//			cerr << "nb true = " << g->getNbAllTrue() << "\n";
+
+			printResult(res,16);
+			delete f;
+//			delete g;
+
+			return res;
 }
 
 bool doTest16()
 {
-	bool res = true;
+	cerr << "\n**Test nombre de sequences a un niveau taxo**\n";
+			string filename = "Debug/tests/test4/liste.txt";
+			FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+			bool res = true;
 
-	return res;
+
+			res = (f->getNSeqInTaxa(0) == 3
+				&& f->getNSeqInTaxa(1) == 16
+				&& f->getNSeqInTaxa(2) == 10
+				&& f->getNSeqInTaxa(3) == 3
+					);
+			printResult(res,16);
+
+
+			delete f;
+
+
+			return res;
 }
 
 bool doTest15()
@@ -68,11 +100,8 @@ bool doTest15()
 				);
 		printResult(res,15);
 
-//		bool *tmp = new bool[15];
-//		f->randomTab(tmp,15,12);
-//
-//		delete[] tmp;
 		delete f;
+
 
 		return res;
 }
