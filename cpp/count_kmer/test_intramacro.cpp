@@ -17,14 +17,17 @@ bool testIntra2()
 	printSwitch(getSwitch(0));
 		cerr << "\n**test égalité différente méthode**\n";
 		string filename = "Debug/tests/Intramacronucleata__431838/list2.txt";
-		FreqKmer *f = new FreqKmer(10000,true,filename,"Debug/tests/Intramacronucleata__431838/pattern.txt",false,"");
-		FreqKmer *g = new FreqKmer(10000,true,filename,"Debug/tests/Intramacronucleata__431838/pattern.txt",false,"Debug/tests");
+		FreqKmer *f = new FreqKmer(10000,true,filename,"Debug/tests/test6/Intramacronucleata__431838/pattern.txt",false,"");
+		FreqKmer *g = new FreqKmer(10000,true,filename,"Debug/tests/test6/Intramacronucleata__431838/pattern.txt",false,"Debug/tests/test6");
 		bool res = true;
 
-
+		FreqKmer *h;
 		f->fillFreq();
 		g->fillFreq();
 
+
+		h = g->sampleMe(5);
+		h->fillFreq();
 
 		 for(int i=0;i<f->getNLine();i++)
 		{
@@ -51,9 +54,12 @@ bool testIntra2()
 			cerr << "test fail...\n";
 		}
 
+		g->imprimeCSV("toto.csv");
+		h->imprimeCSV("tata.csv");
 
 		delete f;
 		delete g;
+		delete h;
 		return res;
 }
 
@@ -944,7 +950,7 @@ bool testIntra()
 			cerr << "test fail...\n";
 		}
 
-
+		f->imprimeCSV("toto.csv");
 		delete f;
 
 		return res;

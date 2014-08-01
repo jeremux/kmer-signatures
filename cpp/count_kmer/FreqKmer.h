@@ -218,6 +218,7 @@ public:
 	int 		getNSeq(){return nSeq;}
 	int			getNbChild(){return nbChildTaxa;}
 	Data** 		getData(){return data;}
+	string 		getpathFastaFile(){return pathFastaFile;}
 
 
 	/*******************************DEPLACEMENT HORIZONTAL*****************************************/
