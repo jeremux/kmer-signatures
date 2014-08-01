@@ -1,0 +1,2 @@
+Debug/tests/Intramacronucleata__431838/genomes_6020-others.fasta
+Debug/tests/Intramacronucleata__431838/genomes_31277.fasta
