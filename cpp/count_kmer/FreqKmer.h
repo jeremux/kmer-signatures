@@ -346,15 +346,17 @@ public:
 
 	void 		writeListFasta();
 
-	void randomTab(bool *tab,int tabSize,int sampleSize);
+	void randomTab(vector<int> *result,int tabSize,int sampleSize);
 
 	FreqKmer* sampleMe(int sampleSize);
 
-	int 	  getNbTrue(bool *tab, int tabSize);
+	int 	  getNbTrue(bool *tab,int start,int end);
 
 	int 	  getNbAllTrue();
 
 	int		  getNSeqInTaxa(int i);
+
+	void 	  maskTab(vector<int> *candidate,bool **mask_tmp, int indexTaxa);
 
 };
 
