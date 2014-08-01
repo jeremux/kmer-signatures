@@ -894,17 +894,19 @@ void FreqKmer::imprimeCSV(string ouput)
 	}
 	myfile << endl;
 	//	cout << endl;
-
+	int indexData,indexSeq;
 	for(int i=0;i<nLine;i++)
 	{
-
-		for(int j=0;j<nCol;j++)
+		obtainDataSeqFromLine(i,indexData,indexSeq);
+		if(mask[indexData][indexSeq])
 		{
-			myfile << freq[i][j] << ";";
+				for(int j=0;j<nCol;j++)
 
+				{
+					myfile << freq[i][j] << ";";
+				}
+				myfile << endl;
 		}
-		myfile << endl;
-
 		//		cout << endl;
 	}
 
