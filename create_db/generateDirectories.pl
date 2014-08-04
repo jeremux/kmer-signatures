@@ -431,6 +431,7 @@ if ($time)
 	
 ##### Fichier script_mkdir.sh #####
 open (SCRIPT_MKDIR, '>', 'script_mkdir.sh') || die "Can't open file:$!\n";
+open (SCRIPT_MKDIR_DATA, '>', 'script_mkdir_data.sh') || die "Can't open file:$!\n";
 
 ##### Fichier generateGenbank.sh #####
 open (GENERATE_GEN,  '>', 'listGenbank2.txt') || die "Can't open file:$!\n"; 
@@ -469,7 +470,7 @@ sub traite_taxon
 	my @lesEnfants = $dbLocale->each_Descendent($taxon_courant);
 
 	my $nom_taxon = $taxon_courant->scientific_name;
-
+	$nom_taxon =~ s/ /_/g;
 	my $taxid = $taxon_courant->ncbi_taxid();
 
 
@@ -496,6 +497,19 @@ sub traite_taxon
 
 	print SCRIPT_MKDIR "mkdir -p ";
 	print SCRIPT_MKDIR "$path\n";
+
+	#######################################
+	######### Classer les données #########
+	#######################################
+	print SCRIPT_MKDIR_DATA "mkdir -p ";
+	print SCRIPT_MKDIR_DATA "$path/data/fasta/nucleotides\n";
+	print SCRIPT_MKDIR_DATA "mkdir -p ";
+	print SCRIPT_MKDIR_DATA "$path/data/fasta/aminoAcids\n";
+	print SCRIPT_MKDIR_DATA "mkdir -p ";
+	print SCRIPT_MKDIR_DATA "$path/data/genbank/\n";
+	print SCRIPT_MKDIR_DATA "mkdir -p ";
+	print SCRIPT_MKDIR_DATA "$path/frequencies/\n";
+
 	# print SCRIPT_MKDIR "/$nom_taxon\n";
 
 	# print GENERATE_GEN "perl extractGenbank.pl -gen $genbank -list ";
@@ -549,6 +563,24 @@ sub traite_taxon
 		print SCRIPT_MKDIR "mkdir -p ";
 		print SCRIPT_MKDIR "$racine";
 		print SCRIPT_MKDIR "/others\n";
+
+		#######################################
+		######### Classer les données #########
+		#######################################
+		print SCRIPT_MKDIR_DATA "mkdir -p ";
+		print SCRIPT_MKDIR_DATA "$racine";
+		print SCRIPT_MKDIR_DATA "/others/data/fasta/nucleotides\n";
+		print SCRIPT_MKDIR_DATA "mkdir -p ";
+		print SCRIPT_MKDIR_DATA "$racine";
+		print SCRIPT_MKDIR_DATA "/others/data/fasta/aminoAcids\n";
+		print SCRIPT_MKDIR_DATA "mkdir -p ";
+		print SCRIPT_MKDIR_DATA "$racine";
+		print SCRIPT_MKDIR_DATA "/others/data/genbank/\n";
+		print SCRIPT_MKDIR_DATA "mkdir -p ";
+		print SCRIPT_MKDIR_DATA "$racine";
+		print SCRIPT_MKDIR_DATA "/others/frequencies/\n";
+	
+
 					
 		# print GENERATE_GEN "perl extractGenbank.pl -gen $genbank -list ";
 		&print_accession_other($taxid,$racine);
@@ -662,6 +694,7 @@ sub tree
 # print NEWICK "(";
 
 my $nom_racine = $objet_taxon->scientific_name;
+$nom_racine =~ s/ /_/g;
 my $nom_fichier = '../generate_data/generateGenbank_'.$nom_racine.'.sh';
 open (SCRIPT_GET, '>',$nom_fichier) || die "Can't open file:$!\n";
 
@@ -719,13 +752,17 @@ foreach (@les_chemins)
 	}
 }
 
+$abs_path =~ s/ /_/g;
 print "abs_path = $abs_path\n";
 
 my $abs_path_racine = $abs_path . $path_racine;
+$abs_path_racine =~ s/ /_/g;
 
 my $abs_genbank = abs_path($genbank);
+$abs_genbank =~ s/ /_/g;
 print SCRIPT_GET "perl extractGenbank.pl -list listGenbank.txt -gen $abs_genbank -conf conf --root $abs_path;\n";
 print SCRIPT_GET "bash fillAll_v2.sh;";
+
 # print "path_racine = $abs_path\n";
 
 print NEWICK ";";
@@ -737,11 +774,13 @@ close KRONA;
 
 close SCRIPT_MKDIR;
 close GENERATE_GEN;
+close SCRIPT_MKDIR_DATA;
 system "chmod +x script_mkdir.sh";
+system "chmod +x script_mkdir_data.sh";
 system "chmod +x $nom_fichier";
-system "./script_mkdir.sh";
-system "./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine";
-system  "rm -f listOrganism.txt";
-system "rm -rf listGenbank2.txt";
+system "rm -rf $abs_path_racine && ./script_mkdir.sh && ./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine && ./script_mkdir_data.sh && rm -f listOrganism.txt";
+
+# system "./script_mkdir_data.sh"
+#system "rm -rf listGenbank2.txt";
 
 # &affiche();

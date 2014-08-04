@@ -49,13 +49,13 @@ GetOptions ('gen=s'	 => \$genbank,
 # }
 
 # fichier d'entré
-print "===========\n";
+
 open (GENBANK, '<', $genbank) || die "Can't open file:$!\n";
 open (LIST, '<', $generate) || die "Can't open file:$!\n";
 open (ALIAS, '<', $conf ) || die "Can't open file:$!\n";
 open (LOG, '>', 'extractGenbank.log') || die "Can't open file:$!\n";
 open (LOG2, '>', 'extractGenbank.log2') || die "Can't open file:$!\n";
-open (DEBUG, '>', 'debug') || die "Can't open file:$!\n";
+
 # fichier généré
 
 while (<ALIAS>)
@@ -499,16 +499,19 @@ sub print_cut
 
 	for ($k = 0; $k <= $last; $k++)
 	{
-		if ($cpt > 80)
+		if ($tab[$k] ne ' ' && $tab[$k] ne '')
 		{
-			$res = $res . "\n" . $tab[$k];
-			$cpt=0;
-		}
-		else
-		{
-			$cpt++;
-			$res = $res . $tab[$k];
-			
+			if ($cpt > 80 )
+			{
+				$res = $res . "\n" . $tab[$k];
+				$cpt=0;
+			}
+			else
+			{
+				$cpt++;
+				$res = $res . $tab[$k];
+				
+			}
 		}
 	}
 
@@ -529,7 +532,19 @@ my $path_fasta = $path;
 my $path_protein;
 my $path_nt;
 
+sub reverse_complement_IUPAC 
+{
+	my ($dna) = @_;
 
+	chomp($dna);
+	$dna =~ s/^\s+|\s+$//g;
+	# reverse the DNA sequence
+	my $revcomp = reverse($dna);
+
+	# complement the reversed DNA sequence
+	$revcomp =~ tr/ABCDGHMNRSTUVWXYabcdghmnrstuvwxy/TVGHCDKNYSAABWXRtvghcdknysaabwxr/;
+	return $revcomp;
+}
 
 sub reverse_complement 
 {
@@ -539,6 +554,8 @@ sub reverse_complement
     my $c;
     chomp($dna);
     $dna =~ s/^\s+|\s+$//g;
+    # print "on va prendre le complement de: \n";
+    # print "$dna";
     my $res = "" ;
     my $k;
 
@@ -585,6 +602,9 @@ sub traite_normal
 	# print "=========\n";
 	# 		print "normal = $pos\n";
 	# 		print "=========\n";
+		#on enlève les sauts de lignes et les blancs
+	$s =~ s/\n//g;
+	$s =~ s/ //g;
 
 	$position =~ s/^\s+|\s+$//g;
 	$pos =~ s/>|<//g;
@@ -606,14 +626,21 @@ sub traite_complement
 	my @les_pos = split(/,/,$pos);
 
 	my $res = "";
+		#on enlève les sauts de lignes et les blancs
+	$s =~ s/\n//g;
+	$s =~ s/ //g;
 	foreach my $x (@les_pos)
 	{
 
 		$x =~ s/^\s+|\s+$//g;
 
+		# print "=========\n";
+		# print "complement = $x\n";
+		# print "=========\n";
+
 		if ($x =~ m/^complement\(/)
 		{
-			# print "la ligne = $ligne\n";
+
 			# print "=========\n";
 			# print "complement = $x\n";
 			# print "=========\n";
@@ -649,13 +676,16 @@ sub traite_complement
 			my $debut = $indice[0];
 			my $fin = $indice[1];
 			my $long = int($fin) - int($debut) + 1;
+			$debut = $debut-1;
 
-			$debut -=1;
+	
+
 			$res = $res . substr($s,$debut,$long);	
+
 		}
 	}
 
-	$res = &reverse_complement($res);
+	$res = reverse_complement_IUPAC($res);
 
 	return $res;
 }
@@ -668,19 +698,19 @@ sub traite_join
 	# print "pos = $pos\n";
 	# print "s = $s\n";
 	my @les_pos = split(/,/,$pos);
-
+	#on enlève les sauts de lignes et les blancs
+	$s =~ s/\n//g;
+	$s =~ s/ //g;
 	# print "Traitement de $pos\n";
 
 	my $res = "";
 	foreach my $x (@les_pos)
 	{
-
+		print "x = $x\n";
 		$x =~ s/^\s+|\s+$//g;
 
 		if ($x =~ m/^complement\(/)
 		{
-			# print "la ligne = $x\n";
-			
 			$x =~ s/^\s+|\s+$//g;
 			$x =~ s/^complement\(|\)$//g;
 			$res = $res . &traite_complement($s,$x);
@@ -701,7 +731,6 @@ sub traite_join
 		}
 		else
 		{
-			
 			# print "Traitement de x = $x: \n";
 			$x =~ s/>|<//g;
 			my @indice = split(/\.\./,$x);
@@ -717,7 +746,11 @@ sub traite_join
 			my $long = int($fin) - int($debut) + 1;
 
 			$debut -= 1;
+			# print "res avant = $res\n";
 			$res = $res . substr($s,$debut,$long);	
+
+			
+			# print "res après = $res\n";
 		}
 	}
 
@@ -733,6 +766,7 @@ my $id;
 my $id2;
 
 print "Traitement 2 / 3 (Génération des donnees aux feuilles)\n";
+
 foreach my $un_genbank (@tab_extract)
 {
 	chomp($un_genbank);
@@ -753,6 +787,7 @@ foreach my $un_genbank (@tab_extract)
 	# print "racine = $racine \n";
 	$path_fasta = $path;
 	$path_protein = $path;
+	$path_nt = $path;
 		
 	### DEBUT V2
 	my @les_chemins = split(/\//,$path);
@@ -786,12 +821,28 @@ foreach my $un_genbank (@tab_extract)
 	### FIN V2
 	# print "id = $id\n";
 
-	$path = $path . "/" . "genomes". "_$id" . ".genbank";
-	$path_fasta = $path_fasta . "/" . "genomes" . "_$id" . ".fasta"; 
-	$path_protein = $path_protein . "/" ;
-	$path_nt = $path_protein;
+	#######################################
+	######### CLASSER LES DONNEES #########
+	#######################################
+	$path = $path . "/data/genbank/" ;
+	system "mkdir -p $path";
+	$path = $path . "genomes". "_$id" . ".genbank";
+	$path_fasta = $path_fasta . "/data/fasta/nucleotides/genomes/";
+	system "mkdir -p $path_fasta";
+ 	$path_fasta = $path_fasta . "genomes" . "_$id" . ".fasta"; 
+	$path_protein = $path_protein . "/data/fasta/aminoAcids/" ;
+	$path_nt = $path_nt . "/data/fasta/nucleotides/";
+	#######################################
+	#######################################
+	#######################################
+	# $path = $path . "/" . "genomes". "_$id" . ".genbank";
+	# $path_fasta = $path_fasta . "/" . "genomes" . "_$id" . ".fasta"; 
+	# $path_protein = $path_protein . "/" ;
+	# $path_nt = $path_nt . "/";
 
-	my $copy = $path_protein;
+
+	my $copy_aa = $path_protein;
+	my $copy_nt = $path_nt;
 
 	# print "On va ouvrir $path\n";
 	open (GENERATE_GEN,  '>', $path) || die "Can't open file $path:$!\n"; 
@@ -815,11 +866,17 @@ foreach my $un_genbank (@tab_extract)
 		my $name = $hash_name{$access};
 		my $la_seq = $hash_sequence{$access};
 		my $copie_seq = $la_seq;
-		my $seq_taille = length($la_seq);
-		if ($seq_taille > 140000)
-		{
-			$la_seq = substr $la_seq, 0, 140000;
-		}
+		
+		###############################################
+		#### Si un jour on veut couper la séquence ####
+		###############################################
+
+
+		# my $seq_taille = length($la_seq);
+		# if ($seq_taille > 140000)
+		# {
+		# 	$la_seq = substr $la_seq, 0, 140000;
+		# }
 		
 		# my $cut = &print_cut($la_seq);
 		print GENERATE_GEN "$tmp";
@@ -853,8 +910,16 @@ foreach my $un_genbank (@tab_extract)
 				####################
 				#  AA              #
 				####################
-				$path_protein = $path_protein . "aa_" . $nom_fichier . "_$id" . ".fasta";
-				
+				#######################################
+				######### CLASSER LES DONNEES #########
+				#######################################
+				system "mkdir -p $path_protein/$nom_fichier/";
+				$path_protein = $path_protein. "/". $nom_fichier. "/" . "aa_" . $nom_fichier . "_$id" . ".fasta";
+				#######################################
+				#######################################
+				#######################################
+				# $path_protein = $path_protein . "aa_" . $nom_fichier . "_$id" . ".fasta";
+
 				$la_proteine = &print_cut($la_proteine);
 				open (PROT,  '>>', $path_protein) || die "Can't open file $path_protein:$!\n"; 
 				print PROT ">";
@@ -869,7 +934,17 @@ foreach my $un_genbank (@tab_extract)
 				####################
 				#  NT              #
 				####################
-				$path_nt = $path_nt . "nt_" . $nom_fichier . "_$id" . ".fasta";
+				#system "mkdir -p $path_nt/$nom_fichier";
+				#######################################
+				######### CLASSER LES DONNEES #########
+				#######################################
+				system "mkdir -p $path_nt/$nom_fichier/";
+				$path_nt = $path_nt . "/". $nom_fichier. "/". "nt_" . $nom_fichier . "_$id" . ".fasta";
+				#######################################
+				#######################################
+				#######################################
+
+				# $path_nt = $path_nt . "nt_" . $nom_fichier . "_$id" . ".fasta";
 				open (NT,  '>>', $path_nt) || die "Can't open file $path_protein:$!\n";
 				print NT ">";
 				print NT "nt_";
@@ -894,8 +969,8 @@ foreach my $un_genbank (@tab_extract)
 				# print PROT "$sous_sequence\n\n";
 		
 
-				$path_protein = $copy;
-				$path_nt = $copy;
+				$path_protein = $copy_aa;
+				$path_nt = $copy_nt;
 			}
 		}
 
@@ -905,3 +980,5 @@ foreach my $un_genbank (@tab_extract)
 
 	close GENERATE_GEN;
 }
+
+
