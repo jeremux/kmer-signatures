@@ -35,6 +35,9 @@ private:
 	bool isList;
 	string pathFastaFile;
 	string pathPattern;
+	string key_fasta; /* cox1, cox2, cox3, cytb ou genomes */
+	bool initFromRoot;
+	bool initWithJump;
 
 	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
 	nCol, /* Nombre de colonne définit par les patterns: nombre de kmer possible */
@@ -107,6 +110,8 @@ private:
 
 	void setFalseMask(int i,int j);
 
+	void normalizeLine(int indexPattern,int line);
+
 
 
 /*************************************************************************************************************************
@@ -129,21 +134,17 @@ public:
 	 * @param 	patternFile: fichier contenant les patterns de kmer
 	 * @param	noData	: true si on ne charge pas toutes les données d'un coup
 	 */
-	FreqKmer(int win_size,bool list, string file,string patternFile, bool noData,string pathRoot);
 
-	/**
-	 * Contruit l'object FreqKmer à partir d'un fichier, contenant
-	 * la liste des chemins des fichiers fasta à analyser
-	 * @param	win_size: taille de la fenetre
-	 * @param	shift: taille du decalage en nucletoide
-	 * @param	fastaFile: fichier fasta
-	 * @param 	patternFile: fichier contenant les patterns de kmer
-	 * @param	noData	: true si on ne charge pas toutes les données d'un coup
-	 */
-	FreqKmer(int win_size,int shift,bool list, string file,string patternFile, bool noData,string pathRoot);
+	FreqKmer(int win_size,bool list, string file,string patternFile, bool noData,string key);
+
+	FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b,string key);
+
+	FreqKmer(int win_size,string patternFile, bool b,string pathR,string key);
+
+	FreqKmer(int win_size,int s,string patternFile, bool b,string pathR,string key);
 
 
-	FreqKmer();
+
 
 	virtual ~FreqKmer();
 
@@ -359,6 +360,10 @@ public:
 	int		  getNSeqInTaxa(int i);
 
 	void 	  maskTab(vector<int> *candidate,bool **mask_tmp, int indexTaxa);
+
+	double getSum(int indexPattern,int line);
+
+	void 	  normalize();
 
 };
 

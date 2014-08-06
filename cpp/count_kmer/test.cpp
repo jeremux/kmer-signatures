@@ -25,15 +25,43 @@ void printResult(bool res,int i)
 
 bool doTest18()
 {
+	cerr << "\n**Somme d'une ligne**\n";
 	bool res = true;
 
+	string filename = "Debug/tests/test1/liste.txt";
+	string pattern = "Debug/tests/test1/pattern.txt";
+
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
+	f->fillFreq();
+	res = (f->getSum(0,0)==2
+		&& f->getSum(0,1)==2
+		&& f->getSum(0,2)==2
+		&& f->getSum(0,3)==2
+		&& f->getSum(0,4)==2
+		&& f->getSum(0,5)==2
+		&& f->getSum(0,6)==2
+
+		&& f->getSum(1,0)==4
+		&& f->getSum(1,1)==4
+		&& f->getSum(1,2)==4
+		&& f->getSum(1,3)==4
+		&& f->getSum(1,4)==4
+		&& f->getSum(1,5)==4
+		&& f->getSum(1,6)==4
+			);
+
+	f->normalize();
+	f->imprimeCSV("normalized.csv");
+
+	delete f;
+	printResult(res,18);
 	return res;
 }
 bool doTest17()
 {
 	cerr << "\n**Test sample**\n";
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+	FreqKmer *f = new FreqKmer(4,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha","genomes");
 	bool res = true;
 
 
@@ -104,7 +132,7 @@ bool doTest16()
 {
 	cerr << "\n**Test nombre de sequences a un niveau taxo**\n";
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+	FreqKmer *f = new FreqKmer(4,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha","genomes");
 	bool res = true;
 
 
@@ -127,7 +155,7 @@ bool doTest15()
 {
 	cerr << "\n**Test index des chemins fasta dans la list**\n";
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+	FreqKmer *f = new FreqKmer(4,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha","genomes");
 	bool res = true;
 
 
@@ -158,7 +186,7 @@ bool doTest14()
 {
 	cerr << "\n**test list sous taxon**\n";
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha");
+	FreqKmer *f = new FreqKmer(4,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha","genomes");
 	bool res = true;
 
 	res = (f->getPathChildTaxa(2)=="Debug/tests/taxon__alpha/taxon__B"
@@ -195,7 +223,9 @@ bool doTest13()
 
 	bool res = true;
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"");
+	string pattern = "Debug/tests/test4/pattern.txt";
+	string key = "genomes";
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,key);
 
 	for(int i=0 ; i < f->getNbFichierFasta(); i++)
 	{
@@ -220,7 +250,10 @@ bool doTest12()
 
 	bool res = true;
 	string filename = "Debug/tests/test4/liste.txt";
-	FreqKmer *f = new FreqKmer(4,true,filename,"Debug/tests/test4/pattern.txt",false,"");
+	string pattern = "Debug/tests/test4/pattern.txt";
+	string key = "genomes";
+
+	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,key);
 
 
 	int idData0,idData1,idData2,idData3,idData4,idData5,idData6,

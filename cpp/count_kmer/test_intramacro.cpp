@@ -15,10 +15,13 @@
 bool testIntra2()
 {
 	printSwitch(getSwitch(0));
-		cerr << "\n**test égalité différente méthode**\n";
+		cerr << "\n**test égalité différente méthode + sample**\n";
 		string filename = "Debug/tests/Intramacronucleata__431838/list2.txt";
-		FreqKmer *f = new FreqKmer(10000,true,filename,"Debug/tests/test6/Intramacronucleata__431838/pattern.txt",false,"");
-		FreqKmer *g = new FreqKmer(10000,true,filename,"Debug/tests/test6/Intramacronucleata__431838/pattern.txt",false,"Debug/tests/test6");
+		string pattern = "Debug/tests/test6/Intramacronucleata__431838/pattern.txt";
+		string key = "genomes";
+		string root = "Debug/tests/test6";
+		FreqKmer *f = new FreqKmer(10000,true,filename,pattern,false,key);
+		FreqKmer *g = new FreqKmer(10000,pattern,false,root,key);
 		bool res = true;
 
 		FreqKmer *h;
@@ -56,10 +59,8 @@ bool testIntra2()
 			cerr << "test fail...\n";
 		}
 
-		cout << "FILL G\n";
-		g->imprimeCSV("freq_F.csv");
-		cout << "FILL H\n";
-		h->imprimeCSV("freq_G.csv");
+
+
 
 		delete f;
 		delete g;
@@ -73,7 +74,10 @@ bool testIntra()
 {
 		cerr << "\n**Test données Intramacronucleata__431838**\n";
 		string filename = "Debug/tests/Intramacronucleata__431838/list.txt";
-		FreqKmer *f = new FreqKmer(10000,true,filename,"Debug/tests/Intramacronucleata__431838/pattern.txt",true,"");
+		string pattern = "Debug/tests/test6/Intramacronucleata__431838/pattern.txt";
+		string key = "genomes";
+		string root = "Debug/tests/test6";
+		FreqKmer *f = new FreqKmer(10000,true,filename,pattern,true,key);
 		bool res = true;
 
 

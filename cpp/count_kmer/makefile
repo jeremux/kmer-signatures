@@ -36,15 +36,16 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: count_kmer
+all: count_kmer clean
 
 # Tool invocations
-count_kmer: $(OBJS) $(USER_OBJS)
+count_kmer: $(OBJS) $(USER_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
 	g++  -o "count_kmer" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
+	
 
 # Other Targets
 realclean:
@@ -59,6 +60,9 @@ test: realclean all
 
 intra: realclean all
 	./count_kmer -T
+	
+valgrindTest: realclean all
+	valgrind --leak-check=full ./count_kmer -t
 
 .PHONY: clen realclean all
 .SECONDARY:

@@ -27,7 +27,7 @@
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 17
+#define NB_TEST 18
 
 typedef struct {
     string listFastaPath;
@@ -40,10 +40,14 @@ typedef struct {
     Switch doTest;
     Switch doTestIntra;
     bool noData;
+    string key;
+    string root;
+    int jump;
 } options;
 
 options opt;
 bool initFromList=false;
+bool racineBool = false;
 
 void init_opt()
 {
@@ -57,6 +61,9 @@ void init_opt()
     opt.doTest = No;
     opt.doTestIntra = No;
     opt.noData = false;
+    opt.key = "genomes";
+    opt.root="null";
+    opt.jump=0;
 }
 
 int getParam(int argcc, char **argvv,options *opt)
@@ -77,9 +84,12 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {"test",no_argument, 0, 't'},        			//-t
 	    {"intra",no_argument, 0, 'T'},        			//-T
 	    {"noData",no_argument,0,'d'},					//-d
+	    {"key",no_argument,0,'K'},					    //-K
+	    {"root",no_argument,0,'r'},					    //-r
+	    {"jump",no_argument,0,'j'},					    //-j
 	    {0, 0, 0, 0}
 	};
-	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtdT",long_options, &option_index);
+	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtdTKr:j:",long_options, &option_index);
 	if (c == -1)
 	    break;
 	switch (c) {
@@ -112,6 +122,22 @@ int getParam(int argcc, char **argvv,options *opt)
 		    initFromList = true;
 		}
 	    }
+	    if(!(strcmp(long_options[option_index].name,"root")))
+		{
+		if(optarg)
+		{
+			opt->root=optarg;
+			racineBool=true;
+			initFromList=false;
+		}
+		}
+	    if(!(strcmp(long_options[option_index].name,"key")))
+		{
+		if(optarg)
+		{
+			opt->key=optarg;
+		}
+		}
 	    if(!(strcmp(long_options[option_index].name,"fasta")))
 	    {
 		if(optarg)
@@ -132,6 +158,11 @@ int getParam(int argcc, char **argvv,options *opt)
 		if(optarg)
 		    opt->windowSize=atoi(optarg);
 	    }
+	    if(!(strcmp(long_options[option_index].name,"jump")))
+		{
+		if(optarg)
+			opt->jump=atoi(optarg);
+		}
 	    break;
 	case 'h':
 	    opt->doPrintHelp=Yes;
@@ -171,9 +202,12 @@ int getParam(int argcc, char **argvv,options *opt)
 	case 'd':
 	    opt->noData=true;
 	    break;
-			
+	case 'K':
+		opt->key = optarg;
+		break;
 	default:
-	    cerr << "?? getopt returned character code " <<  c << "\n";;
+	    cerr << "?? getopt returned character code " <<  c << "\n";
+	    break;
 	}
     }
     if (optind < argcc) {
@@ -219,6 +253,7 @@ int main(int argc, char **argv) {
     getParam(argc,argv,&opt);
     bool error = false;
     bool testResult = true;
+
     if (opt.doPrintHelp==Yes)
     {
 	printHelp();
@@ -267,8 +302,19 @@ int main(int argc, char **argv) {
     {
 	if (opt.listFastaPath=="null" && opt.fastaPath=="null")
 	{
-	    cerr << "Need a fasta file (-f file.fasta) or a list of fasta path (-F listFasta_file) \n";
-	    error = true;
+		if (opt.root=="null")
+		{
+			if (opt.listFastaPath=="null" && opt.fastaPath=="null")
+			{
+				cerr << "Need a fasta file (-f file.fasta) or a list of fasta path (-F listFasta_file) \n \tor a path dir (-r pathToTaxon) \n";
+				error = true;
+			}
+
+		}
+		else
+		{
+			racineBool = true;
+		}
 	}
 
 	if (opt.kmerPath=="null")
@@ -299,14 +345,39 @@ int main(int argc, char **argv) {
 	    // {
 	    // 	cerr << "TOTO\n";
 	    // }
-	    
-	    f = new FreqKmer(opt.windowSize,initFromList,opt.listFastaPath,opt.kmerPath,opt.noData,"");
+	    if(opt.jump==0)
+	    {
+	    	f = new FreqKmer(opt.windowSize,initFromList,opt.listFastaPath,opt.kmerPath,opt.noData,opt.key);
+	    }
+	    else
+	    {
+	    	f = new FreqKmer(opt.windowSize,opt.jump,initFromList,opt.listFastaPath,opt.kmerPath,opt.noData,opt.key);
+	    }
 	}
 	else
 	{
-	    cerr << "Debut init fasta \n";
-	    f = new FreqKmer(opt.windowSize,initFromList,opt.fastaPath,opt.kmerPath,opt.noData,"");
-	    cerr << "Fin init fasta\n";
+	    if(!racineBool)
+	    {
+	    	if(opt.jump==0)
+			{
+	    		 f = new FreqKmer(opt.windowSize,initFromList,opt.fastaPath,opt.kmerPath,opt.noData,opt.key);
+			}
+	    	else
+	    	{
+	    		f = new FreqKmer(opt.windowSize,opt.jump,initFromList,opt.fastaPath,opt.kmerPath,opt.noData,opt.key);
+	    	}
+	    }
+	    else
+	    {
+	    	if(opt.jump==0)
+			{
+	    		f = new FreqKmer(opt.windowSize,opt.kmerPath,opt.noData,opt.root,opt.key);
+			}
+	    	else
+	    	{
+	    		f = new FreqKmer(opt.windowSize,opt.jump,opt.kmerPath,opt.noData,opt.root,opt.key);
+	    	}
+	    }
 	}
 
 	f->fillFreq();
