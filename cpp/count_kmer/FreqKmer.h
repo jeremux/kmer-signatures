@@ -31,6 +31,7 @@ private:
 	bool **mask; /* mask pour savoir quels séquences de quel jeu de donnée on considère, de taille nData*nSeq */
 	string **taxaDataSeq;
 	int *indexTaxaInFasta;
+	bool **lineFilled; /* Marqueur pour savoir les lignes déjà calculé lineFille[kmer_i][ligne_j] */
 	bool isList;
 	string pathFastaFile;
 	string pathPattern;

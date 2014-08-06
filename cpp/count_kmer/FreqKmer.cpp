@@ -24,6 +24,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 
 	printSwitch(getSwitch(0));
 	indexTaxaInFasta=NULL;
+	lineFilled=NULL;
 	pathRoot=pathR;
 	data=NULL;
 	freq=NULL;
@@ -90,6 +91,7 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 
 	printSwitch(getSwitch(0));
 	pathRoot=pathR;
+	lineFilled=NULL;
 	mask=NULL;
 	data=NULL;
 	freq=NULL;
@@ -230,6 +232,16 @@ FreqKmer::~FreqKmer()
 		cerr.flush();
 	}
 	delete[] kmerSpace;
+
+	for(int i=0;i<nPattern;i++)
+	{
+		if(lineFilled[i]!=NULL)
+			delete[] lineFilled[i];
+	}
+	if(lineFilled!=NULL)
+		delete[] lineFilled;
+
+
 
 	if(dataVerbose){
 		cerr << "Debut FreqKmer::~FreqKmer()\n ";
@@ -427,6 +439,16 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 		tailleLigne = ligne.length();
 	}
 
+	lineFilled = new bool*[nPattern];
+	for(int i=0;i<nPattern;i++)
+	{
+		lineFilled[i]=new bool[nLine];
+		for(int j=0;j<nLine;j++)
+		{
+			lineFilled[i][j]=false;
+		}
+	}
+
 	if(dataVerbose)
 	{
 		cerr << "Fin FreqKmer::initDataFromListFastaPath("<< fichier << ")\n";
@@ -515,6 +537,15 @@ void FreqKmer::initFromFasta(string fichier)
 	}
 	indexLineData[0] = nLine-1;
 
+	lineFilled = new bool*[nPattern];
+	for(int i=0;i<nPattern;i++)
+	{
+		lineFilled[i]=new bool[nLine];
+		for(int j=0;j<nLine;j++)
+		{
+			lineFilled[i][j]=false;
+		}
+	}
 	if(noData)
 	{
 		delete data[0];
@@ -722,44 +753,53 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 	while(j < z)
 	{
 
-		/* Si j > 0 alors on a déjà effectué le comtpage pour la première fenetre
-		 * on utilise l'astuce de decalage
-		 */
-		if (j>0)
+		/* on compte seulement si la ligne n'a pas été calculée */
+		if(!lineFilled[indexPattern][index])
 		{
-			/* On copie la bonne partie du buffer et on compte les nouveaux kmers */
-			copyBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
+			/* Si j > 0 alors on a déjà effectué le comtpage pour la première fenetre
 
-			/* on increment les kmers trouvés */
-			for(int i=0;i<buf_size;i++)
+			 * on utilise l'astuce de decalage
+			 */
+			if (j>0)
 			{
-				/* On ne compte que les acgt */
-				if(current[i]<getNCol() && current[i]>0)
+				/* On copie la bonne partie du buffer et on compte les nouveaux kmers */
+				copyBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
+
+				/* on increment les kmers trouvés */
+				for(int i=0;i<buf_size;i++)
 				{
-					freq[index][current[i]]+=1;
+					/* On ne compte que les acgt */
+					if(current[i]<getNCol() && current[i]>0)
+					{
+						freq[index][current[i]]+=1;
+
+					}
+
 				}
+				/* le courant devient le precedent */
+				swap(current,previous,buf_size);
+
+
 
 			}
-			/* le courant devient le precedent */
-			swap(current,previous,buf_size);
+			else
+			{
+				//			cout << "first window\n";
+				//			cout.flush();
+				winCount(seq,win_length,i,indexPattern,previous,start_line);
+				//			cout << "end first window\n";
+				//			cout.flush();
+
+			}
 
 
+			/* On decale de shift nucleotides */
+			i = i + shift;
+			j = j + 1;
 
+			lineFilled[indexPattern][index]=true; /* la ligne courante a été calculée */
 		}
-		else
-		{
-			//			cout << "first window\n";
-			//			cout.flush();
-			winCount(seq,win_length,i,indexPattern,previous,start_line);
-			//			cout << "end first window\n";
-			//			cout.flush();
 
-		}
-
-
-		/* On decale de shift nucleotides */
-		i = i + shift;
-		j = j + 1;
 		index++;
 	}
 
