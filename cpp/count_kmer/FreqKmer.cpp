@@ -1226,6 +1226,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	for(int i=0; i < nbChildTaxa ; i++)
 	{
 		path = getPathChildTaxa(i);
+		path += "/data/fasta/nucleotides/" + key_fasta;
 
 		if((dp  = opendir(path.c_str()) )== NULL)
 		{
@@ -1242,7 +1243,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 
 				x = file_name.find( "." ) + 1 ;
 				extension = file_name.substr(x,file_name.length());
-				if(!(file_name.compare(0,key_fasta.length(),key_fasta)) && extension=="fasta")
+				if(extension=="fasta")
 				{
 
 					listPathFasta.push_back(path_tmp);
