@@ -82,9 +82,16 @@ bool doTest17()
 	res = res && g->getNbAllTrue()==27;
 	delete g;
 
+	f->fillFreq();
 	g = f->sampleMe(18);
 	res = res && g->getNbAllTrue()==32;
+
+
+	g->fillFreq();
+
 	delete g;
+
+
 
 	printResult(res,17);
 	delete f;

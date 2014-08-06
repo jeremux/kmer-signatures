@@ -23,10 +23,12 @@ bool testIntra2()
 
 		FreqKmer *h;
 		f->fillFreq();
+
 		g->fillFreq();
 
 
 		h = g->sampleMe(5);
+
 		h->fillFreq();
 
 		 for(int i=0;i<f->getNLine();i++)
@@ -54,8 +56,10 @@ bool testIntra2()
 			cerr << "test fail...\n";
 		}
 
-		g->imprimeCSV("toto.csv");
-		h->imprimeCSV("tata.csv");
+		cout << "FILL G\n";
+		g->imprimeCSV("freq_F.csv");
+		cout << "FILL H\n";
+		h->imprimeCSV("freq_G.csv");
 
 		delete f;
 		delete g;
