@@ -365,6 +365,8 @@ public:
 
 	void 	  normalize();
 
+	void 	  writeConfFeq(string output);
+
 };
 
 #endif /* FREQKMER_H_ */

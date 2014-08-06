@@ -16,7 +16,7 @@ bool testIntra2()
 {
 	printSwitch(getSwitch(0));
 		cerr << "\n**test égalité différente méthode + sample**\n";
-		string filename = "Debug/tests/Intramacronucleata__431838/list2.txt";
+		string filename = "Debug/tests/test6/Intramacronucleata__431838/list2.txt";
 		string pattern = "Debug/tests/test6/Intramacronucleata__431838/pattern.txt";
 		string key = "genomes";
 		string root = "Debug/tests/test6";
@@ -73,7 +73,7 @@ bool testIntra2()
 bool testIntra()
 {
 		cerr << "\n**Test données Intramacronucleata__431838**\n";
-		string filename = "Debug/tests/Intramacronucleata__431838/list.txt";
+		string filename = "Debug/tests/test6/Intramacronucleata__431838/list.txt";
 		string pattern = "Debug/tests/test6/Intramacronucleata__431838/pattern.txt";
 		string key = "genomes";
 		string root = "Debug/tests/test6";
@@ -83,7 +83,8 @@ bool testIntra()
 
 		f->fillFreq();
 
-		//	f->imprimeCSV("intra.csv");
+
+//			f->imprimeCSV("intra.csv");
 		double val[281][256] =
 
 		{
@@ -958,7 +959,8 @@ bool testIntra()
 			cerr << "test fail...\n";
 		}
 
-		f->imprimeCSV("toto.csv");
+
+		f->writeConfFeq("intra.conf");
 		delete f;
 
 		return res;

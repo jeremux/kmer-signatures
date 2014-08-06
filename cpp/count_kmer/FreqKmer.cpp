@@ -1765,4 +1765,66 @@ void FreqKmer::normalize()
 	}
 }
 
+void FreqKmer::writeConfFeq(string output)
+{
+	ofstream myfile ;
+
+
+
+	myfile.open(output.c_str());
+
+	myfile << "INIT_CONS\n";
+	if(initFromRoot)
+	{
+		if(initWithJump)
+		{
+			myfile << "4\n" << winSize << "\n"<< shift << "\n";
+			myfile << pathPattern << "\n" << noData << "\n" << pathRoot << "\n" << key_fasta << "\n";
+		}
+		else
+		{
+			myfile << "3\n" << winSize <<  "\n";
+		    myfile << pathPattern << "\n" << noData << "\n" << pathRoot << "\n" << key_fasta << "\n";
+
+		}
+	}
+	else
+	{
+		if(initWithJump)
+		{
+			myfile << "1\n" << winSize << "\n"<< isList << "\n" << pathFastaFile << "\n" ;
+			myfile << pathPattern << "\n" << noData << "\n"  << key_fasta << "\n";
+
+		}
+		else
+		{
+			myfile << "2\n" << winSize << "\n" << shift << "\n"<< isList << "\n" << pathFastaFile << "\n" ;
+			myfile << pathPattern << "\n" << noData << "\n"  << key_fasta << "\n";
+		}
+	}
+	myfile << "FIN_CONS\n";
+
+	myfile << "DIM\n";
+	myfile << nLine << "\n";
+	myfile << nCol << "\n";
+	myfile << "FIN_DIM\n";
+
+	//	cout << endl;
+	myfile << "FREQ\n";
+
+	for(int i=0;i<nLine;i++)
+	{
+		{
+			for(int j=0;j<nCol;j++)
+			{
+				myfile << freq[i][j] << ";";
+			}
+			myfile << endl;
+		}
+		//		cout << endl;
+	}
+	myfile << "FIN_FREQ\n";
+	myfile.close();
+}
+
 
