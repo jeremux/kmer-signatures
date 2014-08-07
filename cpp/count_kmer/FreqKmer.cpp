@@ -12,6 +12,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 using namespace std;
 
 /******************************************************************************
@@ -178,7 +179,7 @@ FreqKmer::FreqKmer(int win_size,string patternFile, bool b,string pathR,string k
 	nbChildTaxa = pathChildTaxa.size();
 	indexTaxaInFasta = new int[nbChildTaxa];
 
-	initTabIndexTaxaInFasta("genomes");
+	initTabIndexTaxaInFasta(key_fasta);
 
 	writeListFasta();
 	pathFastaFile=pathR+"/list_fasta.txt";
@@ -228,7 +229,7 @@ FreqKmer::FreqKmer(int win_size,int s,string patternFile, bool b,string pathR,st
 	nbChildTaxa = pathChildTaxa.size();
 	indexTaxaInFasta = new int[nbChildTaxa];
 
-	initTabIndexTaxaInFasta("genomes");
+	initTabIndexTaxaInFasta(key_fasta);
 
 	writeListFasta();
 	pathFastaFile=pathR+"/list_fasta.txt";
@@ -245,6 +246,7 @@ FreqKmer::FreqKmer(int win_size,int s,string patternFile, bool b,string pathR,st
 	initPathFasta(pathFastaFile);
 	listData = pathFastaFile;
 }
+
 
 
 /******************************************************************************
@@ -1773,7 +1775,7 @@ void FreqKmer::writeConfFeq(string output)
 
 	myfile.open(output.c_str());
 
-	myfile << "INIT_CONS\n";
+//	myfile << "INIT_CONS\n";
 	if(initFromRoot)
 	{
 		if(initWithJump)
@@ -1790,34 +1792,33 @@ void FreqKmer::writeConfFeq(string output)
 	}
 	else
 	{
-		if(initWithJump)
+		if(!initWithJump)
 		{
-			myfile << "1\n" << winSize << "\n"<< isList << "\n" << pathFastaFile << "\n" ;
+			myfile << "2\n" << winSize << "\n"<< isList << "\n" << pathFastaFile << "\n" ;
 			myfile << pathPattern << "\n" << noData << "\n"  << key_fasta << "\n";
 
 		}
 		else
 		{
-			myfile << "2\n" << winSize << "\n" << shift << "\n"<< isList << "\n" << pathFastaFile << "\n" ;
+			myfile << "1\n" << winSize << "\n" << shift << "\n"<< isList << "\n" << pathFastaFile << "\n" ;
 			myfile << pathPattern << "\n" << noData << "\n"  << key_fasta << "\n";
 		}
 	}
 	myfile << "FIN_CONS\n";
 
-	myfile << "DIM\n";
+//	myfile << "DIM\n";
 	myfile << nLine << "\n";
 	myfile << nCol << "\n";
 	myfile << "FIN_DIM\n";
 
 	//	cout << endl;
-	myfile << "FREQ\n";
 
 	for(int i=0;i<nLine;i++)
 	{
 		{
 			for(int j=0;j<nCol;j++)
 			{
-				myfile << freq[i][j] << ";";
+				myfile << freq[i][j] << " ";
 			}
 			myfile << endl;
 		}
@@ -1827,4 +1828,196 @@ void FreqKmer::writeConfFeq(string output)
 	myfile.close();
 }
 
+FreqKmer* FreqKmer::initFromConf(string fichier)
+{
+	string ligne;
+	ifstream file(fichier.c_str());
+	getline(file,ligne);
+	FreqKmer* res;
 
+	enum state{INIT=0, SIZE=1, FREQ=2,END=3};
+	enum state s=INIT;
+	double val;
+	int winParam,shiftParam,j;
+	bool b1_list,b2_noData;
+	string pathFastaParam,pathPatternParam,keyParam,rootParam;
+
+	while (file)
+	{
+	;
+		if(ligne=="FIN_CONS")
+		{
+			s=SIZE;
+		}
+		if(ligne=="FIN_DIM")
+		{
+			s=FREQ;
+		}
+		if(ligne=="FIN_FREQ")
+		{
+
+			s=END;
+		}
+
+		switch (s) {
+			case INIT:
+				if(ligne=="1")
+				{
+					getline(file,ligne);
+					winParam=atoi(ligne.c_str());
+					getline(file,ligne);
+					shiftParam=atoi(ligne.c_str());
+					getline(file,ligne);
+
+					(ligne=="0") ? (b1_list=false) : (b1_list=true);
+					getline(file,ligne);
+					pathFastaParam = ligne;
+					getline(file,ligne);
+					pathPatternParam = ligne;
+					getline(file,ligne);
+					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+					getline(file,ligne);
+					keyParam=ligne;
+
+
+					res = new FreqKmer(winParam,shiftParam,b1_list, pathFastaParam,pathPatternParam,b2_noData,keyParam);
+
+
+
+					res->initFreq();
+					getline(file,ligne);
+
+
+
+				}
+				if(ligne=="2")
+				{
+					getline(file,ligne);
+
+					winParam=atoi(ligne.c_str());
+					getline(file,ligne);
+					(ligne=="0") ? (b1_list=false) : (b1_list=true);
+					getline(file,ligne);
+					pathFastaParam = ligne;
+					getline(file,ligne);
+					pathPatternParam = ligne;
+					getline(file,ligne);
+					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+					getline(file,ligne);
+					keyParam=ligne;
+
+					res = new FreqKmer(winParam,b1_list, pathFastaParam,pathPatternParam,b2_noData,keyParam);
+					res->initFreq();
+					getline(file,ligne);
+
+				}
+				if(ligne=="3")
+				{
+
+					getline(file,ligne);
+					winParam=atoi(ligne.c_str());
+					getline(file,ligne);
+					pathPatternParam=ligne;
+					getline(file,ligne);
+					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+					getline(file,ligne);
+					rootParam=ligne;
+					getline(file,ligne);
+					keyParam=ligne;
+
+					res = new FreqKmer(winParam,pathPatternParam,b2_noData,rootParam,keyParam);
+					res->initFreq();
+					getline(file,ligne);
+				}
+				if(ligne=="4")
+				{
+
+					getline(file,ligne);
+					winParam=atoi(ligne.c_str());
+					getline(file,ligne);
+					shiftParam=atoi(ligne.c_str());
+					getline(file,ligne);
+					pathPatternParam=ligne;
+					getline(file,ligne);
+					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+					getline(file,ligne);
+					rootParam=ligne;
+					getline(file,ligne);
+					keyParam=ligne;
+
+					res = new FreqKmer(winParam,shiftParam,pathPatternParam,b2_noData,rootParam,keyParam);
+
+					res->initFreq();
+					getline(file,ligne);
+				}
+
+				break;
+			case SIZE:
+				getline(file,ligne);
+				res->nLine=atoi(ligne.c_str());
+				getline(file,ligne);
+				res->nCol=atoi(ligne.c_str());
+				getline(file,ligne);
+				break;
+
+			case FREQ:
+			{
+
+				for(int i=0;i<res->nLine;i++)
+				{
+					getline(file,ligne);
+					string buf="";
+					stringstream ss(ligne);
+					j=0;
+					 while (ss >> buf)
+					 {
+						 val=atof(buf.c_str());
+						 res->freq[i][j]=val;
+						 j+=1;
+					 }
+				}
+				s=END;
+			}
+			break;
+			case END:
+				getline(file,ligne);
+				break;
+			default:
+				break;
+		}
+
+	}
+
+	return res;
+}
+
+bool FreqKmer::equal(FreqKmer *f)
+{
+	bool res=true;
+
+	if((f->getNCol()==this->getNCol()) && (f->getNLine()==this->getNLine()))
+	{
+		for(int i=0;i<f->getNLine();i++)
+		{
+			for(int j=0;j<f->getNCol();j++)
+			{
+//                		cerr << "f[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || g[" << i << "][" << j << "] = " << g->getFreq()[i][j]<< "\n";
+				if(f->getFreq()[i][j]!=this->getFreq()[i][j])
+				{
+						res=false;
+
+				}
+				if(!res)
+					break;
+			}
+			if(!res)
+				break;
+		}
+	}
+	else
+	{
+		res=false;
+	}
+
+	return res;
+}

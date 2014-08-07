@@ -22,7 +22,27 @@ void printResult(bool res,int i)
 	}
 }
 
+bool doTest19()
+{
+	cerr << "\n**test init from conf**\n";
 
+	string filename = "Debug/tests/test5/liste.txt";
+	string pattern ="Debug/tests/test5/pattern.txt";
+	FreqKmer *f = new FreqKmer(5,2,true,filename,pattern,false,"genomes");
+	FreqKmer *g=NULL;
+
+	f->fillFreq();
+
+	f->writeConfFeq("Debug/tests/test5/conf.txt");
+
+	g = g->initFromConf("Debug/tests/test5/conf.txt");
+
+	bool res = true;
+	res = g->equal(f);
+
+	printResult(res,19);
+	return res;
+}
 bool doTest18()
 {
 	cerr << "\n**Somme d'une ligne**\n";
@@ -997,6 +1017,9 @@ bool callTest(int i)
 		break;
 	case 18:
 		res = doTest18();
+		break;
+	case 19:
+		res = doTest19();
 		break;
 	default:
 		break;

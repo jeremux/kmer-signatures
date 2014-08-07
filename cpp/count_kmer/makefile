@@ -49,7 +49,7 @@ count_kmer: $(OBJS) $(USER_OBJS)
 
 # Other Targets
 realclean:
-	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) count_kmer
+	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) count_kmer confBig.txt
 	-@echo 'realclean done'
 clean:
 	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS)
@@ -64,7 +64,7 @@ intra: realclean all
 valgrindTest: realclean all
 	valgrind --leak-check=full ./count_kmer -t
 
-.PHONY: clen realclean all
+.PHONY: clean realclean all
 .SECONDARY:
 
 -include makefile.targets

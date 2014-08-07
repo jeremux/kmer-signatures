@@ -22,34 +22,21 @@ bool testIntra2()
 		string root = "Debug/tests/test6";
 		FreqKmer *f = new FreqKmer(10000,true,filename,pattern,false,key);
 		FreqKmer *g = new FreqKmer(10000,pattern,false,root,key);
+
 		bool res = true;
 
 		FreqKmer *h;
+		FreqKmer *f2 = NULL;
 		f->fillFreq();
-
+		f->writeConfFeq("confBig.txt");
 		g->fillFreq();
-
-
+		f2 = f2->initFromConf("confBig.txt");
 		h = g->sampleMe(5);
+
 
 		h->fillFreq();
 
-		 for(int i=0;i<f->getNLine();i++)
-		{
-			for(int j=0;j<f->getNCol();j++)
-			{
-//                		cerr << "f[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || g[" << i << "][" << j << "] = " << g->getFreq()[i][j]<< "\n";
-				if(f->getFreq()[i][j]!=g->getFreq()[i][j])
-				{
-						res=false;
-
-				}
-				if(!res)
-					break;
-			}
-			if(!res)
-				break;
-		}
+		res = res && f->equal(g) && f->equal(f2);
 		if(res)
 		{
 			cerr << "test égalité différente méthode ok\n";
@@ -65,6 +52,7 @@ bool testIntra2()
 		delete f;
 		delete g;
 		delete h;
+		delete f2;
 		return res;
 }
 
@@ -80,8 +68,10 @@ bool testIntra()
 		FreqKmer *f = new FreqKmer(10000,true,filename,pattern,true,key);
 		bool res = true;
 
-
 		f->fillFreq();
+
+		f->writeConfFeq("confBig.txt");
+
 
 
 //			f->imprimeCSV("intra.csv");
