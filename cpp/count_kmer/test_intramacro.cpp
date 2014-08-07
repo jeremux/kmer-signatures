@@ -949,8 +949,6 @@ bool testIntra()
 			cerr << "test fail...\n";
 		}
 
-
-		f->writeConfFeq("intra.conf");
 		delete f;
 
 		return res;

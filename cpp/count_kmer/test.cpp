@@ -39,7 +39,8 @@ bool doTest19()
 
 	bool res = true;
 	res = g->equal(f);
-
+	delete f;
+	delete g;
 	printResult(res,19);
 	return res;
 }
@@ -71,7 +72,6 @@ bool doTest18()
 			);
 
 	f->normalize();
-	f->imprimeCSV("normalized.csv");
 
 	delete f;
 	printResult(res,18);
