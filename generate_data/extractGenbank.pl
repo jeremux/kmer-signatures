@@ -120,6 +120,7 @@ my $nom_standard;
 
 my $cpt = 0;
 my $cpt_ligne = 0; 
+my $taille_gen = 0;
 
 my $taille_finale = `cat $genbank | grep "LOCUS" | wc -l`;
 
@@ -159,6 +160,7 @@ while(<GENBANK>)
 	
 		
 		$hash_genbank{$acc} = $case;
+		$taille_gen = $taille_gen + 1;
 		$hash_name{$acc} = $organism . "__" . $acc;
 		$hash_sequence{$acc} = $seq;
 
@@ -706,7 +708,7 @@ sub traite_join
 	my $res = "";
 	foreach my $x (@les_pos)
 	{
-		print "x = $x\n";
+		# print "x = $x\n";
 		$x =~ s/^\s+|\s+$//g;
 
 		if ($x =~ m/^complement\(/)
@@ -764,11 +766,22 @@ my $cpt2;
 my $cpt1;
 my $id;
 my $id2;
+my $cpt3 = 0;
 
-print "Traitement 2 / 3 (Génération des donnees aux feuilles)\n";
+
 
 foreach my $un_genbank (@tab_extract)
 {
+
+	$cpt3 = $cpt3 + 1;
+	print "\033[2J";
+	print "\033[0;0H";
+	my $rap = ($cpt3 / $taille_gen)*100;
+	my $rap_string = "" . $rap;
+	$rap_string = substr($rap_string,0,4);
+	print "Traitement 2 / 3 (Génération des donnees aux feuilles)\n";
+	print "Avancement: $rap_string %\n";
+
 	chomp($un_genbank);
 	my $i = 0;
 	my @tab_acc =  split (/,/,$un_genbank);

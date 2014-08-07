@@ -761,7 +761,9 @@ $abs_path_racine =~ s/ /_/g;
 my $abs_genbank = abs_path($genbank);
 $abs_genbank =~ s/ /_/g;
 print SCRIPT_GET "perl extractGenbank.pl -list listGenbank.txt -gen $abs_genbank -conf conf --root $abs_path;\n";
-print SCRIPT_GET "bash fillAll_v2.sh;";
+print SCRIPT_GET "bash fillAll_v2.sh ";
+print SCRIPT_GET "2> 46Ukt6xMyK6Li6 .txt ;";
+print SCRIPT_GET "rm -rf 46Ukt6xMyK6Li6.txt;";
 
 # print "path_racine = $abs_path\n";
 

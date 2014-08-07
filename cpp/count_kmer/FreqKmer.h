@@ -55,6 +55,8 @@ private:
 	vector<string> pathChildTaxa; /* chemin des taxon fils du dossier courant */
 	vector<string> idTaxa; /* id des taxon fils du dossier courant */
 	vector<string> listPathFasta;
+	vector<string> idTaxaFromData;
+
 	/**
 	 * Effectue le comptage dans une fenetre
 	 * @param	seq: la sequence où effectuer le comptage
@@ -111,6 +113,12 @@ private:
 	void setFalseMask(int i,int j);
 
 	void normalizeLine(int indexPattern,int line);
+
+	void writeHeaderWeka(ofstream &os);
+
+	void writeLineInOs(ofstream &os,int i,int j);
+
+	string getTaxidFromString(string line);
 
 
 
@@ -372,6 +380,10 @@ public:
 	FreqKmer* 	  initFromConf(string conf);
 
 	bool 	  equal(FreqKmer *f);
+
+	void 	  writeCrossVal(int percent);
+
+
 
 };
 

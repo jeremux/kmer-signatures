@@ -13,6 +13,7 @@
 #include <typeinfo>
 #include <iomanip>
 #include <getopt.h>
+#include <ctime>
 
 
 #include "classPattern.h"
@@ -27,7 +28,7 @@
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 19
+#define NB_TEST 20
 
 typedef struct {
     string listFastaPath;
@@ -69,6 +70,8 @@ void init_opt()
 int getParam(int argcc, char **argvv,options *opt)
 {
     init_opt();
+    /* afin d'avoir des randoms différents pour deux écutions du programme */
+    srand ( time(NULL) );
     int c;
     while (1)
     {

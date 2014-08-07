@@ -66,10 +66,10 @@ int Pattern::getKmer(int* seq,int coord)
 vector<string> Pattern::getCombi()
 {
 	vector<string> bases;
-	bases.push_back("A");
-	bases.push_back("C");
-	bases.push_back("G");
-	bases.push_back("T");
+	bases.push_back("a");
+	bases.push_back("c");
+	bases.push_back("g");
+	bases.push_back("t");
 	vector<string> words;
 	words = bases;
 

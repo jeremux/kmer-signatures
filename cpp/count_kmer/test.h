@@ -8,6 +8,7 @@
 #ifndef TEST_H_
 #define TEST_H_
 
+bool doTest20();
 bool doTest19();
 bool doTest18();
 bool doTest17();

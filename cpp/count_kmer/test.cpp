@@ -22,6 +22,23 @@ void printResult(bool res,int i)
 	}
 }
 
+bool doTest20()
+{
+	cerr << "\n**test writeCrossVal**\n";
+	bool res=true;
+
+	string filename = "Debug/tests/test4/liste.txt";
+	FreqKmer *f = new FreqKmer(4,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha","genomes");
+
+	f->fillFreq();
+	f->writeCrossVal(25);
+
+	delete f;
+	printResult(res,20);
+	return res;
+
+}
+
 bool doTest19()
 {
 	cerr << "\n**test init from conf**\n";
@@ -1021,6 +1038,9 @@ bool callTest(int i)
 	case 19:
 		res = doTest19();
 		break;
+	case 20:
+		res = doTest20();
+		break;
 	default:
 		break;
 	}
@@ -1037,8 +1057,9 @@ bool executeTests(int k)
 	{
 		res = res & callTest(i);
 	}
-	return res;
 	cerr << "\n===Fin des tests===\n";
+	return res;
+
 }
 
 

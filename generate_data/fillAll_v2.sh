@@ -18,6 +18,7 @@ pathNTcox1="data/fasta/nucleotides/cox1/";
 pathNTcox2="data/fasta/nucleotides/cox2/";
 pathNTcox3="data/fasta/nucleotides/cox3/";
 pathNTcytb="data/fasta/nucleotides/cytb/";
+pathNTgen="data/fasta/nucleotides/genomes/";
 
 pathGenbank="data/genbank/";
 
@@ -26,7 +27,7 @@ cpt=0;
 
 array=("$pathNTcox1" "$pathNTcox2" "$pathNTcox3" "$pathNTcytb" 
 	   "$pathAAcox1" "$pathAAcox2" "$pathAAcox3" "$pathAAcytb"
-	   "$pathGenbank"
+	   "$pathGenbank" "$pathNTgen"
 	  )
 
 
@@ -65,6 +66,8 @@ routineMain()
 		#on bouge dans le dossier
 		cd $line;
 		for i in "${array[@]}"; do 
+			# lieu=`pwd`;
+			# echo "je suis dans $lieu"; 
     		cd $i;
     		routineLN $line $i;
 		done

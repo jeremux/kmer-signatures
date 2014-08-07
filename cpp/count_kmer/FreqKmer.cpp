@@ -411,6 +411,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 		cerr << "Debut FreqKmer::initDataFromListFastaPath("<< fichier << ")\n";
 		cerr.flush();
 	}
+	idTaxaFromData.erase(idTaxaFromData.begin(),idTaxaFromData.end());
 	string ligne;
 	int cpt=0;
 	int cpt2=-1;
@@ -419,6 +420,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 	getline(file,ligne);
 	int nbFichier = 0;
 	int tailleLigne = ligne.length();
+	string taxid;
 	/* On lit la liste */
 	while (file)
 	{
@@ -457,6 +459,8 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 			//			cerr << "lecture de " << ligne << "\n";
 			/* J'initilise ma donnée */
 			string tmpligne=ligne;
+			taxid = getTaxidFromString(ligne);
+			idTaxaFromData.push_back(taxid);
 			data[cpt]->initFrom(tmpligne,Fasta);
 
 			indexLineDataSeq[cpt] = new int[data[cpt]->getNtaxa()];
@@ -536,9 +540,10 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 void FreqKmer::initPathFasta(string fichier)
 {
 	string ligne;
+	string taxid;
 	int cpt=0;
 	ifstream file(fichier.c_str());
-
+	idTaxaFromData.erase(idTaxaFromData.begin(),idTaxaFromData.end());
 
 
 	getline(file,ligne);
@@ -554,6 +559,8 @@ void FreqKmer::initPathFasta(string fichier)
 		/* Si ce n'est pas une ligne blanche, vide */
 		if(tailleLigne!=0)
 		{
+			taxid = getTaxidFromString(ligne);
+			idTaxaFromData.push_back(taxid);
 			pathFasta[cpt]=ligne;
 		}
 		/* on lit la ligne suivante */
@@ -1334,6 +1341,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	int index=-1;
 	string current="";
 	string previous="";
+	string taxid;
 	unsigned found;
 	
 	int x = -1;
@@ -1343,6 +1351,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	for(int i=0; i < nbChildTaxa ; i++)
 	{
 		path = getPathChildTaxa(i);
+
 		path += "/data/fasta/nucleotides/" + key_fasta;
 
 		if((dp  = opendir(path.c_str()) )== NULL)
@@ -1364,6 +1373,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 				{
 
 					listPathFasta.push_back(path_tmp);
+
 					cpt++;
 				}
 
@@ -1991,6 +2001,7 @@ FreqKmer* FreqKmer::initFromConf(string fichier)
 	return res;
 }
 
+
 bool FreqKmer::equal(FreqKmer *f)
 {
 	bool res=true;
@@ -2021,3 +2032,152 @@ bool FreqKmer::equal(FreqKmer *f)
 
 	return res;
 }
+
+
+void FreqKmer::writeCrossVal(int percent)
+{
+	int nbSeq = getNbAllTrue();
+	int nbToTake;
+	int cpt=-1;
+	int seqInData_i;
+
+	vector<int> candidates;
+	nbToTake = (percent*nbSeq)/100;
+	string outLearn = "learn.arff";
+	string outToclassify = "toPredict.arff";
+
+	ofstream os_learn ;
+	ofstream os_predict ;
+
+	bool *seqInLearn=NULL;
+
+	cout << "nbToTake = " << nbToTake << "\n";
+
+	if (nbToTake==0)
+	{
+		cerr << "WARNING in FreqKmer::writeCrossVal, percent =  " << percent << " is too low (total seq = " << nbSeq << ")\n";
+		exit(0);
+	}
+	else
+	{
+		os_learn.open(outLearn.c_str());
+		os_predict.open(outToclassify.c_str());
+		writeHeaderWeka(os_predict);
+		writeHeaderWeka(os_learn);
+
+		seqInLearn = new bool[nbSeq];
+		for(int i=0;i<nbSeq;i++)
+		{
+			seqInLearn[i]=true;
+		}
+		randomTab(&candidates,nbSeq,nbToTake);
+		for(unsigned j=0;j<candidates.size();j++)
+		{
+			seqInLearn[candidates[j]]=false;
+		}
+
+	}
+
+
+
+	// Pour chaque data
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		if(noData)
+
+		{
+			if(data[i]!=NULL)
+			{
+				cerr << "WARNING in FreqKmer::writeCrossVal, NULL pointer on data[" << i << "] expected\n";
+				exit(0);
+			}
+			data[i] = new Data();
+			data[i]->initFrom(pathFasta[i],Fasta);
+		}
+		seqInData_i= data[i]->getNtaxa();
+		if(noData)
+		{
+			delete data[i];
+			data[i]=NULL;
+		}
+		//Pour chaque seq
+		for(int j=0;j<seqInData_i;j++)
+		{
+			//si mask[i][j]
+			if(mask[i][j])
+			{
+				cpt++;
+				//si seqInlearn[cpt]
+				if(seqInLearn[cpt])
+				{
+					//impression dans os_learn
+
+					writeLineInOs(os_learn,i,j);
+				}
+				else
+				{
+					//sinon impression dans predict
+					writeLineInOs(os_predict,i,j);
+				}
+
+			}
+		}
+	}
+	os_learn.close();
+	os_predict.close();
+}
+
+void FreqKmer::writeHeaderWeka(ofstream &os)
+{
+	os << "@RELATION freqKmer\n\n";
+	vector<string> combi;
+	for(int i=0;i<getNPattern();i++)
+	{
+		combi = patterns[i]->getCombi();
+		for(unsigned j=0;j<combi.size();j++)
+		{
+			os << "@ATTRIBUTE " << combi[j] << " NUMERIC\n";
+		}
+	}
+	os << "@ATTRIBUTE {";
+	for(int i=0;i<nbChildTaxa-1;i++)
+	{
+		os << getIdTaxa(i) << ",";
+	}
+	os << getIdTaxa(nbChildTaxa-1) << "}\n\n\n@DATA\n";
+}
+
+void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
+{
+	int start = obtainStartLineDataSeq(i,j);
+	int end = obtainEndLineDataSeq(i,j);
+	string taxid = idTaxaFromData[i];
+	for(int i=start; i <= end ;i++)
+	{
+		for(int j=0;j<nCol;j++)
+		{
+			os << freq[i][j] << ",";
+		}
+		os << taxid << "\n";
+	}
+}
+
+string FreqKmer::getTaxidFromString(string line)
+{
+	string res="";
+	int index ;
+	string tmp="";
+
+	index = line.find("/data/fasta/");
+	tmp=line.substr(0,index);
+	index = tmp.find_last_of("__");
+	res = tmp.substr(index+1,tmp.size());
+	/* on chope le other du taxon courant taxon_courant/others si il y a lieu*/
+	if (res.find("others") != std::string::npos)
+	{
+		res="others";
+	}
+	return res;
+}
+
+
