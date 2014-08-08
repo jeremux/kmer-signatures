@@ -766,21 +766,13 @@ my $cpt2;
 my $cpt1;
 my $id;
 my $id2;
-my $cpt3 = 0;
 
 
-
+print "Traitement 2 / 3 (Génération des donnees aux feuilles)\n";
 foreach my $un_genbank (@tab_extract)
 {
 
-	$cpt3 = $cpt3 + 1;
-	print "\033[2J";
-	print "\033[0;0H";
-	my $rap = ($cpt3 / $taille_gen)*100;
-	my $rap_string = "" . $rap;
-	$rap_string = substr($rap_string,0,4);
-	print "Traitement 2 / 3 (Génération des donnees aux feuilles)\n";
-	print "Avancement: $rap_string %\n";
+
 
 	chomp($un_genbank);
 	my $i = 0;
