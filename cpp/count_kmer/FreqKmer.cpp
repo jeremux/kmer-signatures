@@ -27,7 +27,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 	key_fasta=key;
 	indexTaxaInFasta=NULL;
 	freqFilled=false;
-	pathRoot="";
+	pathRoot="null";
 	data=NULL;
 	freq=NULL;
 	mask=NULL;
@@ -103,6 +103,7 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 	pathPattern=patternFile;
 	initFromRoot=false;
 	initWithJump=false;
+	pathRoot="null";
 
 	if(win_size>0)
 	{
@@ -175,11 +176,16 @@ FreqKmer::FreqKmer(int win_size,string patternFile, bool b,string pathR,string k
 
 	}
 
+
 	getDirTaxonFromPath(pathRoot,nbChildTaxa,pathChildTaxa,idTaxa);
+
 	nbChildTaxa = pathChildTaxa.size();
 	indexTaxaInFasta = new int[nbChildTaxa];
 
+
 	initTabIndexTaxaInFasta(key_fasta);
+
+
 
 	writeListFasta();
 	pathFastaFile=pathR+"/list_fasta.txt";
@@ -188,6 +194,8 @@ FreqKmer::FreqKmer(int win_size,string patternFile, bool b,string pathR,string k
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
 	initPatterns(patternFile);
+
+
 
 
 
@@ -406,6 +414,7 @@ int FreqKmer::obtainEndColKmer(int i)
 
 void FreqKmer::initDataFromListFastaPath(string fichier)
 {
+
 	if(dataVerbose)
 	{
 		cerr << "Debut FreqKmer::initDataFromListFastaPath("<< fichier << ")\n";
@@ -448,13 +457,16 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 	/* J'init à partir de chaque ligne du fichier */
 	indexLineDataSeq = new int*[nbFastaFile];
 	mask  = new bool*[nbFastaFile];
+
+
 	while (file2)
 	{
+		cout << "Traitement de " << ligne << "\n";
 		if(tailleLigne!=0)
 		{
 
 			/* au premier tour cpt=0, ensuite 1...*/
-
+//			cout << "TOTOTOTO\n";
 			data[cpt] = new Data();
 			//			cerr << "lecture de " << ligne << "\n";
 			/* J'initilise ma donnée */
@@ -2046,12 +2058,16 @@ void FreqKmer::writeCrossVal(int percent)
 	string outLearn = "learn.arff";
 	string outToclassify = "toPredict.arff";
 
+	if (pathRoot!="null")
+	{
+		outLearn = pathRoot+"/frequencies/learn.arff";
+		outToclassify = pathRoot+"/frequencies/toPredict.arff";
+	}
+
 	ofstream os_learn ;
 	ofstream os_predict ;
 
 	bool *seqInLearn=NULL;
-
-	cout << "nbToTake = " << nbToTake << "\n";
 
 	if (nbToTake==0)
 	{
@@ -2139,7 +2155,7 @@ void FreqKmer::writeHeaderWeka(ofstream &os)
 			os << "@ATTRIBUTE " << combi[j] << " NUMERIC\n";
 		}
 	}
-	os << "@ATTRIBUTE {";
+	os << "@ATTRIBUTE class {";
 	for(int i=0;i<nbChildTaxa-1;i++)
 	{
 		os << getIdTaxa(i) << ",";
@@ -2152,13 +2168,14 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 	int start = obtainStartLineDataSeq(i,j);
 	int end = obtainEndLineDataSeq(i,j);
 	string taxid = idTaxaFromData[i];
-	for(int i=start; i <= end ;i++)
+	for(int l=start; l <= end ;l++)
 	{
-		for(int j=0;j<nCol;j++)
+//		os << "(" << i << "," << j << "):" ;
+		for(int k=0;k<nCol;k++)
 		{
-			os << freq[i][j] << ",";
+			os << freq[l][k] << ",";
 		}
-		os << taxid << "\n";
+		os << taxid << " % Data(" << i << "," << j << ")\n";
 	}
 }
 
