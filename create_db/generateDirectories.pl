@@ -780,9 +780,8 @@ close SCRIPT_MKDIR_DATA;
 system "chmod +x script_mkdir.sh";
 system "chmod +x script_mkdir_data.sh";
 system "chmod +x $nom_fichier";
-system "rm -rf $abs_path_racine && ./script_mkdir.sh && ./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine && ./script_mkdir_data.sh && rm -f listOrganism.txt";
+system "rm -rf $abs_path_racine && ./script_mkdir.sh && ./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine && ./script_mkdir_data.sh ";
+system "rm -f listOrganism.txt"
 
-# system "./script_mkdir_data.sh"
-#system "rm -rf listGenbank2.txt";
 
 # &affiche();
