@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use Cwd 'abs_path';
 
-use Data::Dumper;
 use Bio::DB::Taxonomy;
 use Getopt::Long;
 
@@ -698,6 +697,7 @@ $nom_racine =~ s/ /_/g;
 my $nom_fichier = '../generate_data/generateGenbank_'.$nom_racine.'.sh';
 open (SCRIPT_GET, '>',$nom_fichier) || die "Can't open file:$!\n";
 
+my $name_tree = "tree_".$nom_racine.".newick";
 open (NEWICK, '>', 'tree_'.$nom_racine.'.newick') || die "Can't open file:$!\n"; 
 
 
@@ -762,13 +762,13 @@ my $abs_genbank = abs_path($genbank);
 $abs_genbank =~ s/ /_/g;
 print SCRIPT_GET "perl extractGenbank.pl -list listGenbank.txt -gen $abs_genbank -conf conf --root $abs_path;\n";
 print SCRIPT_GET "bash fillAll_v2.sh ";
-print SCRIPT_GET "2> 46Ukt6xMyK6Li6 .txt ;";
+print SCRIPT_GET "2> 46Ukt6xMyK6Li6.txt ;";
 print SCRIPT_GET "rm -rf 46Ukt6xMyK6Li6.txt;";
 
 # print "path_racine = $abs_path\n";
 
 print NEWICK ";";
-system "sed -i -e s/\\(\\)//g tree.newick";
+system "sed -i -e s/\\(\\)//g $name_tree";
 print "Nombre de requete sur Entrez : $nb_requete_entrez\n";
 
 print KRONA "</krona>";
@@ -781,7 +781,8 @@ system "chmod +x script_mkdir.sh";
 system "chmod +x script_mkdir_data.sh";
 system "chmod +x $nom_fichier";
 system "rm -rf $abs_path_racine && ./script_mkdir.sh && ./get_leaf.sh $abs_path_racine listGenbank2.txt $nom_racine && ./script_mkdir_data.sh ";
-system "rm -f listOrganism.txt"
+system "rm -f listOrganism.txt";
+system "rm -f script_mkdir.sh script_mkdir_data.sh listGenbank2.txt";
 
 
 # &affiche();

@@ -2,7 +2,7 @@
 
 use strict;
 
-use Bio::DB::EUtilities;
+#use Bio::DB::EUtilities;
 use Getopt::Long;
 
 my $help;

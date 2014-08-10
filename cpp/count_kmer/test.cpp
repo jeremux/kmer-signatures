@@ -32,16 +32,17 @@ bool doTest20()
 	string path_root = "../../create_db/Eukaryota__2759/";
 	string key = "genomes";
 	cout << "New Freq\n";
-	FreqKmer *f = new FreqKmer(350,patternPath,false,path_root,key);
+	FreqKmer *f = new FreqKmer(-1,patternPath,true,path_root,key);
 	cout << "FillFreq\n";
-	FreqKmer *h = f->sampleMe(125);
-	h->fillFreq();
-
+	//FreqKmer *h = f->sampleMe(125);
+	//h->fillFreq();
+		f->fillFreq();
+	f->normalize();
 	cout << "writeCrossVal\n";
-	h->writeCrossVal(25);
+	f->writeCrossVal(25);
 
 	delete f;
-	delete h;
+	//delete h;
 	printResult(res,20);
 	return res;
 
