@@ -31,6 +31,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 	data=NULL;
 	freq=NULL;
 	mask=NULL;
+
 	patterns=NULL;
 	kmerSpace=NULL;
 	shift=s;
@@ -113,6 +114,10 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 			shift=1;
 
 	}
+	else
+	{
+		shift=0;
+	}
 
 	indexLineDataSeq=NULL;
 	indexLineData=NULL;
@@ -174,6 +179,10 @@ FreqKmer::FreqKmer(int win_size,string patternFile, bool b,string pathR,string k
 		if (shift==0)
 			shift=1;
 
+	}
+	else
+	{
+		shift=0;
 	}
 
 
@@ -320,7 +329,9 @@ FreqKmer::~FreqKmer()
 		for (int var=0; var < nLine ; var++)
 		{
 			if(freq[var]!=NULL)
+			{
 				delete[] freq[var];
+			}
 		}
 
 		delete[] freq;
@@ -461,7 +472,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 
 	while (file2)
 	{
-		cout << "Traitement de " << ligne << "\n";
+//		cout << "Traitement de " << ligne << "\n";
 		if(tailleLigne!=0)
 		{
 
@@ -659,11 +670,8 @@ void FreqKmer::initFreq()
 	for(int i=0 ; i<nLine ; i++)
 	{
 
-		freq[i] = new double[nCol];
-		for(int j=0 ; j<nCol ; j++)
-		{
-			freq[i][j]=0.0;
-		}
+		freq[i] = NULL;
+
 	}
 	if(dataVerbose){
 		cerr << "Fin FreqKmer::fillFreq()\n ";
@@ -695,6 +703,14 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 		col = obtainColIndex(indexPattern,seq,i);
 		if(col >= 0 && col < getNCol())
 		{
+			if(freq[start_line]==NULL)
+			{
+				freq[start_line] = new double[nCol];
+				for(int p=0 ; p<nCol ; p++)
+				{
+					freq[start_line][p]=0.0;
+				}
+			}
 			freq[start_line][col]+=1;
 		}
 
@@ -835,6 +851,7 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 	/* on recupère le nombre de ligne pour la sequence
 	 * afin d'iterer le bon nombre de fois
 	 */
+
 	z=obtainNbLineWindow(0,seq_length-1,win_length,shift);
 
 	while(j < z)
@@ -857,6 +874,16 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 					/* On ne compte que les acgt */
 					if(current[i]<getNCol() && current[i]>0)
 					{
+						/* on instancie la ligne */
+						if(freq[index]==NULL)
+						{
+							freq[index] = new double[nCol];
+							for(int p=0 ; p<nCol ; p++)
+							{
+								freq[index][p]=0.0;
+							}
+						}
+
 						freq[index][current[i]]+=1;
 
 					}
@@ -1027,7 +1054,7 @@ void FreqKmer::imprimeCSV(string ouput)
 //		myfile << j << ";";
 		//		cout << j << ";";
 	}
-	myfile << endl;
+//	myfile << endl;
 	//	cout << endl;
 	int indexData,indexSeq;
 	for(int i=0;i<nLine;i++)
@@ -1063,7 +1090,17 @@ void FreqKmer::imprimeCSV(string ouput)
  */
 int FreqKmer::obtainNbLineWindow(int i,int j,int l,int pas)
 {
-	return ((j-i+1-l)/pas)+1;
+	int res = 0;
+	if(pas!=0)
+	{
+		res = ((j-i+1-l)/pas)+1;
+	}
+	else
+	{
+		res = 1;
+	}
+
+	return res;
 }
 
 /**
@@ -1493,6 +1530,11 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 {
 	FreqKmer *res;
 
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::sampleMe("<< sampleSize << ")\n";
+	}
+
 	if(initFromRoot)
 	{
 		if(initWithJump)
@@ -1530,8 +1572,17 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 		res->initFreq();
 		for(int i=0;i<nLine;i++)
 		{
+			if(res->freq[i]==NULL)
+			{
+				res->freq[i] = new double[nCol];
+				for(int p=0 ; p<res->nCol ; p++)
+				{
+					res->freq[i][p]=0.0;
+				}
+			}
 			for(int j=0;j<nCol;j++)
 			{
+
 				res->freq[i][j]=this->freq[i][j];
 			}
 		}
@@ -1639,6 +1690,10 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 	}
 
 	delete[] mask_tmp;
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::sampleMe("<< sampleSize << ")\n";
+	}
 	return res;
 
 }
@@ -1758,9 +1813,12 @@ double FreqKmer::getSum(int indexPattern,int indexLine)
 {
 	double s=0;
 
-	for(int i=obtainStartColKmer(indexPattern);i<=obtainEndColKmer(indexPattern);i++)
+	if(freq[indexLine]!=NULL)
 	{
-		s += freq[indexLine][i];
+		for(int i=obtainStartColKmer(indexPattern);i<=obtainEndColKmer(indexPattern);i++)
+		{
+			s += freq[indexLine][i];
+		}
 	}
 
 	return s;
@@ -1769,9 +1827,15 @@ double FreqKmer::getSum(int indexPattern,int indexLine)
 void FreqKmer::normalizeLine(int indexPattern,int line)
 {
 	double s = getSum(indexPattern,line);
-	for(int i=obtainStartColKmer(indexPattern);i<=obtainEndColKmer(indexPattern);i++)
+	int nbComb = patterns[indexPattern]->getAllCombi();
+
+	if (s!=0)
 	{
-		freq[line][i] = freq[line][i]/s;
+		for(int i=obtainStartColKmer(indexPattern);i<=obtainEndColKmer(indexPattern);i++)
+		{
+			if(freq[line]!=NULL)
+				freq[line][i] = (nbComb) * freq[line][i]/s;
+		}
 	}
 }
 void FreqKmer::normalize()
@@ -1783,7 +1847,8 @@ void FreqKmer::normalize()
 		{
 			for(int j=0;j<nLine;j++)
 			{
-				normalizeLine(i,j);
+				if(freq[j]!=NULL)
+					normalizeLine(i,j);
 			}
 		}
 	}
@@ -1837,13 +1902,23 @@ void FreqKmer::writeConfFeq(string output)
 
 	for(int i=0;i<nLine;i++)
 	{
+
+		if(freq[i]==NULL)
 		{
-			for(int j=0;j<nCol;j++)
+			freq[i] = new double[nCol];
+			for(int j=0 ; j<nCol ; j++)
 			{
-				myfile << freq[i][j] << " ";
+				freq[i][j]=0.0;
 			}
-			myfile << endl;
 		}
+
+		for(int j=0;j<nCol;j++)
+		{
+
+			myfile << freq[i][j] << " ";
+		}
+		myfile << endl;
+
 		//		cout << endl;
 	}
 	myfile << "FIN_FREQ\n";
@@ -1987,6 +2062,15 @@ FreqKmer* FreqKmer::initFromConf(string fichier)
 
 				for(int i=0;i<res->nLine;i++)
 				{
+					if(res->freq[i]==NULL)
+					{
+						cout << "la ligne " << i << " etait null \n";
+						res->freq[i] = new double[res->nCol];
+						for(int j=0 ; j<res->nCol ; j++)
+						{
+							res->freq[i][j]=0.0;
+						}
+					}
 					getline(file,ligne);
 					string buf="";
 					stringstream ss(ligne);
@@ -2048,6 +2132,10 @@ bool FreqKmer::equal(FreqKmer *f)
 
 void FreqKmer::writeCrossVal(int percent)
 {
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeCrossVal("<< percent << ")\n";
+	}
 	int nbSeq = getNbAllTrue();
 	int nbToTake;
 	int cpt=-1;
@@ -2063,6 +2151,7 @@ void FreqKmer::writeCrossVal(int percent)
 		outLearn = pathRoot+"/frequencies/learn.arff";
 		outToclassify = pathRoot+"/frequencies/toPredict.arff";
 	}
+
 
 	ofstream os_learn ;
 	ofstream os_predict ;
@@ -2141,6 +2230,11 @@ void FreqKmer::writeCrossVal(int percent)
 	}
 	os_learn.close();
 	os_predict.close();
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::writeCrossVal("<< percent << ")\n";
+	}
 }
 
 void FreqKmer::writeHeaderWeka(ofstream &os)
@@ -2171,11 +2265,14 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 	for(int l=start; l <= end ;l++)
 	{
 //		os << "(" << i << "," << j << "):" ;
-		for(int k=0;k<nCol;k++)
+		if(freq[l]!=NULL)
 		{
-			os << freq[l][k] << ",";
+			for(int k=0;k<nCol;k++)
+			{
+				os << freq[l][k] << ",";
+			}
+			os << taxid << " % Data(" << i << "," << j << ")\n";
 		}
-		os << taxid << " % Data(" << i << "," << j << ")\n";
 	}
 }
 

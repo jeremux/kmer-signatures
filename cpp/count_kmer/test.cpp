@@ -32,17 +32,22 @@ bool doTest20()
 	string path_root = "../../create_db/Eukaryota__2759/";
 	string key = "genomes";
 	cout << "New Freq\n";
-	FreqKmer *f = new FreqKmer(-1,patternPath,true,path_root,key);
+	FreqKmer *f = new FreqKmer(1000,patternPath,true,path_root,key);
+//	FreqKmer *f = new FreqKmer(-1,false,"../../create_db/Eukaryota__2759/Opisthokonta__33154/data/fasta/nucleotides/genomes/genomes_6669.fasta",patternPath,false,"genomes");
+
+	cout << "SampleMe\n";
+	FreqKmer *h = f->sampleMe(125);
 	cout << "FillFreq\n";
-	//FreqKmer *h = f->sampleMe(125);
-	//h->fillFreq();
-		f->fillFreq();
-	f->normalize();
+	h->fillFreq();
+//	f->fillFreq();
+	cout << "normalize\n";
+	h->normalize();
 	cout << "writeCrossVal\n";
-	f->writeCrossVal(25);
+	h->writeCrossVal(25);
+//	f->imprimeCSV("toto.csv");
 
 	delete f;
-	//delete h;
+	delete h;
 	printResult(res,20);
 	return res;
 

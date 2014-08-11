@@ -39,6 +39,7 @@ private:
 	bool initFromRoot;
 	bool initWithJump;
 
+
 	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
 	nCol, /* Nombre de colonne définit par les patterns: nombre de kmer possible */
 	nPattern, /* Nombre de pattern définissant les kmers */

@@ -567,6 +567,7 @@ Switch Data::readFasta(string filename) {
     	  alphabet=protein;
     	  charalphabet=AminoAcids;
     	  Nstate=20;
+    	  alphabet=dna; /* TODO: a enlever ! */
       }
       if(tmpnsite > maxnbsite)
     	  maxnbsite=tmpnsite;

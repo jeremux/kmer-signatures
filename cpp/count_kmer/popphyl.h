@@ -94,7 +94,7 @@ static Switch getSwitch(int s)
     return No;
 }
 
-const bool dataVerbose=false;
+const bool dataVerbose=true;
 const bool doTest=true;
 
 #endif
