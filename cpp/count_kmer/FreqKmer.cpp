@@ -270,7 +270,7 @@ FreqKmer::FreqKmer(int win_size,int s,string patternFile, bool b,string pathR,st
  *
  *Destructeur
  ****************************************************************************/
-FreqKmer::~FreqKmer() 
+FreqKmer::~FreqKmer()
 {
 
 	if(dataVerbose){
@@ -1301,7 +1301,7 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 		if (s1.find("__") != std::string::npos || s1=="others")
 		{
 			files.push_back(dir+"/"+s1);
-			
+
 
 		}
 
@@ -1392,7 +1392,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	string previous="";
 	string taxid;
 	unsigned found;
-	
+
 	int x = -1;
 //	cerr << "nbChildttaxa = " << nbChildTaxa << "\n";
 
@@ -1444,7 +1444,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	    current=listPathFasta[j];
 	    found=current.find_last_of("/\\");
 	    current=current.substr(0,found);
-       
+
 	    if(current!=previous)
 	    {
 		previous=current;
@@ -1454,7 +1454,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	    }
 	}
 	indexTaxaInFasta[++index]=listPathFasta.size()-1;
-	
+
 }
 
 void FreqKmer::writeListFasta()
@@ -1812,7 +1812,7 @@ void FreqKmer::maskTab(vector<int> *candidate,bool **mask_tmp, int indexTaxa)
 double FreqKmer::getSum(int indexPattern,int indexLine)
 {
 	double s=0;
-
+	//cout << "calcul pour i = " << obtainStartColKmer(indexPattern) << " à " << obtainEndColKmer(indexPattern) << " : ";
 	if(freq[indexLine]!=NULL)
 	{
 		for(int i=obtainStartColKmer(indexPattern);i<=obtainEndColKmer(indexPattern);i++)
@@ -2064,7 +2064,7 @@ FreqKmer* FreqKmer::initFromConf(string fichier)
 				{
 					if(res->freq[i]==NULL)
 					{
-						cout << "la ligne " << i << " etait null \n";
+					    //cout << "la ligne " << i << " etait null \n";
 						res->freq[i] = new double[res->nCol];
 						for(int j=0 ; j<res->nCol ; j++)
 						{
