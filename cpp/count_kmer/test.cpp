@@ -42,12 +42,14 @@ bool doTest20()
 //	f->fillFreq();
 	cout << "normalize\n";
 	h->normalize();
+//	f->normalize();
 	cout << "writeCrossVal\n";
 	h->writeCrossVal(25);
+//	f->writeCrossVal(25);
 //	f->imprimeCSV("toto.csv");
 
 	delete f;
-	delete h;
+//	delete h;
 	printResult(res,20);
 	return res;
 
@@ -843,12 +845,18 @@ bool doTest3()
 	{
 		for(int j=0;j<col;j++)
 		{
+//			cout << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] << " || ";
+//			cout << "base[" << i << "][" << j << "] = " << freq[i][j] << "\n";
 			if(f->getFreq()[i][j]!=freq[i][j])
 			{
 				res=false;
 				break;
 			}
+			if(!res)
+				break;
 		}
+		if(!res)
+			break;
 	}
 	if (res)
 	{
