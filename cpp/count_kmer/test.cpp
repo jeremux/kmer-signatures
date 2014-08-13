@@ -29,27 +29,28 @@ bool doTest20()
 
 	string filename = "Debug/tests/test4/liste.txt";
 	string patternPath = "pattern.txt";
-	string path_root = "../../create_db/Eukaryota__2759";
+	string path_root = "../../create_db/Eukaryota__2759/Alveolata__33630";
 	string key = "genomes";
 	cout << "New Freq\n";
-	FreqKmer *f = new FreqKmer(-1,patternPath,true,path_root,key);
+	FreqKmer *f = new FreqKmer(200,patternPath,true,path_root,key);
 //	FreqKmer *f = new FreqKmer(-1,false,"../../create_db/Eukaryota__2759/Opisthokonta__33154/data/fasta/nucleotides/genomes/genomes_6669.fasta",patternPath,false,"genomes");
 
 	cout << "SampleMe\n";
-//	FreqKmer *h = f->sampleMe(50);
+	FreqKmer *h = f->sampleMe(20);
 	cout << "FillFreq\n";
 //	h->fillFreq();
-//	f->fillFreq();
+	f->fillFreq();
 //	cout << "normalize\n";
-//	h->normalize();
+	h->normalize();
 //	f->normalize();
 	cout << "writeCrossVal\n";
-//	h->writeCrossVal(25);
-	f->writeCrossVal(25);
+	for(int i=1;i<=10;i++)
+		h->writeCrossVal(10,i);
+//	f->writeCrossVal(25);
 //	f->imprimeCSV("toto.csv");
 
 	delete f;
-//	delete h;
+	delete h;
 	printResult(res,20);
 	return res;
 

@@ -20,6 +20,7 @@ using namespace std;
  *Constructeur
  ****************************************************************************/
 
+
 FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b,string key)
 {
 
@@ -696,7 +697,7 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 		cerr << " win_length = " << win_length << "\t pos = " << pos << "\n";
 		cerr.flush();
 	}
-	bool flag_debug=true;
+
 	int col;
 	/* on s'arrête à la dernière fenetre possible */
 	int fin = pos+win_length-patterns[indexPattern]->getSizePattern();
@@ -707,11 +708,7 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 		col = obtainColIndex(indexPattern,seq,i);
 		if(col >= 0 && col < getNCol())
 		{
-			if(flag_debug)
-			{
-				freq[start_line]==new double[nCol];
-				flag_debug=false;
-			}
+
 			if(freq[start_line]==NULL)
 			{
 //				cout << "ALLOC freq[" << start_line << "]\n";
@@ -1094,7 +1091,7 @@ void FreqKmer::fillFreq()
 			}
 
 
-
+			freqFilled=true;
 
 }
 
@@ -2208,8 +2205,11 @@ bool FreqKmer::equal(FreqKmer *f)
 	return res;
 }
 
-
 void FreqKmer::writeCrossVal(int percent)
+{
+	writeCrossVal(percent,"learn.arff","toPredict.arff");
+}
+void FreqKmer::writeCrossVal(int percent,string outLearn,string outToclassify)
 {
 	if (dataVerbose)
 	{
@@ -2222,13 +2222,12 @@ void FreqKmer::writeCrossVal(int percent)
 
 	vector<int> candidates;
 	nbToTake = (percent*nbSeq)/100;
-	string outLearn = "learn.arff";
-	string outToclassify = "toPredict.arff";
+
 
 	if (pathRoot!="null")
 	{
-		outLearn = pathRoot+"/frequencies/learn.arff";
-		outToclassify = pathRoot+"/frequencies/toPredict.arff";
+		outLearn = pathRoot+"/frequencies/"+outLearn;
+		outToclassify = pathRoot+"/frequencies/"+outToclassify;
 	}
 
 
@@ -2347,8 +2346,13 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 	string taxid = idTaxaFromData[i];
 
 	//if(bigData)
-	initFreq();
-	fillFreq(i,j);
+	if(!freqFilled)
+	{
+		initFreq();
+		fillFreq(i,j);
+	}
+
+
 
 	for(int l=start; l <= end ;l++)
 	{
@@ -2366,16 +2370,20 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 			os << taxid << " % Data(" << i << "," << j << ")\n";
 		}
 	}
-	//if(bigData)
-	for (int var=start; var <= end ; var++)
+
+	if(!freqFilled)
 	{
-		if(freq[var]!=NULL)
+		for (int var=start; var <= end ; var++)
 		{
-//			cout << "DELETE freq[" << var << "]\n";
-			delete[] freq[var];
-			freq[var]=NULL;
+			if(freq[var]!=NULL)
+			{
+	//			cout << "DELETE freq[" << var << "]\n";
+				delete[] freq[var];
+				freq[var]=NULL;
+			}
 		}
 	}
+
 
 	if (dataVerbose)
 	{
@@ -2492,6 +2500,16 @@ void FreqKmer::fillFreq(int data_i,int seq_j)
 		cerr.flush();
 	}
 
+}
+
+void FreqKmer::writeCrossVal(int percent,int id)
+{
+	stringstream sstm1,sstm2;
+	sstm1 << "learn-" << id << ".arff";
+	sstm2 << "toPredict-" << id << ".arff";
+	string learn = sstm1.str();
+	string toPredict = sstm2.str();
+	writeCrossVal(percent,learn,toPredict);
 }
 
 

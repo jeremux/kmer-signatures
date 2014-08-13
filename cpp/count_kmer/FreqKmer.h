@@ -121,7 +121,7 @@ private:
 
 	string getTaxidFromString(string line);
 
-
+	void writeCrossVal(int percent,string outLearn,string outPredict);
 
 
 
@@ -387,6 +387,8 @@ public:
 	void 	  writeCrossVal(int percent);
 
 	void	fillFreq(int data_i,int seq_j);
+
+	void 	writeCrossVal(int percent,int i);
 
 
 };

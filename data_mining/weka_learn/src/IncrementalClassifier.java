@@ -1,17 +1,14 @@
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.Utils;
 import weka.core.converters.ArffLoader;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayesUpdateable;
-import weka.classifiers.meta.FilteredClassifier;
+import weka.classifiers.functions.LibSVM;
 import weka.classifiers.bayes.NaiveBayes;
-import weka.filters.unsupervised.attribute.StringToWordVector;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.util.Random;
+
 
 /**
  * This example trains NaiveBayes incrementally on data obtained
@@ -19,72 +16,71 @@ import java.util.Random;
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  */
-public class IncrementalClassifier {
+public class IncrementalClassifier  {
 
-  /**
-   * Expects an ARFF file as first argument (class attribute is assumed
-   * to be the last attribute).
-   *
-   * @param args        the commandline arguments
-   * @throws Exception  if something goes wrong
-   */
-  public static void main(String[] args) throws Exception {
-    // load data
-//    ArffLoader loader = new ArffLoader();
-//    loader.setFile(new File("/home/jeremy/taxonomic-classification/create_db/Alveolata__33630/learn/learning_S50.arff"));
-	  ArffLoader loader = new ArffLoader();
-	    loader.setFile(new File("/home/jeremy/taxonomic-classification/create_db/Alveolata__33630/learn/learning_S50.arff"));
-	  System.out.println("TOTO");
-	  Instances train = loader.getStructure();
-	  System.out.println("TATA");
-	  train.setClassIndex(train.numAttributes()-1);
-	  
-	  String testDataset = "/home/jeremy/taxonomic-classification/create_db/Alveolata__33630/learn/learning_S50.arff";
+	
+	public static double getCorrect(String root,int id) throws Exception
+	{
+		double res=0;
+		
+		String trainPath = root + "/frequencies/learn-"+id+".arff";
+		String testDataset = root + "/frequencies/toPredict-"+id+".arff";
+		ArffLoader loader = new ArffLoader();
+		loader.setFile(new File(trainPath));
+		Instances train = loader.getStructure();
+		train.setClassIndex(train.numAttributes()-1);
 
-	  NaiveBayes nb = new NaiveBayesUpdateable();
-	  nb.buildClassifier(train);
-	  int cpt = 0;
+	
+		NaiveBayes nb = new NaiveBayesUpdateable();
+//		nb.setOptions(Utils.splitOptions("-K"));
+		nb.buildClassifier(train);
+//		int cpt = 0;
+		
 
-	    Instance current;
-	    while ((current = loader.getNextInstance(train)) != null)
-	    {
-	    	cpt++;
-	    	System.out.println("cpt = "+cpt);
-	    	nb.updateClassifier(current);
-	    }
-	      
+		Instance current;
+		while ((current = loader.getNextInstance(train)) != null)
+		{
+//			cpt++;
+//			System.out.println("cpt = "+cpt);
+			nb.updateClassifier(current);
+		}
 
-	    // output generated model
-	    System.out.println(nb);
-	    
-	    // Print statistics
-	    System.out.println(nb);
 
-	    // Load the test dataset
-	    ArffLoader loader_test = new ArffLoader();
-	    loader_test.setFile(new File(testDataset));
+		// output generated model
+//		System.out.println(nb);
 
-	    Instances instances_test = loader_test.getDataSet();
-	    instances_test.setClassIndex(16);
+		// Load the test dataset
+		ArffLoader loader_test = new ArffLoader();
+		loader_test.setFile(new File(testDataset));
 
-	    // Evaluate the model
-	    Evaluation eval = new Evaluation(instances_test);
-	    eval.evaluateModel(nb, instances_test);
+		Instances instances_test = loader_test.getDataSet();
+		instances_test.setClassIndex(instances_test.numAttributes()-1);
 
-	    // Print summary
-	    System.out.println(eval.toSummaryString());
+		// Evaluate the model
+		Evaluation eval = new Evaluation(instances_test);
+		eval.evaluateModel(nb, instances_test);
 
-	    // Print confusion matrix
-	    System.out.println("Confusion Matrix:");
+		// Print summary
+//		System.out.println(eval.toSummaryString());
 
-	    double[][] confMatrix = eval.confusionMatrix();
-
-	    for(int i=0; i<confMatrix.length;i++) {
-	    for (int j=0;j<confMatrix[i].length;j++) {
-	    System.out.print(confMatrix[i][j] + " ");
-	    }
-	    System.out.println();
-	    }
-
-	    }
-  }
+		// Print confusion matrix
+//		double correct = eval.correct();
+//		double incorrect = eval.numInstances() - correct;
+		res = (int) Math.round((eval.correct()/eval.numInstances())*100);
+		
+		
+		return res;
+	}
+	public static void main(String[] args) throws Exception 
+	{
+		double res=0;
+		int nTests = Integer.parseInt(args[1]);
+		for(int i=1;i<=nTests;i++)
+		{
+			res+= getCorrect(args[0],i);
+		}
+		res /= (double) nTests;
+		
+		System.out.println(res);
+	}
+}
