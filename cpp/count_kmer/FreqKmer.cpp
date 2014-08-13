@@ -330,7 +330,9 @@ FreqKmer::~FreqKmer()
 		{
 			if(freq[var]!=NULL)
 			{
+//				cout << "DELETE freq[" << var << "]\n";
 				delete[] freq[var];
+				freq[var]=NULL;
 			}
 		}
 
@@ -541,7 +543,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 				// cerr << "Fermeture Data\n";
 				delete data[cpt];
 				data[cpt]=NULL;
-				cout << "data[" << cpt << "] = NULL \n";
+//				cout << "data[" << cpt << "] = NULL \n";
 			}
 			cpt++;
 
@@ -694,6 +696,7 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 		cerr << " win_length = " << win_length << "\t pos = " << pos << "\n";
 		cerr.flush();
 	}
+	bool flag_debug=true;
 	int col;
 	/* on s'arrête à la dernière fenetre possible */
 	int fin = pos+win_length-patterns[indexPattern]->getSizePattern();
@@ -704,9 +707,14 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 		col = obtainColIndex(indexPattern,seq,i);
 		if(col >= 0 && col < getNCol())
 		{
-
+			if(flag_debug)
+			{
+				freq[start_line]==new double[nCol];
+				flag_debug=false;
+			}
 			if(freq[start_line]==NULL)
 			{
+//				cout << "ALLOC freq[" << start_line << "]\n";
 				freq[start_line] = new double[nCol];
 				for(int p=0 ; p<nCol ; p++)
 				{
@@ -879,6 +887,7 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 						/* on instancie la ligne */
 						if(freq[index]==NULL)
 						{
+//							cout << "ALLOC freq[" << index << "]\n";
 							freq[index] = new double[nCol];
 							for(int p=0 ; p<nCol ; p++)
 							{
@@ -2329,12 +2338,25 @@ void FreqKmer::writeHeaderWeka(ofstream &os)
 
 void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 {
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeLineInOs\n";
+	}
 	int start = obtainStartLineDataSeq(i,j);
 	int end = obtainEndLineDataSeq(i,j);
 	string taxid = idTaxaFromData[i];
+
+	//if(bigData)
+	initFreq();
+	fillFreq(i,j);
+
 	for(int l=start; l <= end ;l++)
 	{
 //		os << "(" << i << "," << j << "):" ;
+		for(int t=0;t<nPattern;t++)
+		{
+			normalizeLine(t,l);
+		}
 		if(freq[l]!=NULL)
 		{
 			for(int k=0;k<nCol;k++)
@@ -2343,6 +2365,21 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 			}
 			os << taxid << " % Data(" << i << "," << j << ")\n";
 		}
+	}
+	//if(bigData)
+	for (int var=start; var <= end ; var++)
+	{
+		if(freq[var]!=NULL)
+		{
+//			cout << "DELETE freq[" << var << "]\n";
+			delete[] freq[var];
+			freq[var]=NULL;
+		}
+	}
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::writeLineInOs\n";
 	}
 }
 
@@ -2429,6 +2466,7 @@ void FreqKmer::fillFreq(int data_i,int seq_j)
 				{
 					if(freq[w]==NULL)
 					{
+//						cout << "ALLOC freq[" << w << "]\n";
 						freq[w] = new double[nCol];
 						for(int x=0;x<nCol;x++)
 						{
