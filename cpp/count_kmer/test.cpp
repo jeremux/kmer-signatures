@@ -31,26 +31,104 @@ bool doTest20()
 	string patternPath = "pattern.txt";
 	string path_root = "../../create_db/Eukaryota__2759/Alveolata__33630";
 	string key = "genomes";
-	cout << "New Freq\n";
-	FreqKmer *f = new FreqKmer(200,patternPath,true,path_root,key);
+	cout << "New Freq1\n";
+	FreqKmer *f = new FreqKmer(-1,patternPath,false,path_root,key);
+
+	cout << "New Freq2\n";
+	FreqKmer *a = new FreqKmer(300,patternPath,false,path_root,key);
+	FreqKmer *b = new FreqKmer(250,patternPath,false,path_root,key);
+	FreqKmer *c = new FreqKmer(200,patternPath,false,path_root,key);
+	FreqKmer *d = new FreqKmer(150,patternPath,false,path_root,key);
+	FreqKmer *e = new FreqKmer(100,patternPath,false,path_root,key);
 //	FreqKmer *f = new FreqKmer(-1,false,"../../create_db/Eukaryota__2759/Opisthokonta__33154/data/fasta/nucleotides/genomes/genomes_6669.fasta",patternPath,false,"genomes");
 
-	cout << "SampleMe\n";
-	FreqKmer *h = f->sampleMe(20);
-	cout << "FillFreq\n";
-//	h->fillFreq();
-	f->fillFreq();
-//	cout << "normalize\n";
-	h->normalize();
-//	f->normalize();
+	cout << "f->fillFreq\n";
+//	f->fillFreq();
+	cout << "a->fillFreq\n";
+//	a->fillFreq();
+
+	cout << "f->sampleMe(20)\n";
+	FreqKmer *toLearn = NULL;
+	FreqKmer *toPredict;
+	toPredict = NULL;
+	toLearn = f->sampleMe(20);
+
+	cout << "a->sampleMe(list)\n";
+	toPredict = a->sampleMe(f->getSampledTaxon());
+
+	delete a;
+
 	cout << "writeCrossVal\n";
 	for(int i=1;i<=10;i++)
-		h->writeCrossVal(10,i);
+	{
+		cout << "writeNCrossVal(" << i << ")\n";
+		f->writeNCrossVal(toLearn,toPredict,20,i,"300");
+	}
+
+	delete toPredict;
+	toPredict = NULL;
+	cout << "b->sampleMe(list)\n";
+	toPredict = b->sampleMe(f->getSampledTaxon());
+
+	delete b;
+
+	cout << "writeCrossVal\n";
+	for(int i=1;i<=10;i++)
+	{
+		cout << "writeNCrossVal(" << i << ")\n";
+		f->writeNCrossVal(toLearn,toPredict,20,i,"250");
+	}
+
+	delete toPredict;
+	toPredict = NULL;
+	cout << "c->sampleMe(list)\n";
+	toPredict = c->sampleMe(f->getSampledTaxon());
+
+	delete c;
+
+
+	cout << "writeCrossVal\n";
+	for(int i=1;i<=10;i++)
+	{
+		cout << "writeNCrossVal(" << i << ")\n";
+		f->writeNCrossVal(toLearn,toPredict,20,i,"200");
+	}
+
+	delete toPredict;
+	toPredict = NULL;
+	cout << "d->sampleMe(list)\n";
+	toPredict = d->sampleMe(f->getSampledTaxon());
+
+	delete d;
+
+	cout << "writeCrossVal\n";
+	for(int i=1;i<=10;i++)
+	{
+		cout << "writeNCrossVal(" << i << ")\n";
+		f->writeNCrossVal(toLearn,toPredict,20,i,"150");
+	}
+
+	delete toPredict;
+	toPredict = NULL;
+	cout << "e->sampleMe(list)\n";
+	toPredict = e->sampleMe(f->getSampledTaxon());
+
+	delete e;
+
+	cout << "writeCrossVal\n";
+	for(int i=1;i<=10;i++)
+	{
+		cout << "writeNCrossVal(" << i << ")\n";
+		f->writeNCrossVal(toLearn,toPredict,20,i,"100");
+	}
+
 //	f->writeCrossVal(25);
 //	f->imprimeCSV("toto.csv");
 
 	delete f;
-	delete h;
+
+	delete toLearn;
+	delete toPredict;
 	printResult(res,20);
 	return res;
 
@@ -113,13 +191,14 @@ bool doTest18()
 }
 bool doTest17()
 {
-	cerr << "\n**Test sample**\n";
+	cerr << "\n**Test sample(int) & sample(list)**\n";
 	string filename = "Debug/tests/test4/liste.txt";
 	FreqKmer *f = new FreqKmer(4,"Debug/tests/test4/pattern.txt",false,"Debug/tests/taxon__alpha","genomes");
 	bool res = true;
 
 
-	FreqKmer *g;
+	FreqKmer *g,*h;
+
 	g = f->sampleMe(1);
 	res = res && g->getNbAllTrue()==4;
 	delete g;
@@ -129,7 +208,10 @@ bool doTest17()
 	delete g;
 
 	g = f->sampleMe(3);
+	h = f->sampleMe(f->getSampledTaxon());
 	res = res && g->getNbAllTrue()==12;
+	res = res && h->getNbAllTrue()==12;
+
 	delete g;
 
 	g = f->sampleMe(4);

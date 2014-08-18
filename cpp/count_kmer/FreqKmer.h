@@ -57,6 +57,7 @@ private:
 	vector<string> idTaxa; /* id des taxon fils du dossier courant */
 	vector<string> listPathFasta;
 	vector<string> idTaxaFromData;
+	vector<pair<int, int> > sampledTaxon;
 
 	/**
 	 * Effectue le comptage dans une fenetre
@@ -124,7 +125,7 @@ private:
 	void writeCrossVal(int percent,string outLearn,string outPredict);
 
 
-
+	void writeLineInOs(ofstream &os,int i,int j,FreqKmer *f);
 
 
 /*************************************************************************************************************************
@@ -161,6 +162,11 @@ public:
 
 	virtual ~FreqKmer();
 
+	FreqKmer* sampleMe(vector<pair<int, int> > list);
+
+
+
+	typedef std::pair<int, int> intPair;
 	/**********************************************************************************/
 	bool	takeDataSeq(int indexData,int indexSeq);
 	/**
@@ -234,6 +240,7 @@ public:
 	int			getNbChild(){return nbChildTaxa;}
 	Data** 		getData(){return data;}
 	string 		getpathFastaFile(){return pathFastaFile;}
+	vector<pair<int, int> > getSampledTaxon(){return sampledTaxon;}
 
 
 	/*******************************DEPLACEMENT HORIZONTAL*****************************************/
@@ -389,6 +396,13 @@ public:
 	void	fillFreq(int data_i,int seq_j);
 
 	void 	writeCrossVal(int percent,int i);
+
+	void 	writeCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, string outLearn, string outToclassify);
+
+	void 	writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i);
+
+	void   writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i,string id);
+
 
 
 };

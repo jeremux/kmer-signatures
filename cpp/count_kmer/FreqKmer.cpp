@@ -331,7 +331,7 @@ FreqKmer::~FreqKmer()
 		{
 			if(freq[var]!=NULL)
 			{
-//				cout << "DELETE freq[" << var << "]\n";
+				//				cout << "DELETE freq[" << var << "]\n";
 				delete[] freq[var];
 				freq[var]=NULL;
 			}
@@ -475,12 +475,12 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 
 	while (file2)
 	{
-//		cout << "Traitement de " << ligne << "\n";
+		//		cout << "Traitement de " << ligne << "\n";
 		if(tailleLigne!=0)
 		{
 
 			/* au premier tour cpt=0, ensuite 1...*/
-//			cout << "TOTOTOTO\n";
+			//			cout << "TOTOTOTO\n";
 			data[cpt] = new Data();
 			//			cerr << "lecture de " << ligne << "\n";
 			/* J'initilise ma donnée */
@@ -544,7 +544,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 				// cerr << "Fermeture Data\n";
 				delete data[cpt];
 				data[cpt]=NULL;
-//				cout << "data[" << cpt << "] = NULL \n";
+				//				cout << "data[" << cpt << "] = NULL \n";
 			}
 			cpt++;
 
@@ -711,7 +711,7 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 
 			if(freq[start_line]==NULL)
 			{
-//				cout << "ALLOC freq[" << start_line << "]\n";
+				//				cout << "ALLOC freq[" << start_line << "]\n";
 				freq[start_line] = new double[nCol];
 				for(int p=0 ; p<nCol ; p++)
 				{
@@ -866,57 +866,57 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 
 		/* on compte seulement si la ligne n'a pas été calculée */
 
-			/* Si j > 0 alors on a déjà effectué le comtpage pour la première fenetre
+		/* Si j > 0 alors on a déjà effectué le comtpage pour la première fenetre
 
-			 * on utilise l'astuce de decalage
-			 */
-			if (j>0)
+		 * on utilise l'astuce de decalage
+		 */
+		if (j>0)
+		{
+			/* On copie la bonne partie du buffer et on compte les nouveaux kmers */
+			copyBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
+
+			/* on increment les kmers trouvés */
+			for(int i=0;i<buf_size;i++)
 			{
-				/* On copie la bonne partie du buffer et on compte les nouveaux kmers */
-				copyBuffAndCount(current,previous,buf_size,indexPattern,seq,i);
-
-				/* on increment les kmers trouvés */
-				for(int i=0;i<buf_size;i++)
+				/* On ne compte que les acgt */
+				if(current[i]<getNCol() && current[i]>0)
 				{
-					/* On ne compte que les acgt */
-					if(current[i]<getNCol() && current[i]>0)
+					/* on instancie la ligne */
+					if(freq[index]==NULL)
 					{
-						/* on instancie la ligne */
-						if(freq[index]==NULL)
+						//							cout << "ALLOC freq[" << index << "]\n";
+						freq[index] = new double[nCol];
+						for(int p=0 ; p<nCol ; p++)
 						{
-//							cout << "ALLOC freq[" << index << "]\n";
-							freq[index] = new double[nCol];
-							for(int p=0 ; p<nCol ; p++)
-							{
-								freq[index][p]=0.0;
-							}
+							freq[index][p]=0.0;
 						}
-
-						freq[index][current[i]]+=1;
-
 					}
 
+					freq[index][current[i]]+=1;
+
 				}
-				/* le courant devient le precedent */
-				swap(current,previous,buf_size);
-
-
 
 			}
-			else
-			{
-				//			cout << "first window\n";
-				//			cout.flush();
-				winCount(seq,win_length,i,indexPattern,previous,start_line);
-				//			cout << "end first window\n";
-				//			cout.flush();
-
-			}
+			/* le courant devient le precedent */
+			swap(current,previous,buf_size);
 
 
-			/* On decale de shift nucleotides */
-			i = i + shift;
-			j = j + 1;
+
+		}
+		else
+		{
+			//			cout << "first window\n";
+			//			cout.flush();
+			winCount(seq,win_length,i,indexPattern,previous,start_line);
+			//			cout << "end first window\n";
+			//			cout.flush();
+
+		}
+
+
+		/* On decale de shift nucleotides */
+		i = i + shift;
+		j = j + 1;
 
 
 
@@ -938,94 +938,6 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 }
 
 
-//void FreqKmer::fillFreq()
-//{
-//	if(dataVerbose){
-//		cerr << "FreqKmer::fillFreq()\n ";
-//		cerr.flush();
-//	}
-//	int start_line = -1;
-//
-//	if(!freqFilled)
-//	{
-//
-//		/* init les cases à 0 */
-//		initFreq();
-//
-//		/* Pour chaque kmer */
-//		for(int k=0;k<nPattern;k++)
-//		{
-//			/* numéro de ligne */
-//			if(dataVerbose){
-//
-//				cerr.flush();
-//			}
-//
-//			/* Pour chaque fichier fasta */
-//			for(int i=0;i<nbFastaFile;i++)
-//			{
-//
-//				if(dataVerbose)
-//				{
-//					cerr << "--------Traitement Data["<< i << "]\n ";
-//					cerr.flush();
-//				}
-//				/* Pour chaque Data du fichier */
-//				if(noData)
-//				{
-//					if(dataVerbose)
-//					{
-//						cerr << "----------------noData=true new Data()\n ";
-//						cerr.flush();
-//					}
-//					if(data[i]!=NULL)
-//					{
-//						cerr << "WARNING in FreqKmer::fillFreq(), NULL pointer on data[" << i << "] expected\n";
-//						exit(0);
-//					}
-//					else
-//					{
-//						data[i] = new Data();
-//
-//						//					cerr << "debut init de " << pathFasta[i] << "\n";
-//						data[i]->initFrom(pathFasta[i],Fasta);
-//						//					cerr << "fin init \n";
-//					}
-//
-//				}
-//
-//				for(int j=0;j<data[i]->getNtaxa();j++)
-//				{
-//
-//					if(dataVerbose)
-//					{
-//						cerr << "----------------Traitement Data["<< i << "]["<< j << "]\n ";
-//						cerr.flush();
-//					}
-//					/*count(int *seq,int tailleDeLaSequence,int indiceKmer) */
-//					if(takeDataSeq(i,j))
-//					{
-//						start_line = obtainStartLineDataSeq(i,j);
-//						count(data[i]->getDataObject()[j],data[i]->getLengthSeq(j),k,start_line);
-//					}
-//				}
-//				if(noData)
-//				{
-//					delete data[i];
-//					data[i]=NULL;
-//
-//				}
-//			}
-//
-//		}
-//		freqFilled=true;
-//	}
-//	if(dataVerbose){
-//		cerr << "Fin FreqKmer::fillFreq()\n ";
-//		cerr.flush();
-//	}
-//
-//}
 
 void FreqKmer::fillFreq()
 {
@@ -1037,61 +949,59 @@ void FreqKmer::fillFreq()
 	int nTaxa;
 
 
-			freq = new double*[nLine];
-			for(int l=0;l<nLine;l++)
+	if(freq==NULL)
+		initFreq();
+
+	/* Pour chaque fichier fasta */
+	for(int i=0;i<nbFastaFile;i++)
+	{
+
+		if(noData)
+		{
+			if(dataVerbose)
 			{
-				freq[l]=NULL;
+				cerr << "----------------noData=true new Data()\n ";
+				cerr.flush();
 			}
-			/* Pour chaque fichier fasta */
-			for(int i=0;i<nbFastaFile;i++)
+			if(data[i]!=NULL)
 			{
+				cerr << "WARNING in FreqKmer::fillFreq(), NULL pointer on data[" << i << "] expected\n";
+				exit(0);
+			}
+			else
+			{
+				data[i] = new Data();
 
-				if(noData)
-				{
-					if(dataVerbose)
-					{
-						cerr << "----------------noData=true new Data()\n ";
-						cerr.flush();
-					}
-					if(data[i]!=NULL)
-					{
-						cerr << "WARNING in FreqKmer::fillFreq(), NULL pointer on data[" << i << "] expected\n";
-						exit(0);
-					}
-					else
-					{
-						data[i] = new Data();
-
-						//					cerr << "debut init de " << pathFasta[i] << "\n";
-						data[i]->initFrom(pathFasta[i],Fasta);
-						//					cerr << "fin init \n";
-					}
-
-
-
-				}
-
-				nTaxa = data[i]->getNtaxa();
-
-				if(noData)
-				{
-					delete data[i];
-					data[i]=NULL;
-
-				}
-
-				for(int j=0;j<nTaxa;j++)
-				{
-
-					fillFreq(i,j);
-				}
-
-
-
+				//					cerr << "debut init de " << pathFasta[i] << "\n";
+				data[i]->initFrom(pathFasta[i],Fasta);
+				//					cerr << "fin init \n";
 			}
 
 
-			freqFilled=true;
+
+		}
+
+		nTaxa = data[i]->getNtaxa();
+
+		if(noData)
+		{
+			delete data[i];
+			data[i]=NULL;
+
+		}
+
+		for(int j=0;j<nTaxa;j++)
+		{
+
+			fillFreq(i,j);
+		}
+
+
+
+	}
+
+
+	freqFilled=true;
 
 }
 
@@ -1127,10 +1037,10 @@ void FreqKmer::imprimeCSV(string ouput)
 	}
 	for(int j=0;j<nCol;j++)
 	{
-//		myfile << j << ";";
+		//		myfile << j << ";";
 		//		cout << j << ";";
 	}
-//	myfile << endl;
+	//	myfile << endl;
 	//	cout << endl;
 	int indexData,indexSeq;
 	for(int i=0;i<nLine;i++)
@@ -1139,12 +1049,12 @@ void FreqKmer::imprimeCSV(string ouput)
 		if(mask[indexData][indexSeq])
 		{
 
-				for(int j=0;j<nCol;j++)
+			for(int j=0;j<nCol;j++)
 
-				{
-					myfile << freq[i][j] << ";";
-				}
-				myfile << endl;
+			{
+				myfile << freq[i][j] << ";";
+			}
+			myfile << endl;
 		}
 		//		cout << endl;
 	}
@@ -1387,16 +1297,16 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 	for(unsigned i=0;i< files.size();i++)
 	{
 		s1 = files[i] ;
-	    found=s1.find_last_of("/\\");
-	    if(found==s1.size()-1)
-	    {
-	    	// on enlève le slash si en fin de path : ex taxonA/taxonB/taxonC/ "
-	    	// ensuite vaut taxonA/taxonB/taxonC
-	    	s1 = s1.substr(found,1);
-	    	found=s1.find_last_of("/\\");
-	    }
-	    s1=s1.substr(found+1,s1.size());
-	    if (s1=="others")
+		found=s1.find_last_of("/\\");
+		if(found==s1.size()-1)
+		{
+			// on enlève le slash si en fin de path : ex taxonA/taxonB/taxonC/ "
+			// ensuite vaut taxonA/taxonB/taxonC
+			s1 = s1.substr(found,1);
+			found=s1.find_last_of("/\\");
+		}
+		s1=s1.substr(found+1,s1.size());
+		if (s1=="others")
 		{
 			taxids.push_back(s1);
 		}
@@ -1445,9 +1355,9 @@ int FreqKmer::obtainNbLineTaxaInFastaList(int i)
 	int res = 0;
 	res = (obtainEndLineTaxaInFastaList(i)-obtainStartLineTaxaInFastaList(i))+1;
 
-//	cerr << "obtainEndLineTaxaInFastaList(" << i << ") = " << obtainEndLineTaxaInFastaList(i) << "\n";
-//	cerr << "obtainStartLineTaxaInFastaList(" << i << ") = " << obtainStartLineTaxaInFastaList(i) << "\n";
-//	cerr << "Pour i = " << i << " je retourne " << res << "\n";
+	//	cerr << "obtainEndLineTaxaInFastaList(" << i << ") = " << obtainEndLineTaxaInFastaList(i) << "\n";
+	//	cerr << "obtainStartLineTaxaInFastaList(" << i << ") = " << obtainStartLineTaxaInFastaList(i) << "\n";
+	//	cerr << "Pour i = " << i << " je retourne " << res << "\n";
 	return res;
 }
 
@@ -1470,7 +1380,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	unsigned found;
 
 	int x = -1;
-//	cerr << "nbChildttaxa = " << nbChildTaxa << "\n";
+	//	cerr << "nbChildttaxa = " << nbChildTaxa << "\n";
 
 	listPathFasta.erase(listPathFasta.begin(),listPathFasta.end());
 	for(int i=0; i < nbChildTaxa ; i++)
@@ -1517,17 +1427,17 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 
 	for(unsigned int j=1;j<listPathFasta.size();j++)
 	{
-	    current=listPathFasta[j];
-	    found=current.find_last_of("/\\");
-	    current=current.substr(0,found);
+		current=listPathFasta[j];
+		found=current.find_last_of("/\\");
+		current=current.substr(0,found);
 
-	    if(current!=previous)
-	    {
-		previous=current;
-		indexTaxaInFasta[++index]=j-1;
+		if(current!=previous)
+		{
+			previous=current;
+			indexTaxaInFasta[++index]=j-1;
 
 
-	    }
+		}
 	}
 	indexTaxaInFasta[++index]=listPathFasta.size()-1;
 
@@ -1545,14 +1455,14 @@ void FreqKmer::writeListFasta()
 	myfile.open(output.c_str());
 	for(unsigned int j=0;j<listPathFasta.size();j++)
 	{
-//		cerr << "Jécris " << listPathFasta[j] << "\n";
+		//		cerr << "Jécris " << listPathFasta[j] << "\n";
 		myfile << listPathFasta[j] << "\n";
 
 	}
 	myfile.close();
 	if (dataVerbose)
 	{
-			cerr << "Fin FreqKmer::writeListFasta()\n";
+		cerr << "Fin FreqKmer::writeListFasta()\n";
 	}
 }
 
@@ -1605,6 +1515,8 @@ void FreqKmer::randomTab(vector<int> *result,int tabSize,int sampleSize)
 FreqKmer* FreqKmer::sampleMe(int sampleSize)
 {
 	FreqKmer *res;
+
+	sampledTaxon.erase(sampledTaxon.begin(),sampledTaxon.end());
 
 	if (dataVerbose)
 	{
@@ -1700,6 +1612,7 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 
 		if(sampleSize>=nbSeqTaxa)
 		{
+
 			d = obtainStartLineTaxaInFastaList(i);
 			f = obtainEndLineTaxaInFastaList(i);
 
@@ -1718,6 +1631,8 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 				for(int k=0;k<data[j]->getNtaxa();k++)
 				{
 					mask_tmp[j][k]=true;
+					sampledTaxon.push_back(intPair(j,k));
+
 				}
 				if(noData)
 				{
@@ -1761,6 +1676,10 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 		for(int j=0;j<nbSequences;j++)
 		{
 			res->mask[i][j]=mask_tmp[i][j];
+			if(mask_tmp[i][j])
+			{
+				sampledTaxon.push_back(intPair(i,j));
+			}
 		}
 		delete[] mask_tmp[i];
 	}
@@ -1778,7 +1697,7 @@ int FreqKmer::getNSeqInTaxa(int i)
 {
 	int nbData = 0;
 	nbData = obtainNbLineTaxaInFastaList(i) ;
-//	cerr << "nbData = " << nbData << "\n";
+	//	cerr << "nbData = " << nbData << "\n";
 	int res=0;
 	int startLineInFasta = 0;
 	startLineInFasta = obtainStartLineTaxaInFastaList(i);
@@ -1873,12 +1792,14 @@ void FreqKmer::maskTab(vector<int> *candidate,bool **mask_tmp, int indexTaxa)
 			delete data[i];
 			data[i]=NULL;
 		}
+
 		for(int j=0 ; j < nSeq ; j++)
 		{
 			if(find(candidate->begin(), candidate->end(),cpt) != candidate->end())
 			{
-			    /* data[i][j] is a candidate for sample */
+				/* data[i][j] is a candidate for sample */
 				mask_tmp[i][j]=true;
+
 			}
 			cpt++;
 		}
@@ -1938,7 +1859,7 @@ void FreqKmer::writeConfFeq(string output)
 
 	myfile.open(output.c_str());
 
-//	myfile << "INIT_CONS\n";
+	//	myfile << "INIT_CONS\n";
 	if(initFromRoot)
 	{
 		if(initWithJump)
@@ -1949,7 +1870,7 @@ void FreqKmer::writeConfFeq(string output)
 		else
 		{
 			myfile << "3\n" << winSize <<  "\n";
-		    myfile << pathPattern << "\n" << noData << "\n" << pathRoot << "\n" << key_fasta << "\n";
+			myfile << pathPattern << "\n" << noData << "\n" << pathRoot << "\n" << key_fasta << "\n";
 
 		}
 	}
@@ -1969,7 +1890,7 @@ void FreqKmer::writeConfFeq(string output)
 	}
 	myfile << "FIN_CONS\n";
 
-//	myfile << "DIM\n";
+	//	myfile << "DIM\n";
 	myfile << nLine << "\n";
 	myfile << nCol << "\n";
 	myfile << "FIN_DIM\n";
@@ -2017,7 +1938,7 @@ FreqKmer* FreqKmer::initFromConf(string fichier)
 
 	while (file)
 	{
-	;
+		;
 		if(ligne=="FIN_CONS")
 		{
 			s=SIZE;
@@ -2033,139 +1954,139 @@ FreqKmer* FreqKmer::initFromConf(string fichier)
 		}
 
 		switch (s) {
-			case INIT:
-				if(ligne=="1")
-				{
-					getline(file,ligne);
-					winParam=atoi(ligne.c_str());
-					getline(file,ligne);
-					shiftParam=atoi(ligne.c_str());
-					getline(file,ligne);
-
-					(ligne=="0") ? (b1_list=false) : (b1_list=true);
-					getline(file,ligne);
-					pathFastaParam = ligne;
-					getline(file,ligne);
-					pathPatternParam = ligne;
-					getline(file,ligne);
-					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
-					getline(file,ligne);
-					keyParam=ligne;
-
-
-					res = new FreqKmer(winParam,shiftParam,b1_list, pathFastaParam,pathPatternParam,b2_noData,keyParam);
-
-
-
-					res->initFreq();
-					getline(file,ligne);
-
-
-
-				}
-				if(ligne=="2")
-				{
-					getline(file,ligne);
-
-					winParam=atoi(ligne.c_str());
-					getline(file,ligne);
-					(ligne=="0") ? (b1_list=false) : (b1_list=true);
-					getline(file,ligne);
-					pathFastaParam = ligne;
-					getline(file,ligne);
-					pathPatternParam = ligne;
-					getline(file,ligne);
-					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
-					getline(file,ligne);
-					keyParam=ligne;
-
-					res = new FreqKmer(winParam,b1_list, pathFastaParam,pathPatternParam,b2_noData,keyParam);
-					res->initFreq();
-					getline(file,ligne);
-
-				}
-				if(ligne=="3")
-				{
-
-					getline(file,ligne);
-					winParam=atoi(ligne.c_str());
-					getline(file,ligne);
-					pathPatternParam=ligne;
-					getline(file,ligne);
-					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
-					getline(file,ligne);
-					rootParam=ligne;
-					getline(file,ligne);
-					keyParam=ligne;
-
-					res = new FreqKmer(winParam,pathPatternParam,b2_noData,rootParam,keyParam);
-					res->initFreq();
-					getline(file,ligne);
-				}
-				if(ligne=="4")
-				{
-
-					getline(file,ligne);
-					winParam=atoi(ligne.c_str());
-					getline(file,ligne);
-					shiftParam=atoi(ligne.c_str());
-					getline(file,ligne);
-					pathPatternParam=ligne;
-					getline(file,ligne);
-					(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
-					getline(file,ligne);
-					rootParam=ligne;
-					getline(file,ligne);
-					keyParam=ligne;
-
-					res = new FreqKmer(winParam,shiftParam,pathPatternParam,b2_noData,rootParam,keyParam);
-
-					res->initFreq();
-					getline(file,ligne);
-				}
-
-				break;
-			case SIZE:
+		case INIT:
+			if(ligne=="1")
+			{
 				getline(file,ligne);
-				res->nLine=atoi(ligne.c_str());
+				winParam=atoi(ligne.c_str());
 				getline(file,ligne);
-				res->nCol=atoi(ligne.c_str());
+				shiftParam=atoi(ligne.c_str());
 				getline(file,ligne);
-				break;
 
-			case FREQ:
+				(ligne=="0") ? (b1_list=false) : (b1_list=true);
+				getline(file,ligne);
+				pathFastaParam = ligne;
+				getline(file,ligne);
+				pathPatternParam = ligne;
+				getline(file,ligne);
+				(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+				getline(file,ligne);
+				keyParam=ligne;
+
+
+				res = new FreqKmer(winParam,shiftParam,b1_list, pathFastaParam,pathPatternParam,b2_noData,keyParam);
+
+
+
+				res->initFreq();
+				getline(file,ligne);
+
+
+
+			}
+			if(ligne=="2")
+			{
+				getline(file,ligne);
+
+				winParam=atoi(ligne.c_str());
+				getline(file,ligne);
+				(ligne=="0") ? (b1_list=false) : (b1_list=true);
+				getline(file,ligne);
+				pathFastaParam = ligne;
+				getline(file,ligne);
+				pathPatternParam = ligne;
+				getline(file,ligne);
+				(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+				getline(file,ligne);
+				keyParam=ligne;
+
+				res = new FreqKmer(winParam,b1_list, pathFastaParam,pathPatternParam,b2_noData,keyParam);
+				res->initFreq();
+				getline(file,ligne);
+
+			}
+			if(ligne=="3")
 			{
 
-				for(int i=0;i<res->nLine;i++)
-				{
-					if(res->freq[i]==NULL)
-					{
-					    //cout << "la ligne " << i << " etait null \n";
-						res->freq[i] = new double[res->nCol];
-						for(int j=0 ; j<res->nCol ; j++)
-						{
-							res->freq[i][j]=0.0;
-						}
-					}
-					getline(file,ligne);
-					string buf="";
-					stringstream ss(ligne);
-					j=0;
-					 while (ss >> buf)
-					 {
-						 val=atof(buf.c_str());
-						 res->freq[i][j]=val;
-						 j+=1;
-					 }
-				}
-				s=END;
-			}
-			break;
-			case END:
 				getline(file,ligne);
-				break;
-			default:
-				break;
+				winParam=atoi(ligne.c_str());
+				getline(file,ligne);
+				pathPatternParam=ligne;
+				getline(file,ligne);
+				(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+				getline(file,ligne);
+				rootParam=ligne;
+				getline(file,ligne);
+				keyParam=ligne;
+
+				res = new FreqKmer(winParam,pathPatternParam,b2_noData,rootParam,keyParam);
+				res->initFreq();
+				getline(file,ligne);
+			}
+			if(ligne=="4")
+			{
+
+				getline(file,ligne);
+				winParam=atoi(ligne.c_str());
+				getline(file,ligne);
+				shiftParam=atoi(ligne.c_str());
+				getline(file,ligne);
+				pathPatternParam=ligne;
+				getline(file,ligne);
+				(ligne=="0") ? (b2_noData=false) : (b2_noData=true);
+				getline(file,ligne);
+				rootParam=ligne;
+				getline(file,ligne);
+				keyParam=ligne;
+
+				res = new FreqKmer(winParam,shiftParam,pathPatternParam,b2_noData,rootParam,keyParam);
+
+				res->initFreq();
+				getline(file,ligne);
+			}
+
+			break;
+		case SIZE:
+			getline(file,ligne);
+			res->nLine=atoi(ligne.c_str());
+			getline(file,ligne);
+			res->nCol=atoi(ligne.c_str());
+			getline(file,ligne);
+			break;
+
+		case FREQ:
+		{
+
+			for(int i=0;i<res->nLine;i++)
+			{
+				if(res->freq[i]==NULL)
+				{
+					//cout << "la ligne " << i << " etait null \n";
+					res->freq[i] = new double[res->nCol];
+					for(int j=0 ; j<res->nCol ; j++)
+					{
+						res->freq[i][j]=0.0;
+					}
+				}
+				getline(file,ligne);
+				string buf="";
+				stringstream ss(ligne);
+				j=0;
+				while (ss >> buf)
+				{
+					val=atof(buf.c_str());
+					res->freq[i][j]=val;
+					j+=1;
+				}
+			}
+			s=END;
+		}
+		break;
+		case END:
+			getline(file,ligne);
+			break;
+		default:
+			break;
 		}
 
 	}
@@ -2184,10 +2105,10 @@ bool FreqKmer::equal(FreqKmer *f)
 		{
 			for(int j=0;j<f->getNCol();j++)
 			{
-//                		cerr << "f[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || g[" << i << "][" << j << "] = " << g->getFreq()[i][j]<< "\n";
+				//                		cerr << "f[" << i << "][" << j << "] = " << f->getFreq()[i][j] <<  " || g[" << i << "][" << j << "] = " << g->getFreq()[i][j]<< "\n";
 				if(f->getFreq()[i][j]!=this->getFreq()[i][j])
 				{
-						res=false;
+					res=false;
 
 				}
 				if(!res)
@@ -2356,7 +2277,7 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 
 	for(int l=start; l <= end ;l++)
 	{
-//		os << "(" << i << "," << j << "):" ;
+		//		os << "(" << i << "," << j << "):" ;
 		for(int t=0;t<nPattern;t++)
 		{
 			normalizeLine(t,l);
@@ -2377,7 +2298,7 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 		{
 			if(freq[var]!=NULL)
 			{
-	//			cout << "DELETE freq[" << var << "]\n";
+				//			cout << "DELETE freq[" << var << "]\n";
 				delete[] freq[var];
 				freq[var]=NULL;
 			}
@@ -2474,7 +2395,7 @@ void FreqKmer::fillFreq(int data_i,int seq_j)
 				{
 					if(freq[w]==NULL)
 					{
-//						cout << "ALLOC freq[" << w << "]\n";
+						//						cout << "ALLOC freq[" << w << "]\n";
 						freq[w] = new double[nCol];
 						for(int x=0;x<nCol;x++)
 						{
@@ -2512,4 +2433,286 @@ void FreqKmer::writeCrossVal(int percent,int id)
 	writeCrossVal(percent,learn,toPredict);
 }
 
+FreqKmer* FreqKmer::sampleMe(vector<pair<int, int> > list)
+{
+	FreqKmer *res;
 
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::sampleMe(listTaxon)\n";
+	}
+
+	if(initFromRoot)
+	{
+		if(initWithJump)
+		{
+			res = new FreqKmer(winSize,shift,pathPattern,noData,pathRoot,key_fasta);
+		}
+		else
+		{
+			res = new FreqKmer(winSize,pathPattern,noData,pathRoot,key_fasta);
+		}
+	}
+	else
+	{
+		if(initWithJump)
+		{
+			res = new FreqKmer(winSize,shift,isList,pathFastaFile,pathPattern,noData,key_fasta);
+		}
+		else
+		{
+			res = new FreqKmer(winSize,isList,pathFastaFile,pathPattern,noData,key_fasta);
+		}
+	}
+
+
+
+
+	res->freqFilled=this->freqFilled;
+	/* on recupére les lignes calculées */
+
+	if(this->freqFilled)
+	{
+		res->initFreq();
+		for(int i=0;i<nLine;i++)
+		{
+			if(res->freq[i]==NULL)
+			{
+				res->freq[i] = new double[nCol];
+				for(int p=0 ; p<res->nCol ; p++)
+				{
+					res->freq[i][p]=0.0;
+				}
+			}
+			for(int j=0;j<nCol;j++)
+			{
+
+				res->freq[i][j]=this->freq[i][j];
+			}
+		}
+	}
+
+	int nbSequences;
+
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		if(noData)
+		{
+			if(data[i]!=NULL)
+			{
+				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << i << "] expected\n";
+				exit(0);
+			}
+			data[i] = new Data();
+			data[i]->initFrom(pathFasta[i],Fasta);
+		}
+		nbSequences = data[i]->getNtaxa();
+
+		for(int j=0;j<nbSequences;j++)
+		{
+			res->mask[i][j]=false;
+
+		}
+
+
+
+		if(noData)
+		{
+			delete data[i];
+			data[i]=NULL;
+		}
+	}
+
+
+
+	/* MAJ de la table mask */
+	for(unsigned int l=0;l<list.size();l++)
+	{
+		res->mask[list[l].first][list[l].second]=true;
+		//		cout << "mask[" << list[l].first << "][" << list[l].second << "] = true \n";
+	}
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::sampleMe(list)\n";
+	}
+	return res;
+
+}
+
+void FreqKmer::writeCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, string outLearn, string outToclassify)
+{
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeCrossVal("<< percent << ")\n";
+	}
+	int nbSeq = getNbAllTrue();
+	int nbToTake;
+	int cpt=-1;
+	int seqInData_i;
+
+	vector<int> candidates;
+	nbToTake = (percent*nbSeq)/100;
+
+
+	if (pathRoot!="null")
+	{
+		outLearn = pathRoot+"/frequencies/"+outLearn;
+		outToclassify = pathRoot+"/frequencies/"+outToclassify;
+	}
+
+
+	ofstream os_learn ;
+	ofstream os_predict ;
+
+	bool *seqInLearn=NULL;
+
+	if (nbToTake==0)
+	{
+		cerr << "WARNING in FreqKmer::writeCrossVal, percent =  " << percent << " is too low (total seq = " << nbSeq << ")\n";
+		exit(0);
+	}
+	else
+	{
+		os_learn.open(outLearn.c_str());
+		os_predict.open(outToclassify.c_str());
+		writeHeaderWeka(os_predict);
+		writeHeaderWeka(os_learn);
+
+		seqInLearn = new bool[nbSeq];
+		for(int i=0;i<nbSeq;i++)
+		{
+			seqInLearn[i]=true;
+		}
+		randomTab(&candidates,nbSeq,nbToTake);
+		for(unsigned j=0;j<candidates.size();j++)
+		{
+			seqInLearn[candidates[j]]=false;
+		}
+
+	}
+
+
+
+	// Pour chaque data
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		if(noData)
+
+		{
+			if(data[i]!=NULL)
+			{
+				cerr << "WARNING in FreqKmer::writeCrossVal, NULL pointer on data[" << i << "] expected\n";
+				exit(0);
+			}
+			data[i] = new Data();
+			data[i]->initFrom(pathFasta[i],Fasta);
+		}
+		seqInData_i= data[i]->getNtaxa();
+		if(noData)
+		{
+			delete data[i];
+			data[i]=NULL;
+		}
+		//Pour chaque seq
+		for(int j=0;j<seqInData_i;j++)
+		{
+			//si mask[i][j]
+			if(mask[i][j])
+			{
+				cpt++;
+				//si seqInlearn[cpt]
+				if(seqInLearn[cpt])
+				{
+					//impression dans os_learn
+
+					writeLineInOs(os_learn,i,j,freqLearn);
+				}
+				else
+				{
+					//sinon impression dans predict
+					writeLineInOs(os_predict,i,j,freqPredict);
+				}
+
+			}
+		}
+	}
+	os_learn.close();
+	os_predict.close();
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::writeCrossVal("<< percent << ")\n";
+	}
+}
+
+void FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)
+{
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)\n";
+	}
+	int start = f->obtainStartLineDataSeq(i,j);
+	int end = f->obtainEndLineDataSeq(i,j);
+	string taxid = f->idTaxaFromData[i];
+
+	//if(bigData)
+	if(!f->freqFilled)
+	{
+		f->initFreq();
+		f->fillFreq(i,j);
+	}
+
+
+
+	for(int l=start; l <= end ;l++)
+	{
+		//		os << "(" << i << "," << j << "):" ;
+		for(int t=0;t<f->nPattern;t++)
+		{
+			f->normalizeLine(t,l);
+		}
+		if(f->freq[l]!=NULL)
+		{
+			for(int k=0;k<f->nCol;k++)
+			{
+				os << f->freq[l][k] << ",";
+			}
+			os << taxid << " % Data(" << i << "," << j << ")\n";
+		}
+	}
+
+	if(!f->freqFilled)
+	{
+		for (int var=start; var <= end ; var++)
+		{
+			if(f->freq[var]!=NULL)
+			{
+				//			cout << "DELETE freq[" << var << "]\n";
+				delete[] f->freq[var];
+				f->freq[var]=NULL;
+			}
+		}
+	}
+
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)\n";
+	}
+}
+
+void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i,string id)
+{
+	stringstream sstm1,sstm2;
+	sstm1 << id << "_learn-" << i << ".arff";
+	sstm2 << id << "_toPredict-" << i << ".arff";
+	string learn = sstm1.str();
+	string toPredict = sstm2.str();
+	writeCrossVal(freqLearn,freqPredict,percent,learn,toPredict);
+}
+
+void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i)
+{
+	writeNCrossVal(freqLearn,freqPredict,percent,i,"");
+}
