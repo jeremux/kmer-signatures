@@ -2238,6 +2238,10 @@ void FreqKmer::writeCrossVal(int percent,string outLearn,string outToclassify)
 
 void FreqKmer::writeHeaderWeka(ofstream &os)
 {
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeHeaderWeka(ofstream &os)\n";
+	}
 	os << "@RELATION freqKmer\n\n";
 	vector<string> combi;
 	for(int i=0;i<getNPattern();i++)
@@ -2254,6 +2258,11 @@ void FreqKmer::writeHeaderWeka(ofstream &os)
 		os << getIdTaxa(i) << ",";
 	}
 	os << getIdTaxa(nbChildTaxa-1) << "}\n\n\n@DATA\n";
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::writeHeaderWeka(ofstream &os)\n";
+	}
 }
 
 void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
@@ -2492,6 +2501,7 @@ FreqKmer* FreqKmer::sampleMe(vector<pair<int, int> > list)
 		}
 	}
 
+
 	int nbSequences;
 
 	for(int i=0;i<nbFastaFile;i++)
@@ -2644,6 +2654,107 @@ void FreqKmer::writeCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int per
 	{
 		cerr << "Fin FreqKmer::writeCrossVal("<< percent << ")\n";
 	}
+
+	if(seqInLearn!=NULL)
+		delete[] seqInLearn;
+}
+
+
+void FreqKmer::writeCrossVal(FreqKmer *freqPredict, int percent, string outToclassify)
+{
+	if (dataVerbose)
+	{
+		cerr << "Debut FreqKmer::writeCrossVal("<< percent << ")\n";
+	}
+	int nbSeq = getNbAllTrue();
+	int nbToTake;
+	int cpt=-1;
+	int seqInData_i;
+
+	vector<int> candidates;
+	nbToTake = (percent*nbSeq)/100;
+
+
+	if (pathRoot!="null")
+	{
+		outToclassify = pathRoot+"/frequencies/"+outToclassify;
+	}
+
+
+	ofstream os_predict ;
+
+	bool *seqInLearn=NULL;
+
+	if (nbToTake==0)
+	{
+		cerr << "WARNING in FreqKmer::writeCrossVal, percent =  " << percent << " is too low (total seq = " << nbSeq << ")\n";
+		exit(0);
+	}
+	else
+	{
+		os_predict.open(outToclassify.c_str());
+		writeHeaderWeka(os_predict);
+
+		seqInLearn = new bool[nbSeq];
+		for(int i=0;i<nbSeq;i++)
+		{
+			seqInLearn[i]=true;
+		}
+		randomTab(&candidates,nbSeq,nbToTake);
+		for(unsigned j=0;j<candidates.size();j++)
+		{
+			seqInLearn[candidates[j]]=false;
+		}
+
+	}
+
+
+
+	// Pour chaque data
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		if(noData)
+
+		{
+			if(data[i]!=NULL)
+			{
+				cerr << "WARNING in FreqKmer::writeCrossVal, NULL pointer on data[" << i << "] expected\n";
+				exit(0);
+			}
+			data[i] = new Data();
+			data[i]->initFrom(pathFasta[i],Fasta);
+		}
+		seqInData_i= data[i]->getNtaxa();
+		if(noData)
+		{
+			delete data[i];
+			data[i]=NULL;
+		}
+		//Pour chaque seq
+		for(int j=0;j<seqInData_i;j++)
+		{
+			//si mask[i][j]
+			if(mask[i][j])
+			{
+				cpt++;
+				//si seqInlearn[cpt]
+				if(!seqInLearn[cpt])
+				{
+					//impression dans predic_t
+					writeLineInOs(os_predict,i,j,freqPredict);
+				}
+			}
+		}
+	}
+	os_predict.close();
+
+	if (dataVerbose)
+	{
+		cerr << "Fin FreqKmer::writeCrossVal("<< percent << ")\n";
+	}
+
+	if(seqInLearn!=NULL)
+		delete[] seqInLearn;
 }
 
 void FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)
@@ -2659,7 +2770,8 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)
 	//if(bigData)
 	if(!f->freqFilled)
 	{
-		f->initFreq();
+		if(f->freq==NULL)
+			f->initFreq();
 		f->fillFreq(i,j);
 	}
 
@@ -2705,7 +2817,17 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)
 void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i,string id)
 {
 	stringstream sstm1,sstm2;
-	sstm1 << id << "_learn-" << i << ".arff";
+	int size = freqLearn->winSize;
+	string s;
+	if(size==-1)
+	{
+		s="complete";
+	}
+	else
+	{
+		s = to_string(size);
+	}
+	sstm1 << s << "_learn-" << i << ".arff";
 	sstm2 << id << "_toPredict-" << i << ".arff";
 	string learn = sstm1.str();
 	string toPredict = sstm2.str();
@@ -2716,3 +2838,146 @@ void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int pe
 {
 	writeNCrossVal(freqLearn,freqPredict,percent,i,"");
 }
+
+void FreqKmer::writeNCrossVal(FreqKmer *freqPredict, int percent, int i,string id)
+{
+	stringstream sstm2;
+	sstm2 << id << "_toPredict-" << i << ".arff";
+	string toPredict = sstm2.str();
+	writeCrossVal(freqPredict,percent,toPredict);
+}
+
+void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict,int end, int pas, int nCross)
+{
+	FreqKmer *toLearn = NULL;
+	FreqKmer *toPredict = NULL;
+
+	FreqKmer *res ;
+	std::string s = to_string(start_win_predict);
+	int size = start_win_predict;
+	if(initFromRoot)
+	{
+		cout << "new res\n";
+		if(initWithJump)
+		{
+			res = new FreqKmer(start_win_predict,shift,pathPattern,noData,pathRoot,key_fasta);
+		}
+		else
+		{
+			res = new FreqKmer(start_win_predict,pathPattern,noData,pathRoot,key_fasta);
+		}
+	}
+	else
+	{
+		if(initWithJump)
+		{
+			res = new FreqKmer(start_win_predict,shift,isList,pathFastaFile,pathPattern,noData,key_fasta);
+		}
+		else
+		{
+			res = new FreqKmer(start_win_predict,isList,pathFastaFile,pathPattern,noData,key_fasta);
+		}
+	}
+
+
+
+
+	res->freqFilled=this->freqFilled;
+	/* on recupére les lignes calculées */
+
+	if(this->freqFilled)
+	{
+		res->initFreq();
+		for(int i=0;i<nLine;i++)
+		{
+			if(res->freq[i]==NULL)
+			{
+				res->freq[i] = new double[nCol];
+				for(int p=0 ; p<res->nCol ; p++)
+				{
+					res->freq[i][p]=0.0;
+				}
+			}
+			for(int j=0;j<nCol;j++)
+			{
+
+				res->freq[i][j]=this->freq[i][j];
+			}
+		}
+	}
+
+
+	if(sizeSample>0)
+	{
+		toLearn = sampleMe(sizeSample);
+		toPredict = res->sampleMe(getSampledTaxon());
+	}
+	else
+	{
+		toLearn = this;
+		toPredict = toLearn;
+	}
+
+	for(int i=1;i<=nCross;i++)
+	{
+		cout << "writeNCrossVal(" << i << ")\n";
+		writeNCrossVal(toLearn,toPredict,percent,i,s);
+	}
+
+	size += pas;
+
+	cout << "delete res\n";
+	delete res;
+	delete toPredict;
+	delete toLearn;
+
+	for(int i=size; i<=end;i+=pas)
+	{
+
+		s = to_string(i);
+
+		cout << "new res tailleF = " << s << "\n";
+		if(initFromRoot)
+		{
+			if(initWithJump)
+			{
+				res = new FreqKmer(i,shift,pathPattern,noData,pathRoot,key_fasta);
+			}
+			else
+			{
+				res = new FreqKmer(i,pathPattern,noData,pathRoot,key_fasta);
+			}
+		}
+		else
+		{
+			if(initWithJump)
+			{
+				res = new FreqKmer(i,shift,isList,pathFastaFile,pathPattern,noData,key_fasta);
+			}
+			else
+			{
+				res = new FreqKmer(i,isList,pathFastaFile,pathPattern,noData,key_fasta);
+			}
+		}
+
+		if(sizeSample>0)
+		{
+			toPredict = res->sampleMe(getSampledTaxon());
+		}
+		else
+		{
+			toPredict = toLearn;
+		}
+
+		for(int j=1;j<=nCross;j++)
+		{
+			cout << "writeNCrossVal(" << j << ")\n";
+			writeNCrossVal(toPredict,percent,j,s);
+		}
+
+		cout << "delete res\n";
+		delete res;
+		delete toPredict;
+	}
+}
+

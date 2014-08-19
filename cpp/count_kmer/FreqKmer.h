@@ -403,6 +403,12 @@ public:
 
 	void   writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i,string id);
 
+	void   writeCrossVal(FreqKmer *freqPredict, int percent, string outToclassify);
+
+	void   writeNCrossVal(FreqKmer *freqPredict, int percent, int i,string id);
+
+	void   generateWekaData(int sizeSample,int percent,int start_win_predict,int end,int pas, int nCross);
+
 
 
 };

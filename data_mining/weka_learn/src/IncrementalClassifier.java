@@ -19,11 +19,11 @@ import java.io.File;
 public class IncrementalClassifier  {
 
 	
-	public static double getCorrect(String root,int id,String id2) throws Exception
+	public static double getCorrect(String root,int id,String id2,String id3) throws Exception
 	{
 		double res=0;
 		
-		String trainPath = root + "/frequencies/"+id2+"_learn-"+id+".arff";
+		String trainPath = root + "/frequencies/"+id3+"_learn-"+id+".arff";
 		String testDataset = root + "/frequencies/"+id2+"_toPredict-"+id+".arff";
 		ArffLoader loader = new ArffLoader();
 		loader.setFile(new File(trainPath));
@@ -77,7 +77,7 @@ public class IncrementalClassifier  {
 		int nTests = Integer.parseInt(args[1]);
 		for(int i=1;i<=nTests;i++)
 		{
-			res+= getCorrect(args[0],i,args[2]);
+			res+= getCorrect(args[0],i,args[2],args[3]);
 		}
 		res /= (double) nTests;
 		

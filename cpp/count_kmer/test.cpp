@@ -29,106 +29,16 @@ bool doTest20()
 
 	string filename = "Debug/tests/test4/liste.txt";
 	string patternPath = "pattern.txt";
-	string path_root = "../../create_db/Eukaryota__2759/Alveolata__33630";
+	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Opisthokonta__33154/Metazoa__33208/Eumetazoa__6072/Bilateria__33213/Deuterostomia__33511/Chordata__7711/Craniata__89593/Vertebrata__7742/Gnathostomata__7776/Teleostomi__117570/Euteleostomi__117571/Sarcopterygii__8287/Dipnotetrapodomorpha__1338369/Tetrapoda__32523/Amniota__32524/Mammalia__40674/Theria__32525/Eutheria__9347";
 	string key = "genomes";
 	cout << "New Freq1\n";
 	FreqKmer *f = new FreqKmer(-1,patternPath,false,path_root,key);
 
-	cout << "New Freq2\n";
-	FreqKmer *a = new FreqKmer(300,patternPath,false,path_root,key);
-	FreqKmer *b = new FreqKmer(250,patternPath,false,path_root,key);
-	FreqKmer *c = new FreqKmer(200,patternPath,false,path_root,key);
-	FreqKmer *d = new FreqKmer(150,patternPath,false,path_root,key);
-	FreqKmer *e = new FreqKmer(100,patternPath,false,path_root,key);
-//	FreqKmer *f = new FreqKmer(-1,false,"../../create_db/Eukaryota__2759/Opisthokonta__33154/data/fasta/nucleotides/genomes/genomes_6669.fasta",patternPath,false,"genomes");
-
-	cout << "f->fillFreq\n";
-//	f->fillFreq();
-	cout << "a->fillFreq\n";
-//	a->fillFreq();
-
-	cout << "f->sampleMe(20)\n";
-	FreqKmer *toLearn = NULL;
-	FreqKmer *toPredict;
-	toPredict = NULL;
-	toLearn = f->sampleMe(20);
-
-	cout << "a->sampleMe(list)\n";
-	toPredict = a->sampleMe(f->getSampledTaxon());
-
-	delete a;
-
-	cout << "writeCrossVal\n";
-	for(int i=1;i<=10;i++)
-	{
-		cout << "writeNCrossVal(" << i << ")\n";
-		f->writeNCrossVal(toLearn,toPredict,20,i,"300");
-	}
-
-	delete toPredict;
-	toPredict = NULL;
-	cout << "b->sampleMe(list)\n";
-	toPredict = b->sampleMe(f->getSampledTaxon());
-
-	delete b;
-
-	cout << "writeCrossVal\n";
-	for(int i=1;i<=10;i++)
-	{
-		cout << "writeNCrossVal(" << i << ")\n";
-		f->writeNCrossVal(toLearn,toPredict,20,i,"250");
-	}
-
-	delete toPredict;
-	toPredict = NULL;
-	cout << "c->sampleMe(list)\n";
-	toPredict = c->sampleMe(f->getSampledTaxon());
-
-	delete c;
-
-
-	cout << "writeCrossVal\n";
-	for(int i=1;i<=10;i++)
-	{
-		cout << "writeNCrossVal(" << i << ")\n";
-		f->writeNCrossVal(toLearn,toPredict,20,i,"200");
-	}
-
-	delete toPredict;
-	toPredict = NULL;
-	cout << "d->sampleMe(list)\n";
-	toPredict = d->sampleMe(f->getSampledTaxon());
-
-	delete d;
-
-	cout << "writeCrossVal\n";
-	for(int i=1;i<=10;i++)
-	{
-		cout << "writeNCrossVal(" << i << ")\n";
-		f->writeNCrossVal(toLearn,toPredict,20,i,"150");
-	}
-
-	delete toPredict;
-	toPredict = NULL;
-	cout << "e->sampleMe(list)\n";
-	toPredict = e->sampleMe(f->getSampledTaxon());
-
-	delete e;
-
-	cout << "writeCrossVal\n";
-	for(int i=1;i<=10;i++)
-	{
-		cout << "writeNCrossVal(" << i << ")\n";
-		f->writeNCrossVal(toLearn,toPredict,20,i,"100");
-	}
-
-//	f->writeCrossVal(25);
-//	f->imprimeCSV("toto.csv");
+	cout << "generate\n";
+	/* generateWekaData(tailleEchantillon,taillePredictPourcent,debutTailleFenetre,finTailleFenetre,pas,nBcross)*/
+	f->generateWekaData(20,20,100,300,50,10);
 
 	delete f;
-
-	delete toLearn;
-	delete toPredict;
 	printResult(res,20);
 	return res;
 
@@ -254,6 +164,7 @@ bool doTest17()
 	g->fillFreq();
 
 	delete g;
+	delete h;
 
 
 
