@@ -1,1 +1,162 @@
+L'objectif de cette semaine est de pouvoir générer un jeu de données pour la validation croisée sous weka.
+
+\subsection{Classer les données}
+
+Avant de poursuivre, la base de donnée à été modifiée afin des données classée. Ceci permet de mieux se retrouver entre séquences d'acides aminées, nucléotidiques, fichier genbank, les enzymes (cox1,cox2...) ...
+
+~\\
+Chaque dossier comporte en plus des dossiers des sous taxons:
+
+\begin{itemize}
+ \item[.]Un dossier \textit{frequencies} où sera rangées les fréquences de kmers
+  \item[.]un dossier \textit{data} correspondant aux données génétiques et étant constitué
+  \begin{itemize}
+ \item Un dossier \textit{fasta} où sera rangées les séquences, constitué de deux sous dossiers 
+  \begin{itemize}
+ \item[*]\textit{aminoAcids} contenant les séquences d'acides aminés, chaque cox, cytb,...sont également rangé dans un dossier de même nom. 
+ 
+  \item[*]\textit{nucletotides} contenant les séquences nucléotidiques, de même ici chaque cox, cytb,...sont également rangé dans un dossier de même nom. Ce dossier contient en plus un dossier \textit{genomes} contenant tous le génome complet (voir figure \ref{dossierCox}).
+  
+\end{itemize}
+  \item un dossier \textit{genbank} contenant les fichiers genbank associés au taxon courant
+  
+\end{itemize}
+\end{itemize}
+~\\
+
+
+
+\subsubsection{Principe d'échantillonnage}
+
+Pour échantillonner les données à un niveau taxonomique $alpha$, on se propose de considérer $SZ$ ($S$ample $S$ize) séquences tirées aléatoirement pour chaque sous taxon
+de $alpha$.
+\\
+
+Si on reprend l'exemple de la figure \ref{struct} avec $SZ=5$, on a par exemple suite à un tirage aléatoire sans remise des séquences:
+
+\begin{figure}[H]
+\centering
+\begin{varwidth}{\linewidth}
+\begin{verbatim}
++taxon_alpha
+|
+|___+others
+|   |__genomes.fasta (3 seqs)
+|   
+|___+taxon__A
+|   |__genomes1.fasta (2 seqs)
+|   |__genomes3.fasta (1 seqs) 
+|   |__genomes4.fasta (2 seqs)
+|   
+|___+taxon__B
+|   |__genomes1.fasta (5 seqs)
+|   
+|___+taxon__C 
+|   |__genomes1.fasta (4 seqs)
+|   |__genomes2.fasta (1 seqs)
+|
+
+\end{verbatim}
+\end{varwidth}
+\caption[Structure au niveau du taxon alpha après échantillonnage]{\label{struct_sample}Exemple de structure de l'arborescence au niveau du taxon alpha après l'échantillonnage pour $SZ=5$}
+\end{figure}
+
+\subsubsection{Méthode d'échantillonnage}
+
+Pour échantillonner les données on va enrichir notre objet $FreqKmer$ par l'ajout d'un tableau de booléens à deux dimensions  pour savoir quelles séquences seront considérées dans le comptage de kmers.
+
+\begin{figure}[H]
+  
+
+\begin{lstlisting}[numbers=left][caption=test]
+
+/* Pour chaque sous taxon */
+for(int i=0;i<nbChildTaxa;i++)
+{
+		nbSeqTaxa = getNSeqInTaxa(i);
+		
+		/* si on doit tirer plus de qu'il y a de seq alors on tire tout */
+	  if(sampleSize>=nbSeqTaxa)
+	  {
+		  d = obtainStartLineTaxaInFastaList(i); /* indice debut data pour taxon courant i */
+		  f = obtainEndLineTaxaInFastaList(i); /* indice fin data pour taxon courant i */
+      
+      /* Pour chaque data du taxon courant */
+      for(int j=d; j<=f;j++)
+		  {
+		     /* Pour chaque sequence */
+	      for(int k=0;k<data[j]->getNtaxa();k++)
+			  {
+			    /* On prend la k-eme sequence du j-eme data */
+				  mask_tmp[j][k]=true;
+			  }
+		  }
+	  }
+	  else
+	  {
+	    	/* on tire sampleSize parmi les nbSeqTaxa sequences
+			 * dans le taxon courant
+			 * (tirage sans remise pour les seq.!)
+			 */
+			randomTab(&candidates,nbSeqTaxa,sampleSize);
+			/* je mets a jour mon mask selon les candidats trouves */
+			maskTab(&candidates,mask_tmp,i);
+	  }
+                       
+\end{lstlisting}
+\caption{\label{sampleMe} Algo d'échantillonnage}
+\end{figure}
+~\\
+
+
+\begin{figure}[H]
+  
+
+\begin{lstlisting}[numbers=left][caption=test]
+
+/* tirage sans remise de sampleSize sequences 
+parmi tabSize sequences */
+void randomTab(vector<int> *result,int tabSize,int sampleSize)
+{
+  
+	int *tmp = new int[tabSize];
+	int r = -1;
+	
+	/* Borne du tirage au depart on peut tirer toutes les sequences */
+	int sup = tabSize;
+	int val_tmp;
+
+  /* on cree un tableau contenant 
+   * initialement les indices, on va ainsi tirer les indices des 
+   * sequences a considerer pour l'echantillon */
+	for(int i=0;i<tabSize;i++)
+	{
+		tmp[i]=i;
+	}
+
+  /* On tire sampleSize indice */
+	for(int j=0;j<sampleSize;j++)
+	{
+
+		r = rand() % sup;
+		/* on met la valeur tiree a la fin du tableau 
+		 * et on n'y touche plus */
+		val_tmp = tmp[sup-1];
+		
+		/* on met l'indice dans le resultat */
+		result->push_back(tmp[r]);
+		tmp[sup-1] = tmp[r];
+		tmp[r] = val_tmp;
+    
+    /* la borne du tirage diminue */
+		sup--;
+
+	}
+
+}
+               
+\end{lstlisting}
+\caption{\label{tirage} Algo de tirage sans remise}
+\end{figure}
+~\\
 
