@@ -38,6 +38,7 @@ private:
 	string key_fasta; /* cox1, cox2, cox3, cytb ou genomes */
 	bool initFromRoot;
 	bool initWithJump;
+	int *nbSeq;
 
 
 	int nLine, /* Nombre de ligne du tableau freq: nombre de vecteur de frequence */
@@ -127,6 +128,12 @@ private:
 
 	void writeLineInOs(ofstream &os,int i,int j,FreqKmer *f);
 
+	void setNoData(bool b);
+
+	void loadAll();
+
+	bool existSeqTrueInData(int i);
+
 
 /*************************************************************************************************************************
  * *************************************************************************************************************************
@@ -196,12 +203,6 @@ public:
 	 * @param 	fasta fichier fasta contenant les données
 	 */
 	void 	initFromFasta(string fasta);
-
-	/**
-	 * Imprime au format csv la table freq
-	 * @param 	output fichier où ecrire le csv
-	 */
-	void 	imprimeCSV(string output);
 
 	/**
 	 * Methode principale qui permet
@@ -409,7 +410,7 @@ public:
 
 	void   generateWekaData(int sizeSample,int percent,int start_win_predict,int end,int pas, int nCross);
 
-
+	int 	getNbSeqData(int data_i);
 
 };
 

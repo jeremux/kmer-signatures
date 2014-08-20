@@ -29,10 +29,10 @@ bool doTest20()
 
 	string filename = "Debug/tests/test4/liste.txt";
 	string patternPath = "pattern.txt";
-	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Opisthokonta__33154/Metazoa__33208/Eumetazoa__6072/Bilateria__33213/Deuterostomia__33511/Chordata__7711/Craniata__89593/Vertebrata__7742/Gnathostomata__7776/Teleostomi__117570/Euteleostomi__117571/Sarcopterygii__8287/Dipnotetrapodomorpha__1338369/Tetrapoda__32523/Amniota__32524/Mammalia__40674/Theria__32525/Eutheria__9347";
+	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759";
 	string key = "genomes";
 	cout << "New Freq1\n";
-	FreqKmer *f = new FreqKmer(-1,patternPath,false,path_root,key);
+	FreqKmer *f = new FreqKmer(-1,patternPath,true,path_root,key);
 
 	cout << "generate\n";
 	/* generateWekaData(tailleEchantillon,taillePredictPourcent,debutTailleFenetre,finTailleFenetre,pas,nBcross)*/
@@ -77,21 +77,21 @@ bool doTest18()
 	FreqKmer *f = new FreqKmer(4,true,filename,pattern,false,"");
 	f->fillFreq();
 	res = (f->getSum(0,0)==2
-		&& f->getSum(0,1)==2
-		&& f->getSum(0,2)==2
-		&& f->getSum(0,3)==2
-		&& f->getSum(0,4)==2
-		&& f->getSum(0,5)==2
-		&& f->getSum(0,6)==2
+			&& f->getSum(0,1)==2
+			&& f->getSum(0,2)==2
+			&& f->getSum(0,3)==2
+			&& f->getSum(0,4)==2
+			&& f->getSum(0,5)==2
+			&& f->getSum(0,6)==2
 
-		&& f->getSum(1,0)==4
-		&& f->getSum(1,1)==4
-		&& f->getSum(1,2)==4
-		&& f->getSum(1,3)==4
-		&& f->getSum(1,4)==4
-		&& f->getSum(1,5)==4
-		&& f->getSum(1,6)==4
-			);
+			&& f->getSum(1,0)==4
+			&& f->getSum(1,1)==4
+			&& f->getSum(1,2)==4
+			&& f->getSum(1,3)==4
+			&& f->getSum(1,4)==4
+			&& f->getSum(1,5)==4
+			&& f->getSum(1,6)==4
+	);
 
 	f->normalize();
 
@@ -238,13 +238,13 @@ bool doTest14()
 
 	res = (f->getPathChildTaxa(2)=="Debug/tests/taxon__alpha/taxon__B"
 			&& f->getPathChildTaxa(1)=="Debug/tests/taxon__alpha/taxon__A"
-					&& f->getPathChildTaxa(0)=="Debug/tests/taxon__alpha/others"
-							&& f->getPathChildTaxa(3)=="Debug/tests/taxon__alpha/taxon__C"
-									&& f->getIdTaxa(2)=="B"
-											&& f->getIdTaxa(1)=="A"
-													&& f->getIdTaxa(0)=="others"
-															&& f->getIdTaxa(3)=="C"
-																	&& f->getNbChild()==4
+			&& f->getPathChildTaxa(0)=="Debug/tests/taxon__alpha/others"
+			&& f->getPathChildTaxa(3)=="Debug/tests/taxon__alpha/taxon__C"
+			&& f->getIdTaxa(2)=="B"
+			&& f->getIdTaxa(1)=="A"
+			&& f->getIdTaxa(0)=="others"
+			&& f->getIdTaxa(3)=="C"
+			&& f->getNbChild()==4
 	);
 
 
@@ -323,19 +323,19 @@ bool doTest12()
 
 
 	res = (idData0 == 0)
-		&& (idData1 == 0)
-		&& (idData2 == 1)
-		&& (idData3 == 1)
-		&& (idData4 == 1)
-		&& (idData5 == 1)
-		&& (idData6 == 1)
-		&& (idSeq0 == 0)
-		&& (idSeq1 == 1)
-		&& (idSeq2 == 0)
-		&& (idSeq3 == 0)
-		&& (idSeq4 == 1)
-		&& (idSeq5 == 2)
-		&& (idSeq6 == 2);
+						&& (idData1 == 0)
+						&& (idData2 == 1)
+						&& (idData3 == 1)
+						&& (idData4 == 1)
+						&& (idData5 == 1)
+						&& (idData6 == 1)
+						&& (idSeq0 == 0)
+						&& (idSeq1 == 1)
+						&& (idSeq2 == 0)
+						&& (idSeq3 == 0)
+						&& (idSeq4 == 1)
+						&& (idSeq5 == 2)
+						&& (idSeq6 == 2);
 
 	//f->fillFreq();
 
@@ -839,8 +839,8 @@ bool doTest3()
 	{
 		for(int j=0;j<col;j++)
 		{
-//			cout << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] << " || ";
-//			cout << "base[" << i << "][" << j << "] = " << freq[i][j] << "\n";
+			//			cout << "freq[" << i << "][" << j << "] = " << f->getFreq()[i][j] << " || ";
+			//			cout << "base[" << i << "][" << j << "] = " << freq[i][j] << "\n";
 			if(f->getFreq()[i][j]!=freq[i][j])
 			{
 				res=false;
