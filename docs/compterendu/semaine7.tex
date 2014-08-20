@@ -33,3 +33,26 @@ Chaque dossier comporte en plus des dossiers des sous taxons:
 ~\\
 
 Cette façon de classer les données permet à l'utilisateur de pouvoir spécifier sur quelles séquences il souhaites travailler en indiquant les mots clés \textit{cox1},\textit{cox2},...ou \textit{genomes}.
+
+\subsection{Validation croisée}
+
+Le principe de la validation croisée, est de produire deux fichiers pour weka:
+\begin{itemize}
+  \item[.] Un pour l'apprentissage (80\% des séquences)
+  \item[.] et un autre pour la prédiction (20\% des séquences)
+\end{itemize}
+
+Les deux fichiers de fréquences doivent avoir été construits à partir de séquences distinctes. Par exemple si $D$ est l'ensemble de nos séquences alors
+on doit construire le fichier d'apprentissage à partir d'un sous ensemble $A$ et le fichier de prédiction à partir d'un sous ensemble $P$ de 
+tel sorte que $A \cup P = D $ et  $ A \cap P = \emptyset $  
+
+\subsection{Classification sous java}
+
+Afin de pouvoir charger les données on est forcé d'utiliser le classifieur Bayes car c'est le seul à ce jour, 
+permettant de charger les données petit à petit. 
+
+\subsubsection{Quelques résultats}
+On obtient avec le programme implémenté en java et donc avec le classifieur de Bayes 90\% d'instances correctement classées, alors qu'avec LibSVM on obtenait plus de 98\%. 
+
+
+{\scriptsize \textit{Implémenter nous même notre LibSVM ?...}}
