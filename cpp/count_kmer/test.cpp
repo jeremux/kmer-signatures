@@ -30,6 +30,7 @@ bool doTest20()
 	string filename = "Debug/tests/test4/liste.txt";
 	string patternPath = "pattern.txt";
 	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759";
+//	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Alveolata__33630";
 	string key = "genomes";
 	cout << "New Freq1\n";
 	FreqKmer *f = new FreqKmer(-1,patternPath,true,path_root,key);
@@ -107,10 +108,11 @@ bool doTest17()
 	bool res = true;
 
 
-	FreqKmer *g,*h;
-
+	FreqKmer *g;
+	FreqKmer *h;
 	g = f->sampleMe(1);
 	res = res && g->getNbAllTrue()==4;
+
 	delete g;
 
 	g = f->sampleMe(2);

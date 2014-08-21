@@ -729,6 +729,12 @@ void Data::initLengthSeq()
 
 int Data::getLengthSeq(int i)
 {
+	if(seqLength==NULL)
+	{
+		cout << "hello !!!!\n";
+		initLengthSeq();
+	}
+
   return seqLength[i];
 }
 

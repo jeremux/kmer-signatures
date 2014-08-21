@@ -474,7 +474,7 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 	tailleLigne = ligne.length();
 	/* J'init à partir de chaque ligne du fichier */
 	indexLineDataSeq = new int*[nbFastaFile];
-	nbSeq = new int*[nbFastaFile];
+	nbSeq = new int[nbFastaFile];
 	mask  = new bool*[nbFastaFile];
 	while (file2)
 	{
@@ -600,8 +600,8 @@ void FreqKmer::initFromFasta(string fichier)
 	indexLineDataSeq = new int *[1];
 	indexLineDataSeq[0] = new int[nSeq];
 	mask  = new bool *[1];
-	nbSeq = new int[0];
-	nbSeq = nSeq;
+	nbSeq = new int[1];
+	nbSeq[0] = nSeq;
 	mask[0] = new bool[nSeq];
 	int taille=0;
 	/* si une taille de fenetre est définie */
@@ -936,32 +936,9 @@ void FreqKmer::fillFreq()
 	/* Pour chaque fichier fasta */
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(dataVerbose)
-			{
-				cerr << "----------------noData=true new Data()\n ";
-				cerr.flush();
-			}
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::fillFreq(), NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			else
-			{
-				data[i] = new Data();
-				//					cerr << "debut init de " << pathFasta[i] << "\n";
-				data[i]->initFrom(pathFasta[i],Fasta);
-				//					cerr << "fin init \n";
-			}
-		}
-		nTaxa = data[i]->getNtaxa();
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		nTaxa = nbSeq[i];
+
 		for(int j=0;j<nTaxa;j++)
 		{
 			/* remplir pour la j-ème sequence du i-ème data */
@@ -1064,22 +1041,9 @@ int FreqKmer::obtainStartLineDataSeq(int i,int j)
 		}
 		else
 		{
-			if(noData)
-			{
-				if(data[tmp2]!=NULL)
-				{
-					cerr << "WARNING in FreqKmer::obtainStartLineDataSeq, NULL pointer on data[" << tmp2 << "] expected\n";
-					exit(0);
-				}
-				data[tmp2] = new Data();
-				data[tmp2]->initFrom(pathFasta[tmp2],Fasta);
-			}
-			tmp = data[tmp2]->getNtaxa()-1;
-			if(noData)
-			{
-				delete data[tmp2];
-				data[tmp2] = NULL;
-			}
+
+			tmp = nbSeq[tmp2]-1;
+
 			return indexLineDataSeq[i-1][tmp]+1;
 		}
 	}
@@ -1124,19 +1088,11 @@ int FreqKmer::obtainNbLineDataSeq(int i,int j)
 void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
 {
 	bool res = false;
+	int n;
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::obtainDataSeqFromLine, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		for(int j=0;j<data[i]->getNtaxa();j++)
+		n = nbSeq[i];
+		for(int j=0;j<n;j++)
 		{
 			if(line >= obtainStartLineDataSeq(i,j) && line <= obtainEndLineDataSeq(i,j))
 			{
@@ -1147,11 +1103,7 @@ void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
 			if (res)
 				break;
 		}
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
 		if(res)
 			break;
 	}
@@ -1168,19 +1120,11 @@ void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
 void FreqKmer::obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idWin)
 {
 	bool res = false;
+	int n;
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::obtainDataSeqFromLine, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		for(int j=0;j<data[i]->getNtaxa();j++)
+		n = nbSeq[i];
+		for(int j=0;j<n;j++)
 		{
 			if(line >= obtainStartLineDataSeq(i,j) && line <= obtainEndLineDataSeq(i,j))
 			{
@@ -1192,11 +1136,7 @@ void FreqKmer::obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idW
 			if (res)
 				break;
 		}
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
 		if(res)
 			break;
 	}
@@ -1557,6 +1497,7 @@ void FreqKmer::randomTab(vector<int> *result,int tabSize,int sampleSize)
 		r = rand() % sup;
 		val_tmp = tmp[sup-1];
 		/* on recupère l'entier tiré */
+
 		result->push_back(tmp[r]);
 		/* on range l'entier tiré à la fin du tableau tmp */
 		tmp[sup-1] = tmp[r];
@@ -1579,7 +1520,8 @@ void FreqKmer::randomTab(vector<int> *result,int tabSize,int sampleSize)
 FreqKmer* FreqKmer::sampleMe(int sampleSize)
 {
 	FreqKmer *res;
-	bool b;
+	bool b = noData;
+	int n;
 	sampledTaxon.erase(sampledTaxon.begin(),sampledTaxon.end());
 
 	if (dataVerbose)
@@ -1610,9 +1552,9 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 		}
 	}
 
-	if(LOADALL)
+	if(LOADALL && noData)
 	{
-		res->setNoData(true);
+		res->setNoData(false);
 		res->loadAll();
 	}
 	int nbSequences = 0;
@@ -1647,29 +1589,18 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 	vector<int> candidates;
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		nbSequences = data[i]->getNtaxa();
+
+		nbSequences = nbSeq[i];
 		mask_tmp[i] = new bool[nbSequences];
 
 		/* on initialise le mask temporaire à false */
 		for(int j=0;j<nbSequences;j++)
 		{
 			mask_tmp[i][j]=false;
+
 		}
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+
 	}
 	for(int i=0;i<nbChildTaxa;i++)
 	{
@@ -1677,33 +1608,22 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 		/* si on doit tirer plus de qu'il y a
 		 * de seq alors on tire tout
 		 */
+
 		if(sampleSize>=nbSeqTaxa)
 		{
 			d = obtainStartLineTaxaInFastaList(i);
 			f = obtainEndLineTaxaInFastaList(i);
 			for(int j=d; j<=f;j++)
 			{
-				if(noData)
-				{
-					if(data[j]!=NULL)
-					{
-						cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << j << "] expected\n";
-						exit(0);
-					}
-					data[j] = new Data();
-					data[j]->initFrom(pathFasta[j],Fasta);
-				}
-				for(int k=0;k<data[j]->getNtaxa();k++)
+				n = nbSeq[j];
+
+				for(int k=0;k<n;k++)
 				{
 					mask_tmp[j][k]=true;
 					/* on garde en memoire les donnees recuperees */
 					sampledTaxon.push_back(intPair(j,k));
 				}
-				if(noData)
-				{
-					delete data[j];
-					data[j]=NULL;
-				}
+
 			}
 		}
 		/* on peut alors tirer n seq dans le taxon i */
@@ -1721,22 +1641,9 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 	/* MAJ de la table mask */
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		nbSequences = data[i]->getNtaxa();
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		nbSequences = nbSeq[i];
+
 		for(int j=0;j<nbSequences;j++)
 		{
 			res->mask[i][j]=mask_tmp[i][j];
@@ -1780,22 +1687,7 @@ int FreqKmer::getNSeqInTaxa(int i)
 	/* Pour chaque fichier fasta */
 	for(int j=0; j<nbData ; j++)
 	{
-		if(noData)
-		{
-			if(data[j+startLineInFasta]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << j+startLineInFasta << "] expected\n";
-				exit(0);
-			}
-			data[j+startLineInFasta] = new Data();
-			data[j+startLineInFasta]->initFrom(pathFasta[j+startLineInFasta],Fasta);
-		}
-		res+=data[j+startLineInFasta]->getNtaxa();
-		if(noData)
-		{
-			delete data[j+startLineInFasta];
-			data[j+startLineInFasta]=NULL;
-		}
+		res+=nbSeq[j+startLineInFasta];
 	}
 	return res;
 }
@@ -1834,22 +1726,9 @@ int FreqKmer::getNbAllTrue()
 	int res = 0;
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		res+=getNbTrue(mask[i],0,data[i]->getNtaxa()-1);
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		res+=getNbTrue(mask[i],0,nbSeq[i]-1);
+
 	}
 	return res;
 }
@@ -1867,26 +1746,14 @@ void FreqKmer::maskTab(vector<int> *candidate,bool **mask_tmp, int indexTaxa)
 	for(int i=d; i <= f ; i++)
 	{
 		/* TODO: no data instancier data ici */
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		nSeq = data[i]->getNtaxa();
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		nSeq = nbSeq[i];
+
 		for(int j=0 ; j < nSeq ; j++)
 		{
 			if(find(candidate->begin(), candidate->end(),cpt) != candidate->end())
 			{
+
 				/* data[i][j] is a candidate for sample */
 				mask_tmp[i][j]=true;
 			}
@@ -2214,22 +2081,9 @@ void FreqKmer::writeCrossVal(int percent,string outLearn,string outToclassify)
 	// Pour chaque data
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::writeCrossVal, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		seqInData_i= data[i]->getNtaxa();
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		seqInData_i= this->nbSeq[i];
+
 		//Pour chaque seq
 		for(int j=0;j<seqInData_i;j++)
 		{
@@ -2352,7 +2206,7 @@ string FreqKmer::getTaxidFromString(string line)
 void FreqKmer::fillFreq(int data_i,int seq_j)
 {
 	if(dataVerbose){
-		cerr << "FreqKmer::fillFreq()\n ";
+		cerr << "FreqKmer::fillFreq(int data_i,int seq_j)\n ";
 		cerr.flush();
 	}
 	int start_line = -1;
@@ -2411,6 +2265,11 @@ void FreqKmer::fillFreq(int data_i,int seq_j)
 						}
 					}
 				}
+				if(data[data_i]==NULL)
+				{
+					cerr << "WARNING in FreqKmer::fillFreq(int data_i,int seq_j), NULL pointer on data[" << data_i << "]\n";
+					exit(0);
+				}
 				count(data[data_i]->getDataObject()[seq_j],data[data_i]->getLengthSeq(seq_j),k,start_line);
 			}
 			if(noData)
@@ -2421,7 +2280,7 @@ void FreqKmer::fillFreq(int data_i,int seq_j)
 		}
 	}
 	if(dataVerbose){
-		cerr << "Fin FreqKmer::fillFreq()\n ";
+		cerr << "FIN  FreqKmer::fillFreq(int data_i,int seq_j)\n ";
 		cerr.flush();
 	}
 }
@@ -2463,6 +2322,13 @@ FreqKmer* FreqKmer::sampleMe(vector<pair<int, int> > list)
 			res = new FreqKmer(winSize,isList,pathFastaFile,pathPattern,noData,key_fasta);
 		}
 	}
+
+	if(LOADALL && noData)
+	{
+		res->setNoData(false);
+		res->loadAll();
+	}
+
 	res->freqFilled=this->freqFilled;
 	/* on recupére les lignes calculées */
 	if(this->freqFilled)
@@ -2487,25 +2353,11 @@ FreqKmer* FreqKmer::sampleMe(vector<pair<int, int> > list)
 	int nbSequences;
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::sampleMe, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		nbSequences = data[i]->getNtaxa();
+
+		nbSequences = nbSeq[i];
 		for(int j=0;j<nbSequences;j++)
 		{
 			res->mask[i][j]=false;
-		}
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
 		}
 	}
 	/* MAJ de la table mask */
@@ -2565,22 +2417,9 @@ void FreqKmer::writeCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int per
 	// Pour chaque data
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::writeCrossVal, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		seqInData_i= data[i]->getNtaxa();
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		seqInData_i= this->nbSeq[i];
+
 		//Pour chaque seq
 		for(int j=0;j<seqInData_i;j++)
 		{
@@ -2652,22 +2491,9 @@ void FreqKmer::writeCrossVal(FreqKmer *freqPredict, int percent, string outTocla
 	// Pour chaque data
 	for(int i=0;i<nbFastaFile;i++)
 	{
-		if(noData)
-		{
-			if(data[i]!=NULL)
-			{
-				cerr << "WARNING in FreqKmer::writeCrossVal, NULL pointer on data[" << i << "] expected\n";
-				exit(0);
-			}
-			data[i] = new Data();
-			data[i]->initFrom(pathFasta[i],Fasta);
-		}
-		seqInData_i= data[i]->getNtaxa();
-		if(noData)
-		{
-			delete data[i];
-			data[i]=NULL;
-		}
+
+		seqInData_i= this->nbSeq[i];
+
 		//Pour chaque seq
 		for(int j=0;j<seqInData_i;j++)
 		{
@@ -2914,7 +2740,7 @@ bool FreqKmer::existSeqTrueInData(int data_i)
 }
 void FreqKmer::loadAll()
 {
-	if(noData)
+	if(noData==false)
 	{
 		for(int i=0;i<nbFastaFile;i++)
 		{
