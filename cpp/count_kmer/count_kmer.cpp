@@ -44,6 +44,7 @@ typedef struct {
     string key;
     string root;
     int jump;
+    int learn;
 } options;
 
 options opt;
@@ -65,6 +66,7 @@ void init_opt()
     opt.key = "genomes";
     opt.root="null";
     opt.jump=0;
+    opt.learn=-1;
 }
 
 int getParam(int argcc, char **argvv,options *opt)
@@ -90,6 +92,7 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {"key",no_argument,0,'K'},					    //-K
 	    {"root",no_argument,0,'r'},					    //-r
 	    {"jump",no_argument,0,'j'},					    //-j
+	    {"learn",required_argument,0,'L'},				//-L
 	    {0, 0, 0, 0}
 	};
 	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtdTKr:j:",long_options, &option_index);
@@ -166,6 +169,11 @@ int getParam(int argcc, char **argvv,options *opt)
 		if(optarg)
 			opt->jump=atoi(optarg);
 		}
+	    if(!(strcmp(long_options[option_index].name,"learn")))
+		{
+		if(optarg)
+			opt->learn=atoi(optarg);
+		}
 	    break;
 	case 'h':
 	    opt->doPrintHelp=Yes;
@@ -207,6 +215,10 @@ int getParam(int argcc, char **argvv,options *opt)
 	    break;
 	case 'K':
 		opt->key = optarg;
+		break;
+	case 'L':
+		if(optarg)
+		opt->learn=atoi(optarg);
 		break;
 	default:
 	    cerr << "?? getopt returned character code " <<  c << "\n";
@@ -257,6 +269,26 @@ int main(int argc, char **argv) {
     bool error = false;
     bool testResult = true;
 
+	string filename = "Debug/tests/test4/liste.txt";
+	string patternPath = "pattern.txt";
+	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759";
+	string key = "genomes";
+	cout << "New Freq1\n";
+	FreqKmer *f = NULL;
+    if(opt.learn>=-1)
+    {
+
+    //	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Alveolata__33630";
+    	f = new FreqKmer(opt.learn,patternPath,true,path_root,key);
+
+    	cout << "generate\n";
+    	/* generateWekaData(tailleEchantillon,taillePredictPourcent,debutTailleFenetre,finTailleFenetre,pas,nBcross)*/
+    	f->generateWekaData(20,20,100,300,50,10);
+
+    	delete f;
+
+    	exit(0);
+    }
     if (opt.doPrintHelp==Yes)
     {
 	printHelp();
@@ -383,7 +415,7 @@ int main(int argc, char **argv) {
 	    }
 	}
 
-	f->fillFreq();
+
 	cerr << "Fin fill \n";
 	// f->imprimeCSV(opt.output);
 	

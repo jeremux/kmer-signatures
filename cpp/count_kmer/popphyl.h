@@ -62,7 +62,7 @@ const string  colors[] = {"red", "blue", "magenta", "green", "cyan", "yellow", "
 const int     nNT=4;
 const char    DNAletters[] = {'A','C','G','T','-', 'N'};
 const char    dnaletters[] = {'a','c','g','t','-', 'n'};
-const string  NTcolors[] = {"red", "green", "yellow", "blue", "black", "black"};
+const string   NTcolors[] = {"red", "green", "yellow", "blue", "black", "black"};
 const double  NTpstrickScale[] = {1, 1, 1, 1.065};  // letter scale correction for vertical logo
 const double  NTpstrickShift[] = {0, 0.01, 0.01, 0};      // letter position correction for vertical logo
 
@@ -96,7 +96,8 @@ static Switch getSwitch(int s)
 
 const bool dataVerbose=false;
 const bool doTest=true;
-const bool normalizeBool=false;
+const bool normalizeBool=true;
+const bool normalNormalize=true;
 
 
 #endif

@@ -1780,7 +1780,17 @@ double FreqKmer::getSum(int indexPattern,int indexLine)
 void FreqKmer::normalizeLine(int indexPattern,int line)
 {
 	double s = getSum(indexPattern,line);
-	int nbComb = patterns[indexPattern]->getAllCombi();
+	int nbComb ;
+	if(normalNormalize)
+	{
+		nbComb=1;
+	}
+	else
+	{
+		nbComb = patterns[indexPattern]->getAllCombi();
+	}
+
+
 	if (s!=0)
 	{
 		for(int i=obtainStartColKmer(indexPattern);i<=obtainEndColKmer(indexPattern);i++)
