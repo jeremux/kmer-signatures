@@ -45,8 +45,7 @@ while (<RESULT>) {
 	# }
 }
 
-open (TABULAR, '>', "result.txt") || die "Can't open file:result.txt\n";
-print TABULAR "#learn_length\tpredict_length\ttrue_positive\n";
+
 my $cpt = 0;
 my $nb_curve = 0;
 foreach my $taille_learn ( keys %tableTruePositive) 
@@ -65,7 +64,6 @@ foreach my $taille_learn ( keys %tableTruePositive)
 			foreach my $val (@tmp_table)
 			{
 				$stat->add_data($val);
-				print TABULAR "$taille_learn\t$taille_predict\t$val\n";
 			}
 
 			my $q0 = $stat->quantile(0);
@@ -78,12 +76,6 @@ foreach my $taille_learn ( keys %tableTruePositive)
 	}
 	close OUT;
 } 
-
-close TABULAR;
-
-print "\n\n======================\n";
-print "==result.txt created==\n";
-print "======================\n";
 
 
 open (PLOT,'>',"boxplot.plot") || die "Can't open file:$!\n";
