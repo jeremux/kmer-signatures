@@ -1555,9 +1555,11 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 
 	if(LOADALL && noData)
 	{
+		cerr << "Changement en cours de route noData = false\n";
 		res->setNoData(false);
 		res->loadAll();
 	}
+
 	int nbSequences = 0;
 	int nbSeqTaxa = 0;
 	int d,f;
@@ -1603,6 +1605,7 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 
 
 	}
+
 	for(int i=0;i<nbChildTaxa;i++)
 	{
 		nbSeqTaxa = getNSeqInTaxa(i);
@@ -1610,7 +1613,7 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 		 * de seq alors on tire tout
 		 */
 
-		if(sampleSize>=nbSeqTaxa)
+		if(sampleSize>=nbSeqTaxa || sampleSize==-1)
 		{
 			d = obtainStartLineTaxaInFastaList(i);
 			f = obtainEndLineTaxaInFastaList(i);
@@ -2678,8 +2681,8 @@ void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict
 	}
 	else
 	{
-		toLearn = this;
-		toPredict = toLearn;
+		toLearn = sampleMe(-1);
+		toPredict = sampleMe(-1);
 	}
 	for(int i=1;i<=nCross;i++)
 	{
@@ -2690,7 +2693,9 @@ void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict
 	cout << "delete res\n";
 	delete res;
 	delete toPredict;
+	cout << "toto\n";
 	delete toLearn;
+
 
 	if(start_win_predict>0)
 	{
@@ -2726,7 +2731,7 @@ void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict
 			}
 			else
 			{
-				toPredict = toLearn;
+				toPredict = sampleMe(-1);
 			}
 			for(int j=1;j<=nCross;j++)
 			{

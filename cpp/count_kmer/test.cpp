@@ -22,28 +22,6 @@ void printResult(bool res,int i)
 	}
 }
 
-bool doTest20()
-{
-	cerr << "\n**test writeCrossVal**\n";
-	bool res=true;
-
-	string filename = "Debug/tests/test4/liste.txt";
-	string patternPath = "pattern.txt";
-	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759";
-//	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Alveolata__33630";
-	string key = "genomes";
-	cout << "New Freq1\n";
-	FreqKmer *f = new FreqKmer(-1,patternPath,true,path_root,key);
-
-	cout << "generate\n";
-	/* generateWekaData(tailleEchantillon,taillePredictPourcent,debutTailleFenetre,finTailleFenetre,pas,nBcross)*/
-	f->generateWekaData(20,20,100,300,50,10);
-
-	delete f;
-	printResult(res,20);
-	return res;
-
-}
 
 bool doTest19()
 {
@@ -1055,9 +1033,6 @@ bool callTest(int i)
 		break;
 	case 19:
 		res = doTest19();
-		break;
-	case 20:
-		res = doTest20();
 		break;
 	default:
 		break;

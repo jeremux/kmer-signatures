@@ -25,6 +25,11 @@ public class IncrementalClassifier  {
 		
 		String trainPath = root + "/frequencies/"+id3+"_learn-"+id+".arff";
 		String testDataset = root + "/frequencies/"+id2+"_toPredict-"+id+".arff";
+		System.err.println("==============");
+		System.err.println(trainPath);
+		System.err.println("*****");
+		System.err.println(testDataset);
+		System.err.println("==============");
 		ArffLoader loader = new ArffLoader();
 		loader.setFile(new File(trainPath));
 		Instances train = loader.getStructure();
@@ -72,7 +77,8 @@ public class IncrementalClassifier  {
 		return res;
 	}
 	public static void main(String[] args) throws Exception 
-	{
+	{	
+		System.err.println("MAIN");
 		double res=0;
 		int nTests = Integer.parseInt(args[1]);
 		for(int i=1;i<=nTests;i++)

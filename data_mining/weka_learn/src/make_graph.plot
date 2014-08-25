@@ -8,6 +8,6 @@ set yrange [0:50]
 set style fill solid    #set plot style	
 set boxwidth 0.5
 #unset key    #legend not plotted
-set arrow 1 from 0,40 to 300,40  
+set arrow 1 from 0,42 to 300,42 
 plot "result.dat" u 1:2 smooth bezier title 'complete_genome'
-#plot bar chart and the value labels on the bars
+plot  42   with lines lt 1 title "y = 42"

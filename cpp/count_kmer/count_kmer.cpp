@@ -28,7 +28,9 @@
 #define optional_argument 2
 #define VERSION 1.0
 
-#define NB_TEST 20
+#define NB_TEST 19
+#define NB_CROSS_VAL 10
+#define PREDICT_LENGTH 20
 
 typedef struct {
     string listFastaPath;
@@ -45,6 +47,10 @@ typedef struct {
     string root;
     int jump;
     int learn;
+    int start;
+    int end;
+    int step;
+    int sampleSize;
 } options;
 
 options opt;
@@ -66,7 +72,11 @@ void init_opt()
     opt.key = "genomes";
     opt.root="null";
     opt.jump=0;
-    opt.learn=-1;
+    opt.learn=-2;
+    opt.start=-1;
+    opt.end=-1;
+    opt.step=-1;
+    opt.sampleSize=-1;
 }
 
 int getParam(int argcc, char **argvv,options *opt)
@@ -89,10 +99,14 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {"test",no_argument, 0, 't'},        			//-t
 	    {"intra",no_argument, 0, 'T'},        			//-T
 	    {"noData",no_argument,0,'d'},					//-d
-	    {"key",no_argument,0,'K'},					    //-K
-	    {"root",no_argument,0,'r'},					    //-r
+	    {"key",required_argument,0,'K'},					    //-K
+	    {"root",required_argument,0,'r'},					    //-r
 	    {"jump",no_argument,0,'j'},					    //-j
 	    {"learn",required_argument,0,'L'},				//-L
+	    {"start",required_argument,0,0},
+	    {"end",required_argument,0,0},
+	    {"step",required_argument,0,0},
+	    {"sample",required_argument,0,0},
 	    {0, 0, 0, 0}
 	};
 	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtdTKr:j:",long_options, &option_index);
@@ -130,6 +144,7 @@ int getParam(int argcc, char **argvv,options *opt)
 	    }
 	    if(!(strcmp(long_options[option_index].name,"root")))
 		{
+	    	cout << "hello" << endl;
 		if(optarg)
 		{
 			opt->root=optarg;
@@ -159,11 +174,36 @@ int getParam(int argcc, char **argvv,options *opt)
 		if(optarg)
 		    opt->kmerPath=optarg;
 	    }
+	    if(!(strcmp(long_options[option_index].name,"root")))
+	    	    {
+	    		if(optarg)
+	    		    opt->root=optarg;
+	    	    }
 	    if(!(strcmp(long_options[option_index].name,"wsize")))
 	    {
 		if(optarg)
 		    opt->windowSize=atoi(optarg);
 	    }
+	    if(!(strcmp(long_options[option_index].name,"start")))
+		{
+		if(optarg)
+			opt->start=atoi(optarg);
+		}
+	    if(!(strcmp(long_options[option_index].name,"end")))
+	    	    {
+	    		if(optarg)
+	    		    opt->end=atoi(optarg);
+	    	    }
+	    if(!(strcmp(long_options[option_index].name,"step")))
+	    	    {
+	    		if(optarg)
+	    		    opt->step=atoi(optarg);
+	    	    }
+	    if(!(strcmp(long_options[option_index].name,"sample")))
+	    	    	    {
+	    	    		if(optarg)
+	    	    		    opt->sampleSize=atoi(optarg);
+	    	    	    }
 	    if(!(strcmp(long_options[option_index].name,"jump")))
 		{
 		if(optarg)
@@ -214,8 +254,12 @@ int getParam(int argcc, char **argvv,options *opt)
 	    opt->noData=true;
 	    break;
 	case 'K':
-		opt->key = optarg;
+		 if(optarg)
+			 opt->key = optarg;
 		break;
+	case 'r':
+			opt->root = optarg;
+			break;
 	case 'L':
 		if(optarg)
 		opt->learn=atoi(optarg);
@@ -269,21 +313,28 @@ int main(int argc, char **argv) {
     bool error = false;
     bool testResult = true;
 
-	string filename = "Debug/tests/test4/liste.txt";
-	string patternPath = "pattern.txt";
-	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759";
-	string key = "genomes";
 	cout << "New Freq1\n";
 	FreqKmer *f = NULL;
     if(opt.learn>=-1)
     {
-
+    	if(opt.start==-1 || opt.end==-1 || opt.step==-1)
+    	{
+    		cerr << "Need an integer start (--start)" << endl;
+    		cerr << "Need an integer end (--end)" << endl;
+    		cerr << "Need an integer step (--step)" << endl;
+    		exit(0);
+    	}
+    	if(opt.root=="null")
+    	{
+    		cerr << "Need a root path (--root /../taxon1/taxon2/)" << endl;
+    		exit(0);
+    	}
     //	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Alveolata__33630";
-    	f = new FreqKmer(opt.learn,patternPath,true,path_root,key);
+    	f = new FreqKmer(opt.learn,opt.kmerPath,false,opt.root,opt.key);
 
     	cout << "generate\n";
     	/* generateWekaData(tailleEchantillon,taillePredictPourcent,debutTailleFenetre,finTailleFenetre,pas,nBcross)*/
-    	f->generateWekaData(20,20,100,300,50,10);
+    	f->generateWekaData(opt.sampleSize,PREDICT_LENGTH,opt.start,opt.end,opt.step,NB_CROSS_VAL);
 
     	delete f;
 
@@ -418,7 +469,7 @@ int main(int argc, char **argv) {
 
 	cerr << "Fin fill \n";
 	// f->imprimeCSV(opt.output);
-	
+
 	delete f;
     }
     return 0;
