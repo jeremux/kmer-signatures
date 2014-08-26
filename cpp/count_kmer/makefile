@@ -36,23 +36,24 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: count_kmer clean
+all: count_kmer 
 
 # Tool invocations
 count_kmer: $(OBJS) $(USER_OBJS) 
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
 	g++  -o "count_kmer" $(OBJS) $(USER_OBJS) $(LIBS)
+	-$(RM) $(OBJS) $(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 	
 
 # Other Targets
 realclean:
-	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) count_kmer confBig.txt
-	-@echo 'realclean done'
+	-$(RM) $(OBJS) $(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) count_kmer confBig.txt
+	-@echo 'realclean done' 
 clean:
-	-$(RM) $(OBJS)$(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) confBig.txt
+	-$(RM) $(OBJS) $(C++_DEPS)$(C_DEPS)$(CC_DEPS)$(CPP_DEPS)$(EXECUTABLES)$(CXX_DEPS)$(C_UPPER_DEPS) confBig.txt 
 	-@echo 'clean done'
 
 test: realclean all
