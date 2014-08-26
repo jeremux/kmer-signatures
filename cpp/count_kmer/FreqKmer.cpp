@@ -13,6 +13,7 @@
 using namespace std;
 
 #define LOADALL 1
+#define BIG_DATA 1
 /******************************************************************************
  *
  *Constructeur
@@ -594,7 +595,7 @@ void FreqKmer::initFromFasta(string fichier)
 	nbFastaFile=1;
 	data=new Data*[1];
 	indexLineData = new int[1];
-	int cpt2=-1;
+	int cpt2=0;
 	data[0] = new Data();
 	data[0]->initFrom(fichier,Fasta);
 	nSeq = data[0]->getNtaxa();
@@ -610,6 +611,7 @@ void FreqKmer::initFromFasta(string fichier)
 	{
 		/* alors on peut calculer le nombre de ligne */
 		/* Pour chaque sesquence du fasta courant */
+
 		for (int var = 0; var < nSeq; var++)
 		{
 			taille= data[0]->getPrimarySequence(var).length();
@@ -622,6 +624,7 @@ void FreqKmer::initFromFasta(string fichier)
 				//nLine += taille-winSize+1;
 				nLine += obtainNbLineWindow(0,taille-1,winSize,shift);
 			}
+
 			indexLineDataSeq[0][var]=nLine-1;
 			mask[0][var]=true;
 		}
@@ -635,6 +638,7 @@ void FreqKmer::initFromFasta(string fichier)
 		}
 		nLine = nSeq;
 	}
+
 	indexLineData[0] = nLine-1;
 	if(noData)
 	{
@@ -663,10 +667,17 @@ int FreqKmer::obtainColIndex(int indexPattern,int *seq,int pos)
  */
 void FreqKmer::initFreq()
 {
+
 	if(dataVerbose){
 		cerr << "Debut FreqKmer::initFreq()\n ";
 		cerr.flush();
 	}
+	if(!(freq==NULL))
+	{
+
+		return;
+	}
+
 	freq = new double *[nLine];
 	for(int i=0 ; i<nLine ; i++)
 	{
@@ -1555,7 +1566,6 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 
 	if(LOADALL && noData)
 	{
-		cerr << "Changement en cours de route noData = false\n";
 		res->setNoData(false);
 		res->loadAll();
 	}
@@ -2142,15 +2152,24 @@ void FreqKmer::writeHeaderWeka(ofstream &os)
 			os << "@ATTRIBUTE " << combi[j] << " NUMERIC\n";
 		}
 	}
-	os << "@ATTRIBUTE class {";
-	for(int i=0;i<nbChildTaxa-1;i++)
+	if(idTaxa.size()!=0)
 	{
-		os << getIdTaxa(i) << ",";
+		os << "@ATTRIBUTE class {";
+
+		for(int i=0;i<nbChildTaxa-1;i++)
+		{
+			os << getIdTaxa(i) << ",";
+		}
+		os << getIdTaxa(nbChildTaxa-1) << "}\n\n\n@DATA\n";
+		if (dataVerbose)
+		{
+			cerr << "Fin FreqKmer::writeHeaderWeka(ofstream &os)\n";
+		}
 	}
-	os << getIdTaxa(nbChildTaxa-1) << "}\n\n\n@DATA\n";
-	if (dataVerbose)
+	else
 	{
-		cerr << "Fin FreqKmer::writeHeaderWeka(ofstream &os)\n";
+		os << "@ATTRIBUTE class {null}";
+		os <<  "\n\n\n@DATA\n";
 	}
 }
 void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
@@ -2161,15 +2180,22 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j)
 	}
 	int start = obtainStartLineDataSeq(i,j);
 	int end = obtainEndLineDataSeq(i,j);
-	string taxid = idTaxaFromData[i];
+	string taxid = "null";
+	if(idTaxaFromData.size()!=0)
+		taxid = idTaxaFromData[i];
+
 	//if(bigData)
 	if(!freqFilled)
 	{
+
 		initFreq();
 		fillFreq(i,j);
 	}
+
+
 	for(int l=start; l <= end ;l++)
 	{
+
 		//		os << "(" << i << "," << j << "):" ;
 		if(normalizeBool)
 		{
@@ -2343,6 +2369,7 @@ FreqKmer* FreqKmer::sampleMe(vector<pair<int, int> > list)
 
 	if(LOADALL && noData)
 	{
+
 		res->setNoData(false);
 		res->loadAll();
 	}
@@ -2588,6 +2615,7 @@ void FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)
 		cerr << "Fin FreqKmer::writeLineInOs(ofstream &os,int i,int j,FreqKmer *f)\n";
 	}
 }
+
 void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i,string id)
 {
 	stringstream sstm1,sstm2;
@@ -2607,10 +2635,12 @@ void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int pe
 	string toPredict = sstm2.str();
 	writeCrossVal(freqLearn,freqPredict,percent,learn,toPredict);
 }
+
 void FreqKmer::writeNCrossVal(FreqKmer *freqLearn, FreqKmer *freqPredict, int percent, int i)
 {
 	writeNCrossVal(freqLearn,freqPredict,percent,i,"");
 }
+
 void FreqKmer::writeNCrossVal(FreqKmer *freqPredict, int percent, int i,string id)
 {
 	stringstream sstm2;
@@ -2618,12 +2648,14 @@ void FreqKmer::writeNCrossVal(FreqKmer *freqPredict, int percent, int i,string i
 	string toPredict = sstm2.str();
 	writeCrossVal(freqPredict,percent,toPredict);
 }
+
 void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict,int end, int pas, int nCross)
 {
 	FreqKmer *toLearn = NULL;
 	FreqKmer *toPredict = NULL;
 	FreqKmer *res ;
 	std::string s = to_string(start_win_predict);
+	int j=0;
 
 	if(start_win_predict==-1)
 	{
@@ -2693,7 +2725,6 @@ void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict
 	cout << "delete res\n";
 	delete res;
 	delete toPredict;
-	cout << "toto\n";
 	delete toLearn;
 
 
@@ -2733,12 +2764,16 @@ void FreqKmer::generateWekaData(int sizeSample,int percent,int start_win_predict
 			{
 				toPredict = sampleMe(-1);
 			}
-			for(int j=1;j<=nCross;j++)
+			for(j=1;j<=nCross;j++)
 			{
 				cout << "writeNCrossVal(" << j << ")\n";
 				writeNCrossVal(toPredict,percent,j,s);
 			}
 			cout << "delete res\n";
+//			if(j>nCross)
+//			{
+//				deleteData=true;
+//			}
 			delete res;
 			delete toPredict;
 		}
@@ -2786,6 +2821,26 @@ void FreqKmer::loadAll()
 				data[i] = new Data();
 				data[i]->initFrom(pathFasta[i],Fasta);
 			}
+		}
+	}
+}
+
+void FreqKmer::writeWeka(string output)
+{
+	ofstream os_out;
+
+	if(BIG_DATA!=1)
+		fillFreq();
+
+	os_out.open(output.c_str());
+	writeHeaderWeka(os_out);
+
+	for(int i=0;i<nbFastaFile;i++)
+	{
+		for(int j=0;j<nbSeq[i];j++)
+		{
+//			cout << "traitement data[" << i << "][" << j <<"]\n";
+			writeLineInOs(os_out,i,j);
 		}
 	}
 }

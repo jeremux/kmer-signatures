@@ -37,7 +37,7 @@ sub usage{
 
 	Récupère le genbank à partir d'un taxid.
     USAGE
-         perl qweryNCBI.pl     -id taxid -m youremail
+         perl qweryNCBI.pl     -id taxid -m youremail -out name_file
 			  [-path pathToSave]
 			  [-not id1,id2,...]
 			  [-more qwery]
@@ -74,7 +74,7 @@ if($help)
 if(!$mail)
 {
 	print STDERR "Email obligatoire.\n";
-	print STDERR "perl qweryNCBI.pl -id taxid -m email\n";
+	print STDERR "perl qweryNCBI.pl -id taxid -m email -out name_file\n";
 	print STDERR "perl qweryNCBI.pl -h: Pour l'aide\n";
 	exit;
 }

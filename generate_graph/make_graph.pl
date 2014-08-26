@@ -6,14 +6,50 @@ use strict;
 use Getopt::Long;
 use Statistics::Descriptive;
 
-my $fichier_in;
-my $titre;
+my $fichier_in = "" ;
+my $titre = "" ;
+my $help;
 
 my %tableTruePositive = ();
 
 
 GetOptions ('in=s'	 => \$fichier_in,
-			'title=s' => \$titre);
+			'title=s' => \$titre,
+			 'help|h' => \$help);
+
+sub usage{
+    print <<HELP;
+	
+USAGE
+	perl make_grpah.pl -in fichier_vrais_positifs -title out_name
+
+
+	-in le fichier de vrais vrais positifs avec le format
+		taille_read_apprentissage	taille_read_prediction	pourcentage_vrais_positifs
+	ex:
+		1000	100	59.6
+		1000	150	69.4
+		1000	200	67.3
+		1000	250	80.9
+		...
+
+	-title nom de sortie sans l'exentension 
+		ex: alveolata
+
+
+	USAGE 1: Genere le fichier alveolata.pdf
+
+			perl make_grpah.pl -in result.log -title alveolata			 
+HELP
+
+	exit;
+}
+
+if($help || $fichier_in eq "" || $titre eq "")
+{
+	&usage();
+}
+
 
 open (RESULT, '<', $fichier_in) || die "Can't open file:$fichier_in\n";
 
@@ -27,7 +63,6 @@ while (<RESULT>) {
 	chomp($l);
 	if ($l =~ /^\s*#/)
 	{
-		print "l = $l\n";
 		next;
 	}
 	else
@@ -35,14 +70,7 @@ while (<RESULT>) {
 		my @columns = split(/\t/, $l);
 		push(@{$tableTruePositive{$columns[0]}{$columns[1]}},$columns[2]);
 	}
-	# if ($l =~ m/(==)(.*)/ )
-	# {
-	# 	$id_learn = $2;
-	# }
-	# if($l =~ m/(.*):(.*)/)
-	# {
-	# 	push(@{$tableTruePositive{$id_learn}{$1}},$2);
-	# }
+	
 }
 
 
@@ -81,7 +109,7 @@ foreach my $taille_learn ( keys %tableTruePositive)
 open (PLOT,'>',"boxplot.plot") || die "Can't open file:$!\n";
 
 print PLOT "reset
-set term pdf font \"Times,5\"
+set term pdf font \"Times,3\"
 set output \"$titre.pdf\"
 set xlabel \"read length\"   
 set ylabel \"true positive\"

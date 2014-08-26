@@ -87,6 +87,6 @@ public class IncrementalClassifier  {
 		}
 		res /= (double) nTests;
 		
-		System.out.println(res);
+		System.out.print(res);
 	}
 }

@@ -1,0 +1,254 @@
+\subsection{Récupération du Genbank}
+\label{qwery}
+\subsubsection{Prérequis}
+
+Dans l'espace de travail par défaut se trouve un fichier REQUIRED, qui un
+script d'installation de paquet Debian nécessaire  pour l'utilisation des scripts perl, voir figure \ref{installPerl}
+
+~\\
+\begin{figure}[H]
+
+\begin{center}
+\begin{verbatim}
+  $ ls -1
+count_kmer/  cpp/  create_db/  data_mining/  docs/  filter/ generate_data/  generate_graph/  
+generate_learn/  HOWTO/  qwery/ REQUIRED
+
+  $ sh REQUIRED
+\end{verbatim}
+
+
+\end{center}
+\caption{\label{installPerl}Installation des bibliothèque perl}
+\end{figure}
+~\\
+
+On peut à présent se placer dans le dossier qwery pour effectuer notre requete.
+
+\begin{verbatim}
+  $ cd qwery/
+  
+  $ ls
+  qweryNCBI.pl
+\end{verbatim}
+
+\subsubsection{Résultats attendus}
+
+On s'attend ici à récupérer un fichier au format Genbank du ncbi\footnote{http://www.ncbi.nlm.nih.gov/} des génomes
+mitochondriaux complet.
+
+La requête exécutée par défaut si l'id = 2759 est : 
+\begin{verbatim}
+  txid2759[Organism:exp] AND (mitochondria[Title] OR mitochondrion[Title] OR mitochondrial[Title]) AND "complete genome"[Title]
+\end{verbatim}
+
+\subsubsection{Utilisation}
+\paragraph{Les options}
+\begin{itemize}
+ \item Obligatoires :
+\begin{itemize}
+ 
+     \item id: taxid du taxon à récupérer ( -id 2759 )
+     \item m: email de l'utilisateur ( -m myemail@mail.com )
+    \item out: nom de sortie sans extension ( -out eukaryota )
+  \end{itemize}
+  \item Optionelles:
+  \begin{itemize}
+    \item path : dossier où sauvegarder le genbank ( /home/me/bdd/ )
+    \item not : liste d'id à ne pas récupérer ( -not 33630,33258 )
+    \item more : ajouter des précisions à la requêtes par défaut ( -more "NOT HOMO" )
+    \item mine : spécifier sa propre requête ( -mine txid2759[Organism:exp] )
+    \item help : Affiche l'aide.
+  \end{itemize}
+\end{itemize}
+
+
+\subsubsection{Exemples}
+
+Utilisation basique voir figure \ref{ub}:
+
+~\\
+\begin{figure}[H]
+
+\begin{center}
+\begin{verbatim}
+  $ ls 
+  qweryNCBI.pl
+  
+  $ ./qweryNCBI.pl -id 2759 -m toto@mail.com -out eukaryota
+  
+  $ ls
+  qweryNCBI.pl eukaryota.gb
+  \end{verbatim}
+\end{center}
+\caption{\label{ub}Utilisation minimale de qweryNCBI.pl}
+\end{figure}
+~\\
+
+\subsection{Création des dossier}
+\label{createdb}
+
+\begin{verbatim}
+  $ cd create_db
+  $ ls 
+  bdd/ Eukaryota_krona.html  generateDirectories.pl  
+  get_dump_file.sh  get_leaf.sh  install_krona.sh
+\end{verbatim}
+\subsubsection{Prérequis}
+
+Un fichier genbank est nécessaire pour la création de la base de donnée.
+Les requêtes sont par défaut effectuées en locale il est donc d'avoir la structure arborescente du NCBI 
+dans des fchiers plats, ces fichiers sont versionnés sur la forge et sont présent dans create\_db/bdd/, mais on peut également les récupérer ou mettre
+à jour via le script\textit{ get\_dump\_file.sh }
+
+\begin{verbatim}
+  $ sh get_dump_file.sh
+  \end{verbatim}
+
+
+
+\subsubsection{Résultats attendus}
+Le script produit une base de donnée avec une structure arborescente de dossier. Il produit également, la structure
+de la base dans un format newick, un fichier xml au format adéquat pour l'outil \textit{krona}, et un script pour le nettoyage de la base.
+
+Le script \textit{install\_krona.sh} est prévu pour l'installation de krona, si on souhaite l'utiliser voir figure \ref{krona}.
+
+Enfin il va générer deux fichier dans le dossier generate\_data pour la génération
+des données pour l'étape \ref{generatedata}.
+~\\
+\begin{figure}[H]
+
+\begin{center}
+\begin{verbatim}
+14:47:09 [jeremy][create_db]$ ./install_krona.sh 
+
+*********************
+Debut install krona
+*********************
+
+
+Cloning into 'krona'...
+remote: Counting objects: 788, done.
+remote: Compressing objects: 100% (598/598), done.
+remote: Total 788 (delta 364), reused 305 (delta 149)
+Receiving objects: 100% (788/788), 528.43 KiB | 395 KiB/s, done.
+Resolving deltas: 100% (364/364), done.
+Creating links...
+
+Installation complete.
+
+To use scripts that rely on NCBI taxonomy, run updateTaxonomy.sh to build the
+local taxonomy database.
+
+
+**************************
+Fin install krona, exemple
+**************************
+
+
+*********************
+ktImportXML krona_Eukaryota.xml
+*********************
+
+
+14:47:19 [jeremy][create_db]$ 
+
+  \end{verbatim}
+\end{center}
+\caption{\label{krona}Installation de krona}
+\end{figure}
+~\\
+
+\subsubsection{Utilisation}
+\paragraph{Les options}
+\begin{itemize}
+ \item Obligatoires :
+\begin{itemize}
+ 
+     \item id: taxid du taxon  ( -id 2759 )
+     \item gen: fichier genbank ( -gen file.gb )
+    \item bound: nombre de sequence pour creer un dossier ( -bound 10 )
+  \end{itemize}
+  \item Optionelles:
+  \begin{itemize}
+    \item path : dossier où créer la base de donnée ( /home/me/bdd/ )
+    \item time : temps pris pour la création de la base ( -time )
+    \item help : Affiche l'aide.
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{Exemples}
+
+Utilsation de base voir figure \ref{gd}:
+
+~\\
+\begin{figure}[H]
+
+\begin{center}
+\begin{verbatim}
+  $ ls
+  bdd/  Eukaryota_krona.html  generateDirectories.pl  get_dump_file.sh  
+  get_leaf.sh  install_krona.sh 
+  
+  $ ls ../generate_data 
+  conf  extractGenbank.pl  fillAll_v2.sh
+  
+  $ ./generateDirectories.pl -id 33630 -gen ../qwery/alveolata.gb -bound 10
+  
+  $ ls 
+  Alveolata__33630/  bdd/  Eukaryota_krona.html  generateDirectories.pl  get_dump_file.sh  
+  get_leaf.sh  install_krona.sh  krona_Alveolata.xml  script_clean_Alveolata.sh  
+  tree_Alveolata.newick
+  
+  $ ls ../generate_data 
+  conf  extractGenbank.pl  fillAll_v2.sh	generateGenbank_Alveolata.sh  listGenbank.txt
+  \end{verbatim}
+\end{center}
+\caption{\label{gd}Utilisation minimale de generateDirectories.pl}
+\end{figure}
+~\\
+
+
+
+\subsection{Création des dossier}
+\label{generatedata}
+\begin{verbatim}
+  $ cd generate_data
+  $ ls
+  conf  extractGenbank.pl  fillAll_v2.sh	generateGenbank_Alveolata.sh  listGenbank.txt
+\end{verbatim}
+
+\subsubsection{Prérequis}
+Le fichier listGenbank, généré grâce au script présenté en \ref{createdb} est nécessaire 
+pour la génération des données aux bons endroits. En effet ce fichier contient des listes d'accessions propre
+à un dossier.
+
+\subsubsection{Résultats attendus}
+On s'attend, après avoir exécuté ce scripts, l'ensemble des données dans la base. C'est à dire
+les genbanks correspondants, les génomes, les séquences codantes (selon le fichier conf)...
+
+\subsubsection{Utilisation, exemple}
+
+~\\
+\begin{figure}[H]
+\begin{center}
+\begin{verbatim}
+  $ sh generateGenbank_Alveolata.sh 
+  \end{verbatim}
+\end{center}
+\caption{Génération des données}
+\end{figure}
+~\\
+
+
+Attention, ce script produit un affichage sur stdout montrant l'évolution du script dans ces trois étapes:
+
+\begin{verbatim}
+      Traitement 1 / 3
+      Avancement: 100 %
+      Traitement 2 / 3 (Génération des donnees aux feuilles)
+      Traitement 3/3 (linkage)
+\end{verbatim}
+
+
+

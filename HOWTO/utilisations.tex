@@ -1,0 +1,107 @@
+\pdfminorversion 7
+\pdfobjcompresslevel 3
+
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[10pt,a4paper]{article}
+%\documentclass[10pt,oneside,noprintercorrection]{article}
+\special{papersize=210mm,297mm}
+
+
+\usepackage[absolute]{textpos} 
+\usepackage{pdfpages}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+\usepackage[francais]{babel}
+\usepackage[bookmarks=false,colorlinks,linkcolor=blue]{hyperref}
+\usepackage[top=4cm,bottom=3cm,left=3cm,right=3cm]{geometry}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{eso-pic}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[table]{xcolor}
+\usepackage{url}
+\usepackage{eurosym}
+\usepackage{url}
+\usepackage{textcomp}
+\usepackage{fancyhdr} 
+\usepackage{amsmath}
+\usepackage{pict2e}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage[toc,page]{appendix} 
+\usepackage{varwidth}
+\onehalfspacing
+\lstset{escapeinside={<@}{@>}}
+\definecolor{lightgray}{gray}{0.9}
+
+
+\title{Manuel d'utilisation}
+
+\author{Jérémy Fontaine}
+
+
+\begin{document}
+
+\newpage
+\tableofcontents
+\newpage
+\listoffigures
+
+\newpage
+\section{Introduction}
+\vspace{10em}
+Le but de ce document est de présenter les différents outils développés, pour permettre à un utilisateur externe aux projet de 
+pouvoir l'utiliser. La présentation se fera dans l'ordre chronologique des développements, on commencera tout d'abord par la
+construction de la base de données en locale, puis par le comptage en fréquence de kmers et on terminera par la validation croisée.
+\newpage
+
+\section{Espace de travail et prérequis}
+On suppose que l'espace de travail par défaut est celle qui contient les dossiers présentés en figure  :
+
+~\\
+\begin{figure}[H]
+
+\begin{center}
+\begin{verbatim}
+  $ ls -1
+count_kmer/  cpp/  create_db/  data_mining/  docs/  filter/ generate_data/  generate_graph/  
+generate_learn/  HOWTO/  qwery/ REQUIRED
+\end{verbatim}
+
+
+\end{center}
+\caption{\label{ws}Espace de travail par défaut}
+\end{figure}
+~\\
+
+\begin{itemize}
+  \item qwery/ : Voir section \ref{qwery},
+  \item create\_db/: voir section \ref{createdb},
+  \item generate\_data/: voir section \ref{generatedata},
+  \item cpp: voir section \ref{cpp},
+  \item generate\_graph: voir seciton \ref{graph}.
+\end{itemize}
+\newpage
+
+\section{Construction de la base de données locale}
+\input{./bdd.tex}
+\newpage
+\section{Fréquence de kmers}
+\input{./freq.tex}
+
+\newpage
+\section{Validation croisée}
+\input{./crossVal.tex}
+
+
+
+\end{document}
+
+
+

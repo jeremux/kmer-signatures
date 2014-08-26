@@ -51,6 +51,7 @@ typedef struct {
     int end;
     int step;
     int sampleSize;
+    bool wekaOut;
 } options;
 
 options opt;
@@ -77,6 +78,7 @@ void init_opt()
     opt.end=-1;
     opt.step=-1;
     opt.sampleSize=-1;
+    opt.wekaOut=false;
 }
 
 int getParam(int argcc, char **argvv,options *opt)
@@ -107,6 +109,7 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {"end",required_argument,0,0},
 	    {"step",required_argument,0,0},
 	    {"sample",required_argument,0,0},
+	    {"weka",no_argument,0,0},
 	    {0, 0, 0, 0}
 	};
 	c = getopt_long (argcc, argvv, "hF:f:l:k:o:vtdTKr:j:",long_options, &option_index);
@@ -122,6 +125,10 @@ int getParam(int argcc, char **argvv,options *opt)
 	    {
 		opt->noData = true;
 	    }
+	    if(!(strcmp(long_options[option_index].name,"weka")))
+		{
+		opt->wekaOut = true;
+		}
 	    if(!(strcmp(long_options[option_index].name,"test")))
 	    {
 		opt->doTest=Yes;
@@ -179,6 +186,11 @@ int getParam(int argcc, char **argvv,options *opt)
 	    		if(optarg)
 	    		    opt->root=optarg;
 	    	    }
+	    if(!(strcmp(long_options[option_index].name,"output")))
+	    	    	    {
+	    	    		if(optarg)
+	    	    		    opt->output=optarg;
+	    	    	    }
 	    if(!(strcmp(long_options[option_index].name,"wsize")))
 	    {
 		if(optarg)
@@ -282,16 +294,27 @@ int getParam(int argcc, char **argvv,options *opt)
 void printHelp()
 {
     printf("usage: count_kmer [-F listPathFasta | -f fasta_file ] -k pattern_kmer -l n -o file_out \n\n"
-	   "count mers in fasta_file with specified kmer in file pattern_kmer\n"
-	   "\n"
-	   "  --listFasta		-F  file with a list of fasta path\n"
-	   "  --fasta	        -f  fasta file\n"
-	   "  --wsize   		-l  length of the read (if -1 read = sequence)\n"
-	   "  --noData            -d  load only one per one fasta file\n"
-	   "  --kmer     		-k  file with pattern of mers to count\n"
-	   "  --output   		-o  output filename\n"
-	   "  --version  		-v  program version\n"
-	   "  --help     		-h  print this help\n"
+		"count mers in fasta_file with specified kmer in file pattern_kmer\n"
+		"\n"
+		"--listFasta           -F  file with a list of fasta path\n"
+		"--fasta               -f  fasta file\n"
+		"--wsize               -l  length of the read (if -1 read = sequence)\n"
+		"--noData              -d  load only one per one fasta file\n"
+		"--kmer                -k  file with pattern of mers to count\n"
+		"--output              -o  output filename\n"
+		"--version             -v  program version\n"
+		"--test                -t  launch unit test\n"
+		"--intra               -T  launch test on Intramacronucleata\n"
+		"--key                 -K  cox1,cox2,genomes...\n"
+		"--root                -r  taxonA/taxonB/\n"
+		"--jump                -j  size of shift (default 20% of wszie )\n"
+		"--learn               -L  learn legnth (-1 if complete genome)\n"
+		"--start               start read size for cross validation\n"
+		"--end                 end read size for cross validation\n"
+		"--step                step read size for cross validation (predict_size = start + step )\n"
+		"--sample              how many sequence per taxon\n"
+		"--weka                print weka format of the frequencies\n"
+		"--help                -h  print this help\n"
 	   "\n"
 	   " jeremy.fontaine@etudiant.univ-lille1.fr\n");
 
@@ -463,12 +486,16 @@ int main(int argc, char **argv) {
 	    	{
 	    		f = new FreqKmer(opt.windowSize,opt.jump,opt.kmerPath,opt.noData,opt.root,opt.key);
 	    	}
+
+	    	f->writeWeka(opt.output);
 	    }
 	}
 
 
-	cerr << "Fin fill \n";
-	// f->imprimeCSV(opt.output);
+	if(opt.wekaOut)
+	{
+		f->writeWeka(opt.output);
+	}
 
 	delete f;
     }

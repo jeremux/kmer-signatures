@@ -1,0 +1,72 @@
+\subsection{Calcul de fréquence en c++}
+\label{cpp}
+
+  \begin{verbatim}
+  $ cd cpp/count_kmer/
+  
+  $ ls
+  qweryNCBI.pl
+\end{verbatim}
+Il existe également une version de calcul de fréquence de kmer en C, mais pour
+le projet on a opté pour le c++ pour son côté objet. Les versions développés en Perl, Java et C
+ont servi de test pour la version c++.
+
+\subsubsection{Utilisation}
+Les options
+\begin{itemize}
+  \item \textit{listFasta}           fichier contenant une liste de chemins vers des fichiers fasta,
+		\item \textit{fasta }              fichier fasta,
+		\item\textit{wsize}               taille du read,
+		\item \textit{noData}              libérer la mémoire suite au chargement des données,
+		\item \textit{kmer}                fichier contenant les patterns de kmers,
+		\item \textit{output}              nom du fichier de sortie,
+		\item \textit{version}             version du programme,
+		\item \textit{test}                lance une batterie de tests unitaires,
+		\item \textit{intra}               lance un test sur le taxon Intramacronucleata,
+		\item \textit{key}                 sur quels séquences compter: cox1,cox2,genomes...,
+		\item \textit{root}                racine où on doit établir l'apprenstissage,
+		\item \textit{jump}                taille du décalage de la fenetre,
+		\item \textit{learn}               taille de l'apprentissage pour la validation croissée,
+		\item \textit{start}               debut de la taille du read dans la prédiction pour la validation croissée,
+		\item \textit{end}                 fin de la taille du read dans la prédiction pour la validation croissée,
+		\item \textit{step}                taille du pas pour les différentes fenetre pour la prédiction,
+		\item \textit{sample}              nombre de sequences à considérer par taxon,
+		\item \textit{weka}                imprime sur la sortie le format weka,
+		\item \textit{help}                affiche l'aide.
+\end{itemize}
+\subsubsection{Exemples}
+
+
+~\\
+\begin{figure}[H]
+
+Pour produire un fichier de fréquence au format weka avec un fichier fasta voir la figure \ref{freq1}.
+Cependant utiliser un fichier simple ne produira pas de classe à prédire pour cela il faut fournir un dossier \ref{freq2}
+avec l'architecture établi par le programme présenté en \ref{createdb}.
+\begin{center}
+\begin{verbatim}
+  $ makefile
+  
+  $ ./count_kmer -f seq.fasta -k pattern.txt -o out.arff -l -1 --weka
+  
+  $ cat out.arff
+  @RELATION freqKmer
+
+  @ATTRIBUTE aaaa NUMERIC
+  @ATTRIBUTE aaac NUMERIC
+  @ATTRIBUTE aaag NUMERIC
+  @ATTRIBUTE aaat NUMERIC
+  ...
+  @ATTRIBUTE tttg NUMERIC
+  @ATTRIBUTE tttt NUMERIC
+  @ATTRIBUTE class {null}
+
+  @DATA
+  0.25,0,...,null %Datat(0,0)
+
+  \end{verbatim}
+\end{center}
+\caption{\label{freq1}Produit un fichier weka avec count\_kmer}
+\end{figure}
+~\\
+

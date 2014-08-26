@@ -34,7 +34,7 @@ GetOptions (
 
 # exmple de ligne de commande:
 
-# ./execAndEval.pl --root "../../create_db/Eukaryota__2759/Alveolata__33630/" --start "50" --end "300" --step "50" --nCross "10" --list list.txt --kmer "pattern.txt" --sample "20"
+# ./execAndEval.pl --root "../../create_db/Eukaryota__2759/Alveolata__33630/" --start "100" --end "300" --step "50" --nCross "10" --list list.txt --kmer "pattern.txt" --sample "20"
 
 
 system("sh compilBayesJava.sh;");
@@ -42,7 +42,6 @@ system("make realclean;");
 system("make;");
 $root = abs_path($root);
 
-system("echo \"#learn_length\tpredict_length\ttrue_positive\"") if -e "result.log";
 open(LIST,'<',$list) || die "Can't open $list\n";
 
 while (<LIST>) {
@@ -67,6 +66,7 @@ while (<LIST>) {
 			system("echo  -n \"$l\t$i\t\" >> result.log;");
 			print "sh execCrossVal.sh $root $nCross $i $l >> result.log;\n";
 			system("sh execCrossVal.sh $root $nCross $i $l >> result.log;");
+			system("echo  \"\" >> result.log;");
 		}
 	}
 }

@@ -40,7 +40,7 @@ sub usage{
 Génère l'arborescence taxonomique Ã  partir d'un taxon.
 
     USAGE
-         perl generateDirectories.pl     -id taxid -bound n
+         perl generateDirectories -gen genomes.gb -id taxid -bound n
 					[-path pathToGenerate]
 					[-time]
 					[-help]
@@ -83,7 +83,7 @@ if($help)
 if ($genbank eq "")
 {
 	print STDERR "Le fichier genbank est attendu:\n";
-	print STDERR "perl generateDirectories -gen genomes.genbank\n";
+	print STDERR "perl generateDirectories -gen genomes.gb -id taxid -bound n\n";
 	print STDERR "perl generateDirectories -h: Pour l'aide\n";
 	exit
 }
@@ -91,7 +91,7 @@ if ($genbank eq "")
 if ($ID_RACINE eq -1)
 {
     print STDERR "Un taxid est attendu:\n";
-	print STDERR "perl generateDirectories -id taxid";
+	print STDERR "perl generateDirectories -gen genomes.gb -id taxid -bound n";
 	print STDERR "perl generateDirectories -h: Pour l'aide\n";
 	exit;  
 } 
@@ -99,7 +99,7 @@ if ($ID_RACINE eq -1)
 if ($boundary eq -1)
 {
 	print STDERR "Indiquez le seuil pour la crÃ©ation d'un nouveau dossier:\n";
-	print STDERR "perl generateDirectories -bound n\n";
+	print STDERR "perl generateDirectories -gen genomes.gb -id taxid -bound n\n";
 	print STDERR "perl generateDirectories -h: Pour l'aide\n";
 	exit;  
 } 

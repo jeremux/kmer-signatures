@@ -412,6 +412,8 @@ public:
 
 	int 	getNbSeqData(int data_i);
 
+	void 	writeWeka(string out);
+
 };
 
 #endif /* FREQKMER_H_ */
