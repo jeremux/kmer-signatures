@@ -6,7 +6,6 @@ classData.o \
 classPattern.o \
 count_kmer.o \
 test.o \
-testPart2.o \
 test_intramacro.o
 
 CPP_SRCS += \
@@ -15,7 +14,6 @@ classData.cpp \
 classPattern.cpp \
 count_kmer.cpp \
 test.cpp \
-testPart2.cpp \
 test_intramacro.cpp
 
 OBJS += \
@@ -24,7 +22,6 @@ classData.o \
 classPattern.o \
 count_kmer.o \
 test.o \
-testPart2.o \
 test_intramacro.o
 
 CPP_DEPS += \
@@ -33,7 +30,6 @@ classData.d \
 classPattern.d \
 count_kmer.d \
 test.d \
-testPart2.d \
 test_intramacro.d
 
 
