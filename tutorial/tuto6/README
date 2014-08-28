@@ -1,0 +1,3 @@
+#lance plusieurs evaluations sur cox1 complet et de taille 1000
+
+./generateListTruePositive.sh

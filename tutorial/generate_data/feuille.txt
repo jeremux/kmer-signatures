@@ -1,0 +1,13 @@
+/home/jeremy/mitomer/trunk/tutorial/create_db/
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/Haemosporida__5819/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/Haemosporida__5819/Plasmodium__5820/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/Haemosporida__5819/Plasmodium__5820/Plasmodium_Laverania__418107/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/Haemosporida__5819/Plasmodium__5820/Plasmodium_Laverania__418107/Plasmodium_falciparum__5833
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/Haemosporida__5819/Plasmodium__5820/Plasmodium_Plasmodium__418103/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/Haemosporida__5819/Plasmodium__5820/Plasmodium_Plasmodium__418103/Plasmodium_vivax__5855
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Aconoidasida__422676/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Apicomplexa__5794/Conoidasida__1280412/Coccidia__5796/Eucoccidiorida__75739/Eimeriorina__423054/Eimeriidae__5799/Eimeria__5800
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Ciliophora__5878/Intramacronucleata__431838/Oligohymenophorea__6020/Hymenostomatida__31277/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Ciliophora__5878/Intramacronucleata__431838/Oligohymenophorea__6020/Hymenostomatida__31277/Tetrahymenina__37093/Tetrahymenidae__291294/Tetrahymena__5890
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/Ciliophora__5878/Intramacronucleata__431838/Oligohymenophorea__6020/others
+/home/jeremy/mitomer/trunk/tutorial/create_db/./Eukaryota__2759/Alveolata__33630/others

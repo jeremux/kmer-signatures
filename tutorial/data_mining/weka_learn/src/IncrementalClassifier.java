@@ -25,7 +25,7 @@ public class IncrementalClassifier  {
 		
 		String trainPath = root + "/frequencies/"+id3+"_learn-"+id+".arff";
 		String testDataset = root + "/frequencies/"+id2+"_toPredict-"+id+".arff";
-		//System.err.println("==============");
+	//System.err.println("==============");
 		//System.err.println(trainPath);
 		//System.err.println("*****");
 		//System.err.println(testDataset);

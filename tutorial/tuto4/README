@@ -1,0 +1,8 @@
+# lancer les tests
+./makeTest.sh
+
+#genere un fichier weka à partir d'un multi fasta
+./genereWeka.sh
+
+#genere un jeu de donnees pour la validation croisée (mode noData NON activé)
+./genereCrossVal_Alveolata.sh

@@ -1,0 +1,8 @@
+# Creer la BDD dans create_db
+./scriptMakeDir.sh
+
+#installer krona
+./install_krona.sh
+
+#generer html krona
+./make_eukaryota_html.sh

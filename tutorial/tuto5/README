@@ -1,0 +1,3 @@
+#evalue le taux de vrai positif
+
+./evaluateAccuracy.sh
