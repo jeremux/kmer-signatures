@@ -13,11 +13,12 @@ my $start;
 my $end;
 my $step;
 my $out;
-my $nCross;
+my $nCross = 10;
 my $learn;
 my $key="genomes";
 my $kmerPath;
 my $sample = -1;
+my $noData;
 
 
 GetOptions (
@@ -26,9 +27,9 @@ GetOptions (
             'start=i' => \$start,
             'end=i'	 => \$end,			
             'step=i' => \$step,
-            'nCross=i' => \$nCross,
             'key=s' => \$key,
              'kmer=s' => \$kmerPath,
+             'noData|d' => \$noData,
              'sample=i' => \$sample);
 
 
@@ -52,9 +53,16 @@ while (<LIST>) {
 	if($l ne "")
 	{
 
-		
-		print "./count_kmer --learn \"$l\" --sample \"$sample\" --key $key --kmer $kmerPath --root \"$root\" --start \"$start\" --step \"$step\" --end \"$end\";\n";
-		system("./count_kmer --learn \"$l\" --sample \"$sample\" --key \"$key\" --kmer \"$kmerPath\" --root \"$root\" --start \"$start\" --step \"$step\" --end \"$end\";");
+		if($noData)
+		{
+			print "./count_kmer --noData --learn \"$l\" --sample \"$sample\" --key $key --kmer $kmerPath --root \"$root\" --start \"$start\" --step \"$step\" --end \"$end\";\n";
+			system("./count_kmer --noData --learn \"$l\" --sample \"$sample\" --key \"$key\" --kmer \"$kmerPath\" --root \"$root\" --start \"$start\" --step \"$step\" --end \"$end\";");
+		}
+		else
+		{
+			print "./count_kmer  --learn \"$l\" --sample \"$sample\" --key $key --kmer $kmerPath --root \"$root\" --start \"$start\" --step \"$step\" --end \"$end\";\n";
+			system("./count_kmer  --learn \"$l\" --sample \"$sample\" --key \"$key\" --kmer \"$kmerPath\" --root \"$root\" --start \"$start\" --step \"$step\" --end \"$end\";");
+		}
 
 		if ($l eq "-1")
 		{

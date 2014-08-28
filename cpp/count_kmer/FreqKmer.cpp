@@ -20,17 +20,7 @@ using namespace std;
  ****************************************************************************/
 
 
-/**
- * Contruscteur
- * @param win_size:   taille de la fenetre
- * @param s:          taille du decalage
- * @param list:       booleen, false si le fichier file en parametre et un fichier fasta
- * 					           true  si le fichier file en parametre est une liste de fichier fasta
- * @param file:       chemin du fichier fasta ou du fichier de la liste des chemins fasta
- * @param patternFile chemin du fichier contenant les patterns de kmer
- * @param b:          noData, si true alors les données ne sont chargees que lors de leur utilisation
- * @param key:        mot cles pour le comptage de frequence (cox1,cox2,...,genomes)
- */
+
 FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile, bool b,string key)
 {
 	printSwitch(getSwitch(0));
@@ -80,16 +70,7 @@ FreqKmer::FreqKmer(int win_size,int s,bool list, string file,string patternFile,
 }
 
 
-/**
- * Contruscteur le decalage = 20% de win_size
- * @param win_size:   taille de la fenetre
- * @param list:       booleen, false si le fichier file en parametre et un fichier fasta
- * 					           true  si le fichier file en parametre est une liste de fichier fasta
- * @param file:       chemin du fichier fasta ou du fichier de la liste des chemins fasta
- * @param patternFile chemin du fichier contenant les patterns de kmer
- * @param b:          noData, si true alors les données ne sont chargees que lors de leur utilisation
- * @param key:        mot cles pour le comptage de frequence (cox1,cox2,...,genomes)
- */
+
 FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool b,string key)
 {
 	printSwitch(getSwitch(0));
@@ -145,14 +126,7 @@ FreqKmer::FreqKmer(int win_size,bool list, string file,string patternFile, bool 
 }
 
 
-/**
- * Contruscteur le decalage = 20% de win_size
- * @param win_size:   taille de la fenetre
- * @param patternFile chemin du fichier contenant les patterns de kmer
- * @param b:          noData, si true alors les données ne sont chargees que lors de leur utilisation
- * @param pathR: 	  chemin du taxon où établir l'apprentissage
- * @param key:        mot cles pour le comptage de frequence (cox1,cox2,...,genomes)
- */
+
 FreqKmer::FreqKmer(int win_size,string patternFile, bool b,string pathR,string key)
 {
 	printSwitch(getSwitch(0));
@@ -203,15 +177,7 @@ FreqKmer::FreqKmer(int win_size,string patternFile, bool b,string pathR,string k
 }
 
 
-/**
- * Contruscteur
- * @param win_size:   taille de la fenetre
- * @param s:		  taille du decalage
- * @param patternFile chemin du fichier contenant les patterns de kmer
- * @param b:          noData, si true alors les données ne sont chargees que lors de leur utilisation
- * @param pathR: 	  chemin du taxon où établir l'apprentissage
- * @param key:        mot cles pour le comptage de frequence (cox1,cox2,...,genomes)
- */
+
 FreqKmer::FreqKmer(int win_size,int s,string patternFile, bool b,string pathR,string key)
 {
 	printSwitch(getSwitch(0));
@@ -328,11 +294,7 @@ FreqKmer::~FreqKmer()
 }
 
 
-/**
- * Permet d'initialiser le tableau
- * patterns[] a partir du fichier en parametre
- * @param fichier	chemin du fichier de patterns de kmer
- */
+
 void FreqKmer::initPatterns(string fichier)
 {
 	int tailleLigne=0;
@@ -398,11 +360,7 @@ void FreqKmer::initPatterns(string fichier)
 }
 
 
-/**
- * Permet de se deplacer horizontalement
- * @param i:	index du pattern
- * return:	    l'indice du début de la colonne du i-ème pattern
- */
+
 int FreqKmer::obtainStartColKmer(int i)
 {
 	/* si c'est le premier kmer */
@@ -419,23 +377,14 @@ int FreqKmer::obtainStartColKmer(int i)
 }
 
 
-/**
- * Permet de se deplacer horizontalement
- * @param i:	index du pattern
- * return:	    l'indice de fin de la colonne du i-ème pattern
- */
+
 int FreqKmer::obtainEndColKmer(int i)
 {
 	return kmerSpace[i];
 }
 
 
-/**
- * Permet d'initailiser le jeux de donnes
- * @param fichier:	chemin d'un fichier contenant une lsite de chemin fasta
- * Cette methode permet d'etablir la carte du tableau de frequence, en particulier
- * le nombre de ligne
- */
+
 void FreqKmer::initDataFromListFastaPath(string fichier)
 {
 	if(dataVerbose)
@@ -552,10 +501,6 @@ void FreqKmer::initDataFromListFastaPath(string fichier)
 }
 
 
-/** Permet de garder en memoire la liste des chemins fasata
- * @param fichier:	chemin du fichier de la liste contenant les chemins fasta
- * Cette methode permet de recuperer les taxids de chaque chemins
- */
 void FreqKmer::initPathFasta(string fichier)
 {
 	string ligne;
@@ -584,12 +529,6 @@ void FreqKmer::initPathFasta(string fichier)
 }
 
 
-/**
- * Permet d'initailiser le jeux de donnes
- * @param fichier:	fichier fasta
- * Cette methode permet d'etablir la carte du tableau de frequence, en particulier
- * le nombre de ligne
- */
 void FreqKmer::initFromFasta(string fichier)
 {
 	nbFastaFile=1;
@@ -648,14 +587,6 @@ void FreqKmer::initFromFasta(string fichier)
 }
 
 
-/**
- * Methode permettant de savoir à quelle colonne
- * correspond un kmer donnée dans une sequence
- * @param indexPattern:		indice du pattern dans le tableau patterns
- * @param seq:				sequence pour laquelle on effectue le comptage
- * @param pos:				indice où l'on se trouve dans la sequence
- * return: 					indice de la colonne dans la table freq
- */
 int FreqKmer::obtainColIndex(int indexPattern,int *seq,int pos)
 {
 	return obtainStartColKmer(indexPattern)+patterns[indexPattern]->getKmer(seq,pos);
@@ -690,16 +621,7 @@ void FreqKmer::initFreq()
 }
 
 
-/***
- * effectue le comptage dans une sous sequence
- * @param	seq: sequence où compter
- * @param	win_length: taille de la sous sequence
- * @param	pos: où commencer à compter
- * @param	indexPattern: indice du kmer courant
- * @param	previous: buffer contenant la frequence en kmer de
- * 					  la partie commune entre la sequence courante et precedent
- * @param   start_line: à partir de quel ligne ecrire.
- */
+
 void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *previous,int start_line)
 {
 	if(dataVerbose){
@@ -740,16 +662,7 @@ void FreqKmer::winCount(int *seq,int win_length,int pos ,int indexPattern,int *p
 }
 
 
-/**
- * Permet de copier un la partie commune
- * d'un buffer vers un autre et de mettre a jour le nouveau buffer
- * @param previous:		buffer du comptage de la fenetre precedente
- * @param current:		buffer a mettre a jour
- * @param buf_size:		taille des buffer
- * @param indexPattern:	index du pattern courant dans patterns
- * @param seq: 			sequence pour laquelle on effectue le comptage
- * @param pos:			position ou l'on se trouve dans la sequence
- */
+
 void FreqKmer::copyBuffAndCount(int *current,int *previous,int buf_size, int indexPattern,int *seq,int pos)
 {
 	for(int i=0;i<buf_size;i++)
@@ -790,11 +703,7 @@ void FreqKmer::copyBuffAndCount(int *current,int *previous,int buf_size, int ind
 }
 
 
-/**
- * Methode permettant d'echanger deux buffer
- * @param current, previous: les buffers a intervertir
- * @param buf_size:			 taille des buffers
- */
+
 void FreqKmer::swap(int *current,int *previous,int buf_size)
 {
 	int *tmp = new int[buf_size];
@@ -809,14 +718,7 @@ void FreqKmer::swap(int *current,int *previous,int buf_size)
 }
 
 
-/**
- * Methode implementee
- * pour le debogage, elle permet
- * d'afficher sur la sortie derreur le contenu
- * d'un buffer
- * @param buf:		buffer a afficher
- * @param buf_size:	taille du buffer
- */
+
 void FreqKmer::printBuf(int *buf,int buf_size)
 {
 	cerr << "[indice - val]\n";
@@ -829,13 +731,7 @@ void FreqKmer::printBuf(int *buf,int buf_size)
 }
 
 
-/**
- * Effectue le comptaga pour seq
- * @param 	seq: 			la sequence ou compter
- * @param 	seq_length : 	taille de la sequence
- * @parm	indexPattern : 	indice du kmer actuel
- * @param 	start_line:		indice de la ligne dans le tableau freq
- */
+
 void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 {
 	if(dataVerbose)
@@ -933,9 +829,6 @@ void FreqKmer::count(int *seq,int seq_length,int indexPattern,int start_line)
 }
 
 
-/**
- * Rempli le tableau de frequence
- */
 void FreqKmer::fillFreq()
 {
 	if(dataVerbose){
@@ -961,14 +854,7 @@ void FreqKmer::fillFreq()
 }
 
 
-/**
- * Permet d'avoir le nombre de ligne (decalage)
- * pour une sous sequence selon une taille de fenetre
- * @param	i	indice du debut (varie de 0 à taille de la sequence  -1 )
- * @param	j 	indice de fin
- * @param	l	taille de la fenetre
- * @return	le nombre de ligne.
- */
+
 int FreqKmer::obtainNbLineWindow(int i,int j,int l,int pas)
 {
 	int res = 0;
@@ -984,13 +870,7 @@ int FreqKmer::obtainNbLineWindow(int i,int j,int l,int pas)
 }
 
 
-/**
- * Permet d'avoir le nombre de ligne
- * pour la donnée Data à l'indice i
- * (soit un ensemble de sequence)
- * @param i	indice du data à considérer
- * @return le nombre de ligne pour data[i]
- */
+
 int FreqKmer::obtainNbLineData(int i)
 {
 	if(i==0)
@@ -1004,13 +884,7 @@ int FreqKmer::obtainNbLineData(int i)
 }
 
 
-/**
- * Permet d'avoir le nombre de ligne
- * pour la donnée Data à l'indice i
- * (soit un ensemble de sequence)
- * @param i	indice du data à considérer
- * @return le nombre de ligne pour data[i]
- */
+
 int FreqKmer::obtainStartLineData(int i)
 {
 	if(i==0)
@@ -1023,24 +897,13 @@ int FreqKmer::obtainStartLineData(int i)
 	}
 }
 
-/**
- * Methode pour obtenir l'indice de fin
- * de la ligne pour un data donnée
- * @param i:	i-ème data
- * return:		l'indice de ligne de fin dans la table freq de data[i]
- */
+
 int FreqKmer::obtainEndLineData(int i)
 {
 	return indexLineData[i];
 }
 
-/**
- * Methode pour obtenir l'indice de
- * debut pour une séquence d'un jeu de donnée
- * @param i:	i-ème jeu de donnee
- * @param j:	j-ème sequence
- * @return:		l'indice de ligne de debut dans la table freq de la j-ème sequence de data[i]
- */
+
 int FreqKmer::obtainStartLineDataSeq(int i,int j)
 {
 	int tmp = 0;
@@ -1066,37 +929,19 @@ int FreqKmer::obtainStartLineDataSeq(int i,int j)
 	return 0;
 }
 
-/**
- * Methode pour obtenir l'indice de
- * fin pour une séquence d'un jeu de donnée
- * @param i:	i-ème jeu de donnee
- * @param j:	j-ème sequence
- * @return:		l'indice de ligne de fin dans la table freq de la j-ème sequence de data[i]
- */
+
 int FreqKmer::obtainEndLineDataSeq(int i,int j)
 {
 	return indexLineDataSeq[i][j];
 }
 
-/**
- * Methode pour obtenir lenombre de ligne
- * pour une séquence d'un jeu de donnée
- * @param i:	i-ème jeu de donnee
- * @param j:	j-ème sequence
- * @return:		le nombre de ligne q'occupe la j-ème sequence de data[i] dans la table freq
- */
+
 int FreqKmer::obtainNbLineDataSeq(int i,int j)
 {
 	return obtainEndLineDataSeq(i,j)-obtainStartLineDataSeq(i,j)+1;
 }
 
-/**
- * Methode pour recuperer l'indice de la sequence et du jeu de
- * donnee à partir du ligne de la table freq
- * @param line:		indice de ligne dans la table freq
- * @param idData:	où sauvegarder l'indice du jeu de donnee
- * @param idSeq:	où sauvegarder l'indice de la sequence
- */
+
 void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
 {
 	bool res = false;
@@ -1121,14 +966,7 @@ void FreqKmer::obtainDataSeqFromLine(int line,int &idData,int &idSeq)
 	}
 }
 
-/**
- * Methode pour recuperer l'indice de la sequence et du jeu de
- * donnee à partir du ligne de la table freq et egalement la fenetre
- * @param line:		indice de ligne dans la table freq
- * @param idData:	où sauvegarder l'indice du jeu de donnee
- * @param idSeq:	où sauvegarder l'indice de la sequence
- * @param idWin: 	où sauvegarder l'indice de la fenetre
- */
+
 void FreqKmer::obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idWin)
 {
 	bool res = false;
@@ -1154,35 +992,19 @@ void FreqKmer::obtainDataSeqWinFromLine(int line,int &idData,int &idSeq,int &idW
 	}
 }
 
-/**
- * Methode pour savoir si on
- * considere une sequence dans nos calcul
- * @param i:	indice du jeu de donnee a questionner
- * @param j:	indice de la sequence du i-ème jeu de donnes
- */
+
 bool FreqKmer::takeDataSeq(int i,int j)
 {
 	return mask[i][j];
 }
 
-/**
- * Methode permettant de "cacher" une sequence
- * @param i:	indice du jeu de donnee a cacher
- * @param j:	indice de la sequence du i-ème jeu de donnes
- */
+
 void FreqKmer::setFalseMask(int i,int j)
 {
 	mask[i][j] = false;
 }
 
-/**
- * Methode permettant de recuperer la liste
- * des sous taxons du taxon courant
- * @param dir:		chemin du taxon courant
- * @param nbChild:	où sauvegarder le nombre de sous taxon
- * @param files:	liste de string ou sera enregistré les chemins vers les fastas
- * @param taxids:	liste de string contenant les taxids des sous taxons du taxon courant
- */
+
 int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &files,vector<string> &taxids)
 {
 	files.erase(files.begin(),files.end());
@@ -1262,35 +1084,19 @@ int FreqKmer::getDirTaxonFromPath(string dir,int &nbChildTaxa, vector<string> &f
 	return 0;
 }
 
-/**
- * Permet de recuperer le taxid
- * à partir du dossier d'indice dir_i
- * @param dir_i:	indice du dossier
- * return:			le taxid du dossier d'indice dir_i
- */
+
 string FreqKmer::getIdTaxa(int dir_i)
 {
 	return idTaxa[dir_i];
 }
 
-/**
- * Permet de recupere le chemin du
- * dossier d'indice dir_i
- * @param dir_i:	indice du dossier
- * return: 			le chemin du dossier d'indice dir_i
- */
+
 string FreqKmer::getPathChildTaxa(int dir_i)
 {
 	return pathChildTaxa[dir_i];
 }
 
-/**
- * Permet d'avoir le numéro de ligne (qui
- * commence à 0) de début
- * dans la liste des chemin fasta pour un taxon donnée
- * @param i:	index du taxon
- * return:		l'indice de début de ligne du taxon i
- */
+
 int FreqKmer::obtainStartLineTaxaInFastaList(int i)
 {
 	if(i==0)
@@ -1303,24 +1109,13 @@ int FreqKmer::obtainStartLineTaxaInFastaList(int i)
 	}
 }
 
-/**
- * Permet d'avoir le numéro de ligne (qui
- * commence à 0) de fin
- * dans la liste des chemin fasta pour un taxon donnée
- * @param i:	index du taxon
- * return:		l'indice de fin de ligne du taxon i
- */
+
 int FreqKmer::obtainEndLineTaxaInFastaList(int i)
 {
 	return indexTaxaInFasta[i];
 }
 
-/**
- * Permet d'avoir le nombre de fichier fasta
- * pour un taxon donnée
- * @param i:	index du taxon
- * return:		le nombre de fichier fasta pour le i-ème taxon
- */
+
 int FreqKmer::obtainNbLineTaxaInFastaList(int i)
 {
 	int res = 0;
@@ -1328,12 +1123,7 @@ int FreqKmer::obtainNbLineTaxaInFastaList(int i)
 	return res;
 }
 
-/**
- * Initialise la liste de fichier fasta
- * des sous taxons du taxon (dossier) courant
- * @param key_fasta:	mot-clé de la sequence a recuperer
- * 						cox1,cox2,...,genomes.
- */
+
 void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 {
 	struct dirent *dirp;
@@ -1429,11 +1219,7 @@ void FreqKmer::initTabIndexTaxaInFasta(string key_fasta)
 	indexTaxaInFasta[++index]=listPathFasta.size()-1;
 }
 
-/**
- * Methode permettant d'ecrire en
- * dur dans le dossier courant la liste des fasta
- * des sous taxon du dossier courant
- */
+
 void FreqKmer::writeListFasta()
 {
 	if (dataVerbose)
@@ -1455,12 +1241,7 @@ void FreqKmer::writeListFasta()
 	}
 }
 
-/**
- * Tirage aleatoire sans remise
- * @param result:		liste des entiers tirés
- * @param tabSize:		borne sup du tirage
- * @param sampleSize:	nombre d'entier à tirer
- */
+
 void FreqKmer::randomTab(vector<int> *result,int tabSize,int sampleSize)
 {
 	if(dataVerbose)
@@ -1523,12 +1304,7 @@ void FreqKmer::randomTab(vector<int> *result,int tabSize,int sampleSize)
 	}
 }
 
-/**
- * Permet d'obtenier un echantillon du jeu
- * de donnees initialement fourni
- * @param sampleSize:	taille de l'échantillon
- * return:				un pointeur d'objet de type FreqKmer
- */
+
 FreqKmer* FreqKmer::sampleMe(int sampleSize)
 {
 	FreqKmer *res;
@@ -1679,12 +1455,7 @@ FreqKmer* FreqKmer::sampleMe(int sampleSize)
 }
 
 
-/**
- * Permet d'avoir le nombre de sequence
- * d'un taxon
- * @param i:	indice du taxon
- * return:		le nombre de sequence du i-ème sous taxon du taxon courant
- */
+
 int FreqKmer::getNSeqInTaxa(int i)
 {
 	int nbData = 0;
@@ -1706,16 +1477,7 @@ int FreqKmer::getNSeqInTaxa(int i)
 	return res;
 }
 
-/**
- * Methode permettant d'avoir le
- * nombre de case à true dans un tableau de booleens entre
- * deux indices
- * @param tab:		tableu de booleens
- * @param start:	indice de debut ou compter
- * @param end:		indice de fin ou arreter le comptage
- * return 			le nombre de case a true entre les indices
- * 					start et end incluses dans le tableau tab
- */
+
 int FreqKmer::getNbTrue(bool *tab,int start,int end)
 {
 	int res=0;
@@ -1729,12 +1491,7 @@ int FreqKmer::getNbTrue(bool *tab,int start,int end)
 	return res;
 }
 
-/**
- * Methode permettant de savoir combien
- * de sequences sont considérées, n'est
- * pas utile au programme mais permet des tests
- * basiques
- */
+
 int FreqKmer::getNbAllTrue()
 {
 	int res = 0;

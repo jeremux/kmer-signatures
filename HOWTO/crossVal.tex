@@ -1,9 +1,134 @@
 \subsection{Validation croisée à un niveau taxonomique}
 \label{graph}
-\subsubsection{Prérequis}
+
+\begin{verbatim}
+  $ cd cpp/count_kmer/
+\end{verbatim}
 
 \subsubsection{Résultats attendus}
 
+Un fichier au format tabulé avec
+\begin{itemize}
+  \item La première colonne : la taille des reads de l'apprentissage
+  \item la seconde : la taille des reads de l'espace à prédire
+  \item et la dernière : le taux de vrais positifs 
+\end{itemize}
+
+Ce fichier ce nomme result.log .
+
 \subsubsection{Utilisation}
+Les options
+\begin{itemize}
+		\item \textit{noData}              libérer la mémoire suite au chargement des données,
+		\item \textit{kmer}                fichier contenant les patterns de kmers,
+		\item \textit{key}                 sur quels séquences compter: cox1,cox2,genomes...,
+		\item \textit{root}                racine où on doit établir l’apprentissage,
+		\item \textit{learn}               taille de l'apprentissage pour la validation croissée,
+		\item \textit{start}               début de la taille du read dans la prédiction pour la validation croisée,
+		\item \textit{end}                 fin de la taille du read dans la prédiction pour la validation croisée,
+		\item \textit{step}                taille du pas pour les différentes fenêtre pour la prédiction,
+		\item \textit{sample}              nombre de séquences à considérer par taxon,
+		\item \textit{list}                une liste de taille pour la taille de l'apprentissage
+\end{itemize}
+~\\
+
 
 \subsubsection{Exemples}
+Utilisation de base voir figure \ref{crossV}
+
+~\\
+\begin{figure}[H]
+\begin{center}
+\begin{verbatim}
+$ perl execAndEval.pl --root "../../create_db/Eukaryota__2759" 
+                      --start "100" 
+                      --end "300" 
+                      --step "50" 
+                      --list list.txt 
+                      --kmer "pattern.txt" 
+                      --sample "20"
+\end{verbatim}
+\end{center}
+\caption{\label{crossV}Utilisation du script execAndEval.pl}
+\end{figure}
+~\\
+
+Si on lance la commande de la figure \ref{crossV} et si list.txt correspond au fichier de la figure \ref{fileList}
+alors notre fichier aura la forme de celui présenté en figure \ref{resultlog}
+
+~\\
+\begin{figure}[H]
+\begin{center}
+
+\begin{verbatim}
+$ cat list.txt
+-1
+1000
+200
+\end{verbatim}
+\end{center}
+\caption{\label{fileList}Contenu du fichier list.txt}
+\end{figure}
+~\\
+
+\begin{figure}[H]
+\begin{verbatim}
+$ cat list.txt
+complete    100	    61.7
+complete	  150	    63.1
+complete	  200	    64.7
+complete	  250	    73.9
+complete	  300	    77.3
+1000	      100	    68.9
+1000	      150	    44.3
+1000	      200	    50.7
+1000	      250	    66.9
+1000	      300	    62.9
+200	        100	    91.3
+200	        150	    98.4
+200	        200	    97.3
+200	        250	    98.4
+200	        300	    99.0
+
+\end{verbatim}
+\begin{center}
+
+\end{center}
+\caption{\label{resultlog}Contenu du fichier result.log}
+\end{figure}
+~\\
+
+
+
+\subsection{Génération d'une courbe à partir d'un fichier tabulé}
+\label{graph2}
+
+\begin{verbatim}
+  $ cd generate_graph
+\end{verbatim}
+\subsubsection{Prérequis}
+
+Un fichier au format tabulé avec à la première colonne
+la taille du read de l'espace d'apprentissage, à la suivante 
+la taille du read de l'espace de prédiction et à la dernière colonne
+au taux de vrais positifs
+
+\subsubsection{Résultats attendus}
+
+L'outil génère un fichier au format pdf représentant le graphe de vrai positif
+en fonction de la taille du read. 
+
+
+\subsubsection{Exemples}
+Utilisation de base voir figure \ref{makgraph}
+
+~\\
+\begin{figure}[H]
+\begin{center}
+\begin{verbatim}
+$ perl ./make_graph.pl -in ../cpp/count_kmer/result.log -title eukaryotaComplete
+\end{verbatim}
+\end{center}
+\caption{\label{makgraph}Utilisation du script make\_graph.pl}
+\end{figure}
+~\\

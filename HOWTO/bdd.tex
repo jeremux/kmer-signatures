@@ -2,8 +2,8 @@
 \label{qwery}
 \subsubsection{Prérequis}
 
-Dans l'espace de travail par défaut se trouve un fichier REQUIRED, qui un
-script d'installation de paquet Debian nécessaire  pour l'utilisation des scripts perl, voir figure \ref{installPerl}
+Dans l'espace de travail par défaut se trouve un fichier REQUIRED, qui est un
+script d'installation de paquets Debian et de modules Perl nécessaires  pour l'utilisation des scripts perl, voir figure \ref{installPerl}
 
 ~\\
 \begin{figure}[H]
@@ -39,7 +39,8 @@ mitochondriaux complet.
 
 La requête exécutée par défaut si l'id = 2759 est : 
 \begin{verbatim}
-  txid2759[Organism:exp] AND (mitochondria[Title] OR mitochondrion[Title] OR mitochondrial[Title]) AND "complete genome"[Title]
+txid2759[Organism:exp] AND (mitochondria[Title] OR mitochondrion[Title] OR mitochondrial[Title])\
+ AND "complete genome"[Title]
 \end{verbatim}
 
 \subsubsection{Utilisation}
@@ -49,8 +50,8 @@ La requête exécutée par défaut si l'id = 2759 est :
 \begin{itemize}
  
      \item id: taxid du taxon à récupérer ( -id 2759 )
-     \item m: email de l'utilisateur ( -m myemail@mail.com )
-    \item out: nom de sortie sans extension ( -out eukaryota )
+     \item m: email de l'utilisateur ( -m myEmail@mail.com )
+    \item out: nom de sortie sans l'extension ( -out eukaryota )
   \end{itemize}
   \item Optionelles:
   \begin{itemize}
@@ -97,7 +98,7 @@ Utilisation basique voir figure \ref{ub}:
 \subsubsection{Prérequis}
 
 Un fichier genbank est nécessaire pour la création de la base de donnée.
-Les requêtes sont par défaut effectuées en locale il est donc d'avoir la structure arborescente du NCBI 
+Les requêtes sont par défaut effectuées en locale il est donc nécessaire d'avoir la structure arborescente du NCBI 
 dans des fchiers plats, ces fichiers sont versionnés sur la forge et sont présent dans create\_db/bdd/, mais on peut également les récupérer ou mettre
 à jour via le script\textit{ get\_dump\_file.sh }
 
@@ -113,7 +114,7 @@ de la base dans un format newick, un fichier xml au format adéquat pour l'outil
 
 Le script \textit{install\_krona.sh} est prévu pour l'installation de krona, si on souhaite l'utiliser voir figure \ref{krona}.
 
-Enfin il va générer deux fichier dans le dossier generate\_data pour la génération
+Enfin il va générer deux fichiers dans le dossier generate\_data pour la génération
 des données pour l'étape \ref{generatedata}.
 ~\\
 \begin{figure}[H]
@@ -171,7 +172,7 @@ ktImportXML krona_Eukaryota.xml
   \end{itemize}
   \item Optionelles:
   \begin{itemize}
-    \item path : dossier où créer la base de donnée ( /home/me/bdd/ )
+    \item path : dossier où créer la base de données ( /home/me/bdd/ )
     \item time : temps pris pour la création de la base ( -time )
     \item help : Affiche l'aide.
   \end{itemize}
@@ -249,6 +250,4 @@ Attention, ce script produit un affichage sur stdout montrant l'évolution du sc
       Traitement 2 / 3 (Génération des donnees aux feuilles)
       Traitement 3/3 (linkage)
 \end{verbatim}
-
-
 

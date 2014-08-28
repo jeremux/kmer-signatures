@@ -58,6 +58,10 @@ clean:
 
 test: realclean all
 	./count_kmer -t
+docs:
+	doxygen doxy.conf > /dev/null 2>&1
+	-@echo 'doxygen done'
+	-@echo 'docs generated in ./docs'
 
 intra: realclean all
 	./count_kmer -T
@@ -65,7 +69,7 @@ intra: realclean all
 valgrindTest: realclean all
 	valgrind --leak-check=full ./count_kmer -t
 
-.PHONY: clean realclean all
+.PHONY: clean realclean all docs
 .SECONDARY:
 
 -include makefile.targets

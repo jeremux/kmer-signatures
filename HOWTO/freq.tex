@@ -3,9 +3,6 @@
 
   \begin{verbatim}
   $ cd cpp/count_kmer/
-  
-  $ ls
-  qweryNCBI.pl
 \end{verbatim}
 Il existe également une version de calcul de fréquence de kmer en C, mais pour
 le projet on a opté pour le c++ pour son côté objet. Les versions développés en Perl, Java et C
@@ -23,14 +20,14 @@ Les options
 		\item \textit{version}             version du programme,
 		\item \textit{test}                lance une batterie de tests unitaires,
 		\item \textit{intra}               lance un test sur le taxon Intramacronucleata,
-		\item \textit{key}                 sur quels séquences compter: cox1,cox2,genomes...,
-		\item \textit{root}                racine où on doit établir l'apprenstissage,
-		\item \textit{jump}                taille du décalage de la fenetre,
+		\item \textit{key}                 sur quelles séquences compter: cox1,cox2,genomes...,
+		\item \textit{root}                racine où on doit établir l’apprentissage,
+		\item \textit{jump}                taille du décalage de la fenêtre,
 		\item \textit{learn}               taille de l'apprentissage pour la validation croissée,
-		\item \textit{start}               debut de la taille du read dans la prédiction pour la validation croissée,
-		\item \textit{end}                 fin de la taille du read dans la prédiction pour la validation croissée,
-		\item \textit{step}                taille du pas pour les différentes fenetre pour la prédiction,
-		\item \textit{sample}              nombre de sequences à considérer par taxon,
+		\item \textit{start}               début de la taille du read dans la prédiction pour la validation croisée,
+		\item \textit{end}                 fin de la taille du read dans la prédiction pour la validation croisée,
+		\item \textit{step}                taille du pas pour les différentes fenêtre pour la prédiction,
+		\item \textit{sample}              nombre de séquences à considérer par taxon,
 		\item \textit{weka}                imprime sur la sortie le format weka,
 		\item \textit{help}                affiche l'aide.
 \end{itemize}
@@ -45,9 +42,13 @@ Cependant utiliser un fichier simple ne produira pas de classe à prédire pour 
 avec l'architecture établi par le programme présenté en \ref{createdb}.
 \begin{center}
 \begin{verbatim}
-  $ makefile
+  $ make
   
-  $ ./count_kmer -f seq.fasta -k pattern.txt -o out.arff -l -1 --weka
+  $ ./count_kmer -f seq.fasta 
+                 -k pattern.txt 
+                 -o out.arff 
+                 -l -1 
+                 --weka
   
   $ cat out.arff
   @RELATION freqKmer
@@ -62,11 +63,44 @@ avec l'architecture établi par le programme présenté en \ref{createdb}.
   @ATTRIBUTE class {null}
 
   @DATA
-  0.25,0,...,null %Datat(0,0)
+  0.25,0,...,null %Data(0,0)
+  ...
 
   \end{verbatim}
 \end{center}
 \caption{\label{freq1}Produit un fichier weka avec count\_kmer}
 \end{figure}
-~\\
 
+~\\
+\begin{figure}[H]
+\begin{center}
+\begin{verbatim}
+  $ makefile
+  
+  $ ./count_kmer -f seq.fasta 
+                 -k pattern.txt 
+                 -o out.arff 
+                 -l -1 
+                 --weka 
+                 --root ~/trunk/create_db/Eukaryota__2759/Alveolata__33630
+  
+  $ cat out.arff
+  @RELATION freqKmer
+
+  @ATTRIBUTE aaaa NUMERIC
+  @ATTRIBUTE aaac NUMERIC
+  @ATTRIBUTE aaag NUMERIC
+  @ATTRIBUTE aaat NUMERIC
+  ...
+  @ATTRIBUTE tttg NUMERIC
+  @ATTRIBUTE tttt NUMERIC
+  @ATTRIBUTE class {5794,5878,others}
+
+  @DATA
+  0.15,0.64,...,5878 %Data(0,0)
+
+  \end{verbatim}
+\end{center}
+\caption{\label{freq2}Produit un fichier weka avec count\_kmer en précisant un dossier de taxon}
+\end{figure}
+~\\

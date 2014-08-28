@@ -41,12 +41,12 @@
 \definecolor{lightgray}{gray}{0.9}
 
 
-\title{Manuel d'utilisation}
-
-\author{Jérémy Fontaine}
 
 
+%
 \begin{document}
+
+\input{./title.tex}
 
 \newpage
 \tableofcontents
@@ -56,13 +56,13 @@
 \newpage
 \section{Introduction}
 \vspace{10em}
-Le but de ce document est de présenter les différents outils développés, pour permettre à un utilisateur externe aux projet de 
+Le but de ce document est de présenter les différents outils développés, pour permettre à un utilisateur externe au projet de 
 pouvoir l'utiliser. La présentation se fera dans l'ordre chronologique des développements, on commencera tout d'abord par la
 construction de la base de données en locale, puis par le comptage en fréquence de kmers et on terminera par la validation croisée.
 \newpage
 
 \section{Espace de travail et prérequis}
-On suppose que l'espace de travail par défaut est celle qui contient les dossiers présentés en figure  :
+On suppose que l'espace de travail par défaut est celle qui contient les dossiers présentés en figure \ref{ws}  :
 
 ~\\
 \begin{figure}[H]
@@ -84,8 +84,9 @@ generate_learn/  HOWTO/  qwery/ REQUIRED
   \item qwery/ : Voir section \ref{qwery},
   \item create\_db/: voir section \ref{createdb},
   \item generate\_data/: voir section \ref{generatedata},
-  \item cpp: voir section \ref{cpp},
-  \item generate\_graph: voir seciton \ref{graph}.
+  \item cpp/: voir section \ref{cpp},
+  \item cpp/: afin de lancer des validation croisée \ref{graph}
+  \item generate\_graph/: voir seciton \ref{graph2}.
 \end{itemize}
 \newpage
 

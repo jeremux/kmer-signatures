@@ -1,6 +1,6 @@
 /*!
  * \file classPattern.h
- * \brief classe pour gérer les kmers
+ * \brief to manage kmer
  * \author jeremy FONTAINE
  * \version 1.0
  */
@@ -13,25 +13,21 @@
 #include <vector>
 using namespace std;
 
-/*! \class CPlayer
-* \brief classe representant un pattern de kmer
+/*! \class Pattern
+* \brief K-mer object
 *
-*  La classe gere la taille, les combinaisons...
 */
 class Pattern {
 
 private:
-	string pattern; /*!< Le pattern */
-	int patternSize;
-	int kmerSize;
+	string pattern; /*!< the pattern: ex ##_## */
+	int patternSize; /*!< pattern length */
+	int kmerSize; /*!< kmer length */
 
 public:
 
 	/*!
 	 *  \brief Constructeur
-	 *
-	 *  Constructeur de la classe Pattern
-	 *
 	 *  \param p : le pattern
 	 */
 	Pattern(string p);
@@ -52,11 +48,33 @@ public:
 	 *  \return le nombre de kmer du pattern courant
 	 */
 	int getAllCombi();
+
+
 	int getSizePattern(){return patternSize;}
+
 	int getSizeKmer(){return kmerSize;}
+
+	/**
+	 * Permet d'avoir la liste des kmer
+	 * @return liste des kmer: a...a,a...c,...,t..tg,t..tt
+	 */
 	vector<string> getCombi();
+
+	/**
+	 * @return vrai si c'est un pattern continue
+	 */
 	bool isContinue();
-	int getKmer(int* seq,int coord); /* coord de 0 à taille(seq)-1 */
+
+
+	int getKmer(int* seq,int coord);
+
+	/**
+	 * Permet de savoir si on
+	 * doit considerer une position
+	 * dans le pattern pour le
+	 * comptage
+	 * @param i: position dans le kmer
+	 */
 	bool extraire(int i);
 };
 

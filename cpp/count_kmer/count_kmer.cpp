@@ -353,7 +353,7 @@ int main(int argc, char **argv) {
     		exit(0);
     	}
     //	string path_root = "/home/jeremy/mitomer/trunk/create_db/Eukaryota__2759/Alveolata__33630";
-    	f = new FreqKmer(opt.learn,opt.kmerPath,false,opt.root,opt.key);
+    	f = new FreqKmer(opt.learn,opt.kmerPath,opt.noData,opt.root,opt.key);
 
     	cout << "generate\n";
     	/* generateWekaData(tailleEchantillon,taillePredictPourcent,debutTailleFenetre,finTailleFenetre,pas,nBcross)*/

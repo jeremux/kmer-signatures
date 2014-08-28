@@ -2,7 +2,7 @@
   L'idée première était de générer le fichier de comptage au format weka à partir d'un dossier. Pour se faire pour un dossier $D$ il faut effectuer le comptage pour ses sous dossier $d_1,...,d_n$ en prenant soins de récupérer chaque taxid pour chaque $d_i$ afin de lancer le programme de comptage {\textit{count\_kmer} avec les bons arguments. Le programme a était réalisé en Perl.\\ (trunk$/$generate\_learn$/$generate\_learn.pl)
   
   \subsubsection{Parallélisme}
-  Au lieu de lancer le programme réalisé auparavant il est possible à partir des options d'utiliser plusieurs processeurs afin d'effectuer plusieurs comptage. Cependant même si le programme offre cette fonctionnalité lors de l'appel system de Perl pour appeler le programme C de comptage, Perl rend immédiatement la main et lance l'appel système suivant, le parallélisme se fait alors par défaut.
+  Au lieu de lancer le programme réalisé auparavant, il est possible, à partir des options, d'utiliser plusieurs processeurs afin d'effectuer plusieurs comptage. Cependant même si le programme offre cette fonctionnalité lors de l'appel system de Perl pour appeler le programme C de comptage, Perl rend immédiatement la main et lance l'appel système suivant, le parallélisme se fait alors par défaut.
   
 \subsection{Générer les fréquences de kmer aux feuilles}
   Le but de cette partie est de générer les fréquences uniquement aux feuilles. Ainsi pour construire le fichier weka à un noeud donnée $d$ il suffit d'aller récupérer les fréquences aux feuilles du sous arbre ayant pour pour racine $d$.  (trunk$/$generate\_learn$/$generate\_count.pl)

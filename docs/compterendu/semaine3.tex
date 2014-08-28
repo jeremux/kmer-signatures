@@ -1,6 +1,6 @@
 \subsection{Gestion d'erreur en C}
   Une partie de cette semaine a été consacrée au débogage du comptage écrit en C. En effet le comptage à la racine avec une fenêtre de 50, provoquait des erreurs 
-  d'allocation mémoire. Ce problème fut régler grâce à la re-allocation de la mémoire. 
+  d'allocation mémoire. Ce problème fut régler grâce à la re-allocation de la mémoire, moins coûteux que de faire une nouvelle allocation. 
   \subsection{Taille du jeu de fréquences à la racine}
   Avec une taille de fenêtre glissante constante, la taille du fichier de fréquence est proportionnel à la somme des tailles de séquences (nombre de nucléotides totale). On a pu évaluer ainsi la taille du fichier de fréquence au plus haut niveau avec une fenêtre de taille 50 et le pattern \#\#\#\#. On obtiendrai au niveau de la racine, une taille de \textbf{123Go} pour le fichier de fréquence et un temps de \textbf{120 min}. Ainsi grâce aux graphes ci dessous on a pu évaluer le temps (fig. \ref{temps_cpt}) pour générer le fichier de fréquence et la taille de celui-ci (fig. \ref{taille_cpt}) sur l'ensemble des séquences (251 371 097 nucléotides).
   

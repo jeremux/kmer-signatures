@@ -1,6 +1,6 @@
 \subsection{Débogage}
 
-Au fil de l'implémentation , des erreurs d'accès mémoire se sont accumulés. Ce fut une tâche longue de trouver toutes les sources d'erreur. A présent au fil du développement avant de passer une étape, valgrind et les tests doivent le programme. 
+Au fil de l'implémentation , des erreurs d'accès mémoire se sont accumulés. Ce fut une tâche longue de trouver toutes les sources d'erreur. A présent au fil du développement avant de passer une étape, valgrind et les tests doivent valider le programme. 
 
 \subsection{Les cartes du tableau fréquences}
 
@@ -38,7 +38,7 @@ Il a été jugé utile également d'avoir la carte inverse permettant à partir 
 \caption[Structure au niveau du taxon alpha]{\label{struct}Exemple de structure de l'arborescence au niveau du taxon alpha}
 \end{figure}
 
-Avec la structure donnée en figure \ref{struct} la carte associé serait celle présentée en figure \ref{map}.
+Avec la structure donnée en figure \ref{struct} la carte associée serait celle présentée en figure \ref{map}.
 
 \begin{figure}[H]
 \begin{center}
@@ -48,7 +48,7 @@ Avec la structure donnée en figure \ref{struct} la carte associé serait celle 
 \end{figure}
 ~\\
 
-Il est possible à présent,  à partir d'une ligne, de savoir à quelle séquence de quel jeu de données et surtout à quel taxon correspond la ligne de fréquence. C'est un bon point pour plus tard dans le développement des outils, en particulier pour l'écriture du fichier d’apprentissage puisque le taxid d'un taxon pour une ligne de fréquence donnée est connu. 
+Il est possible à présent,  à partir d'une ligne, de savoir à quelle séquence de quel jeu de données et surtout à quel taxon correspond la ligne de fréquence. C'est un bon point pour plus tard dans le développement des outils, en particulier pour l'écriture du fichier d’apprentissage puisque le taxid est la donnée à apprendre et donc à prédire. 
 \\
 
 
