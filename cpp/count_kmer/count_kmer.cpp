@@ -20,7 +20,6 @@
 #include "classData.h"
 #include "FreqKmer.h"
 #include "test.h"
-#include "testPart2.h"
 #include "test_intramacro.h"
 
 #define no_argument 0
