@@ -617,6 +617,13 @@ sub traite_normal
 	my $long = int($fin) - int($debut) + 1;
 
 	$debut -=1;
+
+	if(length($s)<$debut)
+	{
+		print "ATTENTION \n";
+		print "debut = $debut \t fin = $fin\n";
+		print "seq = $s\n";
+	}
 	my $res = substr($s,$debut,$long);
 	return $res;
 }
@@ -680,7 +687,12 @@ sub traite_complement
 			my $long = int($fin) - int($debut) + 1;
 			$debut = $debut-1;
 
-	
+					if(length($s)<$debut)
+	{
+		print "ATTENTION \n";
+		print "debut = $debut \t fin = $fin\n";
+		print "seq = $s\n";
+	}
 
 			$res = $res . substr($s,$debut,$long);	
 
@@ -749,6 +761,13 @@ sub traite_join
 
 			$debut -= 1;
 			# print "res avant = $res\n";
+
+				if(length($s)<$debut)
+	{
+		print "ATTENTION \n";
+		print "debut = $debut \t fin = $fin\n";
+		print "seq = $s\n";
+	}
 			$res = $res . substr($s,$debut,$long);	
 
 			
@@ -891,6 +910,7 @@ foreach my $un_genbank (@tab_extract)
 
 		print FASTA ">";
 		print FASTA "$name\n";
+		print "Pour $name\n";
 		# print FASTA "$cut\n\n";
 		print FASTA "$la_seq\n\n";
 

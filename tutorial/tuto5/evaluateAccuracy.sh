@@ -9,7 +9,15 @@ echo "Learn size = -1 VS predict size = 100"
 
 echo -n "Accuracy = "
 
-sh execCrossVal.sh "../../create_db/Eukaryota__2759/Alveolata__33630/" "10" "100" "complete" 
+###############################################################################################
+sh execCrossVal.sh "../../create_db/Eukaryota__2759/Alveolata__33630/" "10" "100" "complete" ##
+###############################################################################################
+
+if [ $? -ne 0 ]
+then
+   echo "error "
+   exit 3 
+fi
 
 echo ""
 
