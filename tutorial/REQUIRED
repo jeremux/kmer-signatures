@@ -3,5 +3,7 @@
 sudo apt-get install -y perl bioperl bioperl-run libxml-simple-perl libsvm-java git-core
 sudo perl -MCPAN -e'install Parallel::ForkManager'
 sudo perl -MCPAN -e'install Bio::DB::EUtilities'
+sudo perl -MCPAN -e'install Bio::Phylo'
 sudo perl -MCPAN -e'install Bio::DB::Query::GenBank'
 sudo perl -MCPAN -e'install Bio::Tools::EUtilities'
+sudo perl -MCPAN -e'install Statistics::Descriptive'
