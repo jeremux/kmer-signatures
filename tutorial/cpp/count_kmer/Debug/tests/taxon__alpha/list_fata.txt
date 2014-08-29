@@ -1,0 +1,8 @@
+Debug/tests/taxon__alpha/taxon__B/genomes__1.fasta
+Debug/tests/taxon__alpha/taxon__A/genomes__3.fasta
+Debug/tests/taxon__alpha/taxon__A/genomes__4.fasta
+Debug/tests/taxon__alpha/taxon__A/genomes__1.fasta
+Debug/tests/taxon__alpha/taxon__A/genomes__2.fasta
+Debug/tests/taxon__alpha/others/genomes__1-others.fasta
+Debug/tests/taxon__alpha/taxon__C/genomes__1.fasta
+Debug/tests/taxon__alpha/taxon__C/genomes__2.fasta

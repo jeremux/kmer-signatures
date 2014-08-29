@@ -1,0 +1,2 @@
+./Debug/tests/test4/file2.fasta
+./Debug/tests/test4/file.fasta

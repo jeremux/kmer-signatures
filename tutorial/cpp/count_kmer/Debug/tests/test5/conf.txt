@@ -1,0 +1,18 @@
+1
+5
+2
+1
+Debug/tests/test5/liste.txt
+Debug/tests/test5/pattern.txt
+0
+genomes
+FIN_CONS
+5
+20
+FIN_DIM
+1 0 0 1 0 1 0 0 0 0 0 0 0 0 0 0 2 2 0 1 
+0 0 0 1 0 0 1 0 0 0 0 0 1 0 0 0 2 1 1 1 
+0 0 0 1 0 0 0 0 0 0 0 0 1 1 0 0 2 1 0 2 
+0 1 0 0 0 0 1 0 0 0 0 0 1 0 0 0 1 2 1 1 
+0 1 0 0 0 0 0 1 1 0 0 0 0 0 0 0 2 1 1 1 
+FIN_FREQ
