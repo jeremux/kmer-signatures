@@ -1,5 +1,4 @@
 #!/bin/sh
-
 sudo apt-get install -y perl bioperl bioperl-run libxml-simple-perl libsvm-java git-core
 sudo perl -MCPAN -e'install Parallel::ForkManager'
 sudo perl -MCPAN -e'install Bio::DB::EUtilities'
