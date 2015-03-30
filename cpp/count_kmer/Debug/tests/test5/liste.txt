@@ -1,2 +1,0 @@
-./Debug/tests/test5/file2.fasta
-./Debug/tests/test5/file.fasta
